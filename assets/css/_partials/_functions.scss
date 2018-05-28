@@ -1,0 +1,45 @@
+@import 'variables';
+
+@mixin center {
+  display: block;
+  height: 100%;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: auto;
+}
+
+@mixin flexStart {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+@mixin paddingButton {
+  padding: .5em .75em;
+}
+
+@mixin boxShadow($hover: false, $level: 1) {
+  $pow: $level * $level;
+  box-shadow: 0px #{$pow}px #{$pow * 2}px rgba($color-shadow, $level * .15), 0px #{$level * 2}px #{$level * 2}px rgba($color-shadow, .22);
+      
+  @if ($hover) {
+    $newL: $level + 1;
+    &:hover {
+      box-shadow: 0px #{$pow}px #{$pow * 2}px rgba($color-shadow, $newL * .15), 0px #{$newL * 2}px #{$newL * 2}px rgba($color-shadow, .22);
+    }
+  }
+}
+
+@mixin classShadow($className, $hover: false, $level: 1) {
+  @each $l in $level {
+    $suffix: if($l == 1, '', -#{$l});
+
+    .#{$className}--shadow#{$suffix} {
+      transition: box-shadow .2s ease-in;
+      @include boxShadow($hover, $l);
+    }
+  }
+}

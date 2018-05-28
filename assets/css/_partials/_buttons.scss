@@ -1,0 +1,100 @@
+@import 'variables';
+@import 'functions';
+
+button {
+  @include paddingButton();
+  transition: background-color .2s ease-in;
+  background-color: inherit;
+  border-color: inherit;
+  border-radius: inherit;
+  border-style: solid;
+  border-width: $border-width;
+  color: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  margin-bottom: 5px;
+  min-height: $min-height;
+  text-transform: uppercase;
+  
+  &:focus {
+    border-color: rgba(map-get($md-black, 500), .4);
+  }
+
+  &:hover {
+    background-color: rgba(map-get($md-blue, 100), .4);
+  }
+
+  &[disabled] {
+    background-color: rgba($color-shadow, .3);
+  }
+}
+
+.button--blank {
+  border-color: transparent;
+
+  &:focus {
+    background-color: rgba(map-get($md-blue, 500), .1);
+    border-color: transparent;
+  }
+}
+
+.button--icon {
+  border-radius: 9999px;
+}
+
+.button--inverted {
+  border-color: $bg-special;
+}
+
+.button--full {
+  display: block;
+  width: 100%;
+}
+
+.button--round {
+  border-radius: $border-radius;
+}
+
+@each $state, $color in $states {
+  @if $state != contrast {
+    $contrast: map-get(map-get($states, contrast), $state);
+    .button--#{$state} {
+      background: linear-gradient(
+        to top,
+        darken($color, 7%),
+        $color
+      );
+      background-color: $color;
+      border-color: $color;
+      color: $contrast;
+
+      &:focus {
+        background: linear-gradient(
+          to top,
+          $color,
+          darken($color, 7%)
+        );
+      }
+
+      &:hover {
+        background: linear-gradient(
+          to top,
+          $color,
+          lighten($color, 7%)
+        );
+      }
+    }
+
+    .button--#{$state}-inverted {
+      background-color: $contrast;
+      border-color: $color;
+      color: $color;
+
+      &:hover {
+        background-color: rgba($color, .1);
+      }
+    }
+  }
+}
+
+@include classShadow(button, true, $elevations);

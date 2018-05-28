@@ -1,0 +1,19 @@
+@import 'variables';
+
+html {
+  font-size: $rem;
+}
+
+body {
+  background-color: $bg-main;
+  color: $color-main;
+  font-family: $sans;
+  font-size: $em;
+
+  * {
+    box-sizing: border-box;
+    color: inherit;
+  }
+}
+
+@import 'typography';

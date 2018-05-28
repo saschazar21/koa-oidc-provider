@@ -1,0 +1,115 @@
+@import 'variables';
+
+.block {
+  display: block;
+  position: relative;
+}
+
+.container {
+  color: inherit;
+  display: block;
+  margin: 0 auto;
+  max-width: map-get($sizes, text);
+  padding-bottom: 3rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 3rem;
+  position: relative;
+}
+
+@each $size, $width in $sizes {
+  $suffix: if($size == full, '', --#{$size});
+  .container#{$suffix} {
+    @extend .container;
+    max-width: $width;
+  }
+}
+
+@each $s, $w in $media-sizes {
+  @if $s != xl and $s != l {
+    $suffix: if($s == s, '', --#{$s}); 
+    .block--author#{$suffix} {
+      @extend .container;
+      background-color: inherit;
+      display: grid;
+      grid-gap: 2rem;
+      grid-template-columns: $w 1fr;
+      grid-template-areas: "avatar text";
+      
+      figure,
+      > img,
+      > .img-container--#{$s} {
+        align-self: center;
+        grid-area: avatar;
+      }
+
+      .block--author__text {
+        align-self: center;
+        grid-area: text;
+        margin: 0;
+
+        > * {
+          display: block;
+          margin-bottom: .5rem;
+          margin-top: 0;
+        }
+      }
+    }
+  }
+}
+
+.block--inverted {
+  @extend .block;
+  background-color: $bg-inverted;
+  color: $color-inverted;
+}
+
+.footer {
+  @extend .container;
+
+  a {
+    color: inherit;
+  }
+
+  @each $h in $font-headings {
+    #{$h} {
+      text-transform: uppercase;
+    }
+  }
+}
+
+@each $state, $color in $states {
+  @if $state != contrast {
+    .block--#{$state} {
+      $contrast: map-get(map-get($states, contrast), $state);
+      background-color: $color;
+      color: $contrast;
+    }
+  }
+}
+
+@media screen and (min-width: map-get($breakpoints, s)) {
+  .footer {
+    display: grid;
+    grid-gap: $grid-gap;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: map-get($breakpoints, m)) {
+  .container {
+    padding-left: .75rem;
+    padding-right: .75rem;
+  }
+
+  .footer {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: map-get($breakpoints, l)) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

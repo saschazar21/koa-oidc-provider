@@ -1,0 +1,47 @@
+@import 'variables';
+@import 'functions';
+
+figure,
+figcaption {
+  display: block;
+  margin: 1rem auto;
+  position: relative;
+  text-align: center;
+}
+
+figure img {
+  margin: .5rem;
+}
+
+@each $s, $w in $media-sizes {
+  .img--#{$s} {
+    width: $w;
+  }
+
+  .img-container--#{$s} {
+    display: block;
+    height: $w;
+    overflow: hidden;
+    position: relative;
+    width: $w;
+
+    > img,
+    > svg {
+      @include center;
+    }
+  }
+}
+
+.img--border {
+  border-color: $color-main;
+  border-style: inset;
+  border-width: .25em;
+}
+
+.img--circle {
+  border-radius: 9999px;
+}
+
+.img--round {
+  border-radius: $border-radius;
+}

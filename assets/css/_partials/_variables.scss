@@ -1,0 +1,68 @@
+$rem: 10px;
+$em: 1.6rem;
+
+@import 'palette';
+
+$color-main: map-get($md-black, 700) !default;
+$color-special: map-get($md-blue, 700) !default;
+$color-alert: map-get($md-red, 700) !default;
+$color-warning: map-get($md-yellow, 700) !default;
+$color-inverted: map-get($md-yellow, 400) !default;
+$color-success: $color-special !default;
+$color-shadow: map-get($md-black, 300) !default;
+
+$bg-main: map-get(map-get($md-black, contrast), 700) !default;
+$bg-special: map-get(map-get($md-blue, contrast), 700) !default;
+$bg-alert: map-get(map-get($md-red, contrast), 700) !default;
+$bg-warning: map-get(map-get($md-yellow, contrast), 700) !default;
+$bg-inverted: lighten(map-get($md-black, 500), 4%) !default;
+$bg-success: $bg-special !default;
+$bg-zebra: lighten(map-get($md-blue, 50), 40%) !default;
+
+$states: (
+  alert: $color-alert,
+  success: $color-success,
+  contrast: (
+    alert: $bg-alert,
+    success: $bg-success,
+  ),
+);
+
+$elevations: 1, 2, 3, 4, 5, 6;
+
+$breakpoints: (
+  s: 480px,
+  m: 768px,
+  l: 1200px,
+  xl: 1920px,
+);
+
+$sizes: (
+  aside: calc(map-get($breakpoints, l) - 920px),
+  text: 900px,
+  full: map-get($breakpoints, l),
+);
+
+$font-headings: (
+  h1: 3.157em,
+  h2: 2.369em,
+  h3: 1.777em,
+  h4: 1.333em,
+  h5: 1em,
+  h6: 1em,
+);
+
+$font-small: .75em;
+$min-height: 32px;
+$grid-gap: 2rem;
+
+$media-sizes: (
+  xs: 48px,
+  s: 96px,
+  m: 150px,
+  l: 320px,
+  xl: 640px,
+);
+
+$border-radius: 5px;
+$border-width: .5px;

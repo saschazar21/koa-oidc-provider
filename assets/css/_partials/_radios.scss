@@ -1,0 +1,12 @@
+@import 'variables';
+@import 'functions';
+
+input[type="radio"] {
+  height: 0;
+  width: 0;
+
+  + label {
+    @extend button;
+    background-color: $bg-zebra;
+  }
+}

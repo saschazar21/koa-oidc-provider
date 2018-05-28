@@ -1,0 +1,6 @@
+@import 'variables';
+@import 'functions';
+
+.shadow {
+  @include boxShadow(false, 2);
+}

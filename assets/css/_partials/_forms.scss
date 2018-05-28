@@ -1,0 +1,55 @@
+@import 'variables';
+@import 'functions';
+
+@import 'inputs';
+@import 'buttons';
+@import 'radios';
+
+form {
+  @include paddingButton();
+  border-color: transparent;
+  border-style: solid;
+  border-width: $border-width;
+  position: relative;
+}
+
+.form--border {
+  border-color: $color-main;
+}
+
+.form--inline {
+  align-items: stretch;
+  display: inline-flex;
+  flex-wrap: nowrap;
+
+  * {
+    margin-bottom: 0;
+
+    & + * {
+      margin-left: .5em;
+    }
+  }
+}
+
+.form-group {
+  display: block;
+
+  label {
+    color: $color-shadow;
+    margin-bottom: .5em;
+  }
+
+  * {
+    display: inherit;
+  }
+}
+
+.form-group--inline {
+  align-items: stretch;
+  display: inline-flex;
+  justify-content: space-between;
+
+  * + * {
+    margin-left: .5em;
+  }
+}

@@ -1,0 +1,95 @@
+@import 'variables';
+@import 'functions';
+
+/* Clear styles */
+input,
+select,
+textarea,
+button {
+  background-color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  min-height: $min-height;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+input,
+textarea {
+  @include paddingButton();
+  transition: border-color .2s ease-in;
+  border-color: map-get($md-black, 100);
+  border-style: solid;
+  border-width: $border-width;
+  margin-bottom: 5px;
+
+  &:focus {
+    border-color: map-get($md-blue, 500);
+  }
+
+  &[disabled] {
+    background-color: rgba($color-shadow, .3);
+    color: map-get(map-get($md-black, contrast), 50);
+  }
+}
+
+.input--blank {
+  border-width: 0px;
+}
+
+.input--inverted {
+  $color: rgba($bg-main, .5);
+  border-color: $color;
+
+  &:focus {
+    border-color: $bg-main;
+  }
+
+  &::placeholder {
+    color: $color;
+  }
+}
+
+.input--full {
+  display: block;
+  width: 100%;
+}
+
+.input--round {
+  border-radius: $border-radius;
+}
+
+@each $state, $color in $states {
+  @if $state != contrast {
+    $contrast: map-get(map-get($states, contrast), $state);
+
+    .input--#{$state} {
+      background-color: $contrast;
+      border-color: $color;
+      color: $color;
+
+      &:focus {
+        border-color: darken($color, 15%);
+      }
+
+      &-inverted {
+        background-color: $color;
+        border-color: $color;
+        color: $contrast;
+
+        &:focus {
+          border-color: inherit;
+        }
+
+        &::placeholder {
+          color: rgba($contrast, .6);
+        }
+      }
+    }
+  }
+}
+
+@include classShadow(input, true, $elevations);

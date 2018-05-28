@@ -1,0 +1,75 @@
+@import 'variables';
+@import 'functions';
+
+.card {
+  border-color: inherit;
+  border-style: solid;
+  border-width: $border-width;
+  color: inherit;
+  display: block;
+  margin-bottom: 1rem;
+  margin-left: .5rem;
+  margin-right: .5rem;
+  margin-top: .5rem;
+  overflow: hidden;
+
+  .card__header,
+  .card__body,
+  .card__controls {
+    background-color: inherit;
+    padding: .75em;
+  }
+
+  .card__header,
+  .card__body {
+    > * {
+      color: inherit;
+      margin-bottom: .5rem;
+      margin-top: .5rem;
+    }
+  }
+
+  .card__header {
+    border-color: inherit;
+    border-bottom-style: solid;
+    border-bottom-width: $border-width;
+    margin-bottom: 1rem;
+  }
+
+  .card__controls {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}
+
+.card--blank {
+  border-style: none;
+}
+
+.card--inverted {
+  @extend .card;
+  
+  .card__header {
+    background-color: $bg-inverted;
+    color: $color-inverted;
+  }
+}
+
+@each $state, $color in $states {
+  @if $state != contrast {
+    .card--#{$state} {
+      @extend .card;
+
+      .card__header {
+        background-color: $color;
+        color: map-get(map-get($states, contrast), $state);
+      }
+    }
+  }
+}
+
+.card--round {
+  border-radius: $border-radius;
+}
