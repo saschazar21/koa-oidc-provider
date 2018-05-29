@@ -10,6 +10,7 @@ $color-warning: map-get($md-yellow, 700) !default;
 $color-inverted: map-get($md-yellow, 400) !default;
 $color-success: $color-special !default;
 $color-shadow: map-get($md-black, 300) !default;
+$color-border: $color-shadow !default;
 
 $bg-main: map-get(map-get($md-black, contrast), 700) !default;
 $bg-special: map-get(map-get($md-blue, contrast), 700) !default;

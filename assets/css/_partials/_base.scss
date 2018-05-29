@@ -5,7 +5,7 @@ html {
 }
 
 body {
-  background-color: $bg-main;
+  background-color: map-get($md-blue, 50);
   color: $color-main;
   font-family: $sans;
   font-size: $em;

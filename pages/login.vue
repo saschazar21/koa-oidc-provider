@@ -1,5 +1,8 @@
 <template>
   <div class="form-container">
+    <div class="header-container">
+      <h1>Login</h1>
+    </div>
     <form class="form--border shadow" action="/api/login" method="post">
       <div class="form-group">
         <label for="input-username">Enter Username:</label>
@@ -14,22 +17,32 @@
         <button class="button--inverted button--round">Cancel</button>
       </div>
     </form>
+    <div class="footer-container">
+      <nav-list></nav-list>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
+import navList from '~/components/nav-list.vue';
 
-}
+export default {
+  components: {
+    'nav-list': navList,
+  },
+};
 </script>
 
 <style lang="scss" scoped>
   @import "~assets/css/_partials/variables";
   @import "~assets/css/_partials/forms";
 
+  h1 {
+    text-align: center;
+  }
+
   form {
     background-color: $bg-main;
-    padding: 1rem;
     margin-left: 1rem;
     margin-right: 1rem;
     max-width: 100%;
@@ -49,6 +62,7 @@ export default {
     align-items: center;
     display: grid;
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr 3fr;
     height: 100vh;
     justify-content: center;
     left: 0;

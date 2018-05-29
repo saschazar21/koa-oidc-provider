@@ -10,11 +10,12 @@ form {
   border-color: transparent;
   border-style: solid;
   border-width: $border-width;
+  padding: 2rem;
   position: relative;
 }
 
 .form--border {
-  border-color: $color-main;
+  border-color: $color-border;
 }
 
 .form--inline {
