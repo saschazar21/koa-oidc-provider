@@ -1,9 +1,20 @@
 {
   "name": "koa-oidc-provider",
-  "version": "1.1.0",
+  "version": "0.0.1",
   "description": "An OpenID Connect Provider based on Nuxt/Koa",
   "author": "Sascha Zarhuber <sascha.zarhuber@gmail.com>",
   "private": true,
+  "keywords": [
+    "oauth 2.0",
+    "openid",
+    "oidc",
+    "token",
+    "authentication",
+    "authorization",
+    "login",
+    "single sign-on",
+    "sso"
+  ],
   "scripts": {
     "dev": "backpack dev",
     "build": "nuxt build && backpack build",
