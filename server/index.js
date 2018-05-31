@@ -1,4 +1,5 @@
 import Koa from 'koa';
+import * as helmet from 'koa-helmet';
 import { Nuxt, Builder } from 'nuxt';
 
 import * as config from '../nuxt.config';
@@ -19,6 +20,8 @@ async function start() {
     const builder = new Builder(nuxt);
     await builder.build();
   }
+
+  app.use(helmet());
 
   app.use(async (ctx, next) => {
     await next();
