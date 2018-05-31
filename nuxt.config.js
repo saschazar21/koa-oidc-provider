@@ -5,7 +5,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: process.env.TITLE || pkg.name,
+    title: process.env.HOST || pkg.name,
     meta: [
       { charset: 'utf-8' },
       { name: 'application-name', content: `${pkg.name} ${pkg.version}` },
