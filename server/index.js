@@ -1,8 +1,10 @@
 import Koa from 'koa';
+import * as bodyParser from 'koa-bodyparser';
 import * as helmet from 'koa-helmet';
 import { Nuxt, Builder } from 'nuxt';
 
 import * as config from '../nuxt.config';
+import router from './routes';
 
 async function start() {
   const app = new Koa();
@@ -22,6 +24,10 @@ async function start() {
   }
 
   app.use(helmet());
+  app.use(bodyParser(), async (ctx) => {
+    ctx.body = ctx.request.body;
+  });
+  app.use(router.routes());
 
   app.use(async (ctx, next) => {
     await next();
