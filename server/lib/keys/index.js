@@ -7,7 +7,7 @@ import { configDir } from '../tools/directory';
 
 const info = debug('info');
 
-const jwks = resolve(configDir, './jwks.json');
+const jwksFile = resolve(configDir, './jwks.json');
 
 async function generate() {
   const keystore = JWK.createKeyStore();
@@ -50,18 +50,18 @@ async function generate() {
 
 export default async function loadKeystore() {
   try {
-    const exists = await ensureDir(configDir).then(() => pathExists(jwks));
+    const exists = await ensureDir(configDir).then(() => pathExists(jwksFile));
     if (!exists) {
       throw new Error('JWK file does not exist! Attempting to create new file.');
     }
-    const keystore = await readJson(jwks);
+    const keystore = await readJson(jwksFile);
     info('JWK file exists, attempting to use that one.');
     return JWK.asKeyStore(keystore);
   } catch (e) {
     info(e.message || e);
     const keystore = await generate();
-    await writeJson(jwks, keystore.toJSON());
-    info(`New JWK file created. Saved under ${jwks}`);
+    await writeJson(jwksFile, keystore.toJSON());
+    info(`New JWK file created. Saved under ${jwksFile}`);
     return keystore;
   }
 }

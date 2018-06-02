@@ -6,26 +6,29 @@ import { configDir } from '../tools/directory';
 
 const info = debug('info');
 
-const config = resolve(configDir, './openid-configuration');
+const configFile = resolve(configDir, './openid-configuration');
+let config;
 
 export async function loadConfig() {
   try {
-    const exists = await ensureDir(configDir).then(() => pathExists(config));
+    const exists = await ensureDir(configDir).then(() => pathExists(configFile));
     if (!exists) {
       throw new Error('OpenID Configuration does not exist!');
     }
-    info(`${config} exists. Attempting to use that file.`);
-    return readJson(config);
+    info(`${configFile} exists. Attempting to use that file.`);
+    return readJson(configFile);
   } catch (e) {
     return {};
   }
 }
 
 export default async function getConfig() {
-  const fileContents = await loadConfig();
-  const updated = {
-    ...fileContents,
-  };
-  await writeJson(config, updated);
-  return updated;
+  if (!config) {
+    const fileContents = await loadConfig();
+    config = {
+      ...fileContents,
+    };
+    await writeJson(configFile, config);
+  }
+  return config;
 }
