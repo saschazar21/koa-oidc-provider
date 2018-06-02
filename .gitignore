@@ -1,3 +1,6 @@
+# Config directory
+static/.well-known
+
 # Nuxt build
 build
 .nuxt
