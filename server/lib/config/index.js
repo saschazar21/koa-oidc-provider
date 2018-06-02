@@ -3,6 +3,7 @@ import { ensureDir, pathExists, readJson, writeJson } from 'fs-extra';
 import { resolve } from 'path';
 
 import { configDir } from '../tools/directory';
+import generatedConfig from './config';
 
 const info = debug('info');
 
@@ -18,7 +19,7 @@ export async function loadConfig() {
     info(`${configFile} exists. Attempting to use that file.`);
     return readJson(configFile);
   } catch (e) {
-    return {};
+    return generatedConfig;
   }
 }
 

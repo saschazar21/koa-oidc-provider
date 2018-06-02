@@ -4,8 +4,13 @@ import * as helmet from 'koa-helmet';
 import { Nuxt, Builder } from 'nuxt';
 
 import * as config from '../nuxt.config';
+import { getConfig, loadKeystore } from './lib';
 import router from './routes';
-import wellKnown from './routes/well-known';
+
+async function bootstrap() {
+  await loadKeystore()
+    .then(() => getConfig());
+}
 
 async function start() {
   const app = new Koa();
@@ -29,7 +34,6 @@ async function start() {
     ctx.body = ctx.request.body;
   });
   app.use(router.routes());
-  app.use(wellKnown.routes());
 
   app.use(async (ctx, next) => {
     await next();
@@ -48,4 +52,5 @@ async function start() {
   console.log(`Server listening on ${host}:${port}`); // eslint-disable-line no-console
 }
 
-start();
+bootstrap()
+  .then(() => start());
