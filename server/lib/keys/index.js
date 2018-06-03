@@ -14,6 +14,36 @@ let jwks;
 async function generate() {
   const keystore = JWK.createKeyStore();
   return Promise.all([
+    keystore.generate('oct', 256, {
+      alg: 'HS256',
+      kid: 'sig-hs2-0',
+      use: 'sig',
+    }),
+    keystore.generate('oct', 256, {
+      alg: 'HS256',
+      kid: 'enc-hs2-0',
+      use: 'enc',
+    }),
+    keystore.generate('oct', 384, {
+      alg: 'HS385',
+      kid: 'sig-hs3-0',
+      use: 'sig',
+    }),
+    keystore.generate('oct', 384, {
+      alg: 'HS384',
+      kid: 'enc-hs3-0',
+      use: 'enc',
+    }),
+    keystore.generate('oct', 512, {
+      alg: 'HS512',
+      kid: 'sig-hs5-0',
+      use: 'sig',
+    }),
+    keystore.generate('oct', 512, {
+      alg: 'HS512',
+      kid: 'enc-hs5-0',
+      use: 'enc',
+    }),
     keystore.generate('RSA', 2048, {
       kid: 'sig-rs-0',
       use: 'sig',
@@ -58,7 +88,7 @@ export default async function loadKeystore() {
       }
 
       info(`${keysFile} file exists, attempting to use that one.`);
-      jwks = JWK.asKeyStore(await readJson(keysFile));
+      jwks = await JWK.asKeyStore(await readJson(keysFile));
 
       if (!await pathExists(jwksFile)) {
         await writeJson(jwksFile, jwks.toJSON());

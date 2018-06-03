@@ -1,17 +1,20 @@
+import { supportedSignAlg } from '../tools/alg';
 import { baseUrl } from '../tools/url';
 import * as pkg from '../../../package.json';
 
-export default {
+export default async () => Object({
   issuer: baseUrl,
   authorization_endpoint: `${baseUrl}/auth/authorize`,
   token_endpoint: `${baseUrl}/auth/token`,
-  token_endpoint_auth_methods_supported: ['client_secret_basic', 'private_key_jwt'],
+  token_endpoint_auth_methods_supported: ['client_secret_basic'],
   token_endpoint_auth_signing_alg_values_supported: ['RS256', 'ES256'],
   userinfo_endpoint: `${baseUrl}/auth/userinfo`,
   check_session_iframe: `${baseUrl}/auth/check_session`,
   end_session_endpoint: `${baseUrl}/auth/end_session`,
   jwks_uri: `${baseUrl}/.well-known/jwks.json`,
   registration_endpoint: `${baseUrl}/auth/register`,
+  response_modes_supported: ['query', 'fragment'],
+  grant_types_supported: ['authorization_code', 'implicit'],
   scopes_supported: [
     'openid',
     'profile',
@@ -26,19 +29,10 @@ export default {
     'id_token',
     'token id_token',
   ],
-  acr_values_supported: [
-    'urn:mace:incommon:iap:gold',
-    'urn:mace:incommon:iap:silver',
-    'urn:mace:incommon:iap:bronze',
-  ],
   subject_types_supported: ['public', 'pairwise'],
-  userinfo_signing_alg_values_supported: ['RS256', 'ES256', 'HS256'],
-  userinfo_encryption_alg_values_supported: ['RSA1_5', 'A128KW'],
-  userinfo_encryption_enc_values_supported: ['A128CBC-HS256', 'A128GCM'],
-  id_token_signing_alg_values_supported: ['RS256', 'ES256', 'HS256'],
-  id_token_encryption_alg_values_supported: ['RSA1_5', 'A128KW'],
-  id_token_encryption_enc_values_supported: ['A128CBC-HS256', 'A128GCM'],
-  request_object_signing_alg_values_supported: ['none', 'RS256', 'ES256'],
+  userinfo_signing_alg_values_supported: await supportedSignAlg(),
+  id_token_signing_alg_values_supported: await supportedSignAlg(),
+  request_object_signing_alg_values_supported: await supportedSignAlg(),
   display_values_supported: ['page', 'popup'],
   claim_types_supported: ['normal', 'distributed'],
   claims_supported: [
@@ -61,4 +55,4 @@ export default {
   claims_parameter_supported: true,
   service_documentation: pkg.homepage,
   ui_locales_supported: ['en-US', 'en-GB', 'de-DE', 'de-AT'],
-};
+});
