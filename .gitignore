@@ -1,4 +1,5 @@
 # Config directory
+private
 static/.well-known
 
 # Nuxt build

@@ -1,14 +1,19 @@
+import { ensureDir } from 'fs-extra';
 import Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
 import * as helmet from 'koa-helmet';
 import { Nuxt, Builder } from 'nuxt';
 
 import * as config from '../nuxt.config';
-import { getConfig, loadKeystore } from './lib';
+import { directory, getConfig, loadKeystore } from './lib';
 import router from './routes';
 
 async function bootstrap() {
-  await loadKeystore()
+  await Promise.all([
+    ensureDir(directory.publicDir),
+    ensureDir(directory.privateDir),
+  ])
+    .then(() => loadKeystore())
     .then(() => getConfig());
 }
 

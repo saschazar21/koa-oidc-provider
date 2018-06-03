@@ -1,4 +1,7 @@
 import { resolve } from 'path';
 
-export const configDirRel = process.env.CONFIGDIR || './static/.well-known';
-export const configDir = resolve(process.cwd(), configDirRel);
+export const publicDirRel = process.env.PUBLIC_DIR || './static/.well-known';
+export const publicDir = resolve(process.cwd(), publicDirRel);
+
+export const privateDirRel = process.env.PRIVATE_DIR || './private';
+export const privateDir = resolve(process.cwd(), privateDirRel);

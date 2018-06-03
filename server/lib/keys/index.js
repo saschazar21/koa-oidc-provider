@@ -1,13 +1,14 @@
 import debug from 'debug';
-import { ensureDir, pathExists, readJson, writeJson } from 'fs-extra';
+import { pathExists, readJson, writeJson } from 'fs-extra';
 import { JWK } from 'node-jose';
 import { resolve } from 'path';
 
-import { configDir } from '../tools/directory';
+import { privateDir, publicDir } from '../tools/directory';
 
 const info = debug('info');
 
-const jwksFile = resolve(configDir, './jwks.json');
+const keysFile = resolve(privateDir, './jwks.json');
+const jwksFile = resolve(publicDir, './jwks.json');
 let jwks;
 
 async function generate() {
@@ -52,18 +53,26 @@ async function generate() {
 export default async function loadKeystore() {
   if (!jwks) {
     try {
-      const exists = await ensureDir(configDir).then(() => pathExists(jwksFile));
-      if (!exists) {
+      if (!await pathExists(keysFile)) {
         throw new Error('JWK file does not exist! Attempting to create new file.');
       }
-      const keystore = await readJson(jwksFile);
-      info(`${jwksFile} file exists, attempting to use that one.`);
-      jwks = JWK.asKeyStore(keystore);
+
+      info(`${keysFile} file exists, attempting to use that one.`);
+      jwks = JWK.asKeyStore(await readJson(keysFile));
+
+      if (!await pathExists(jwksFile)) {
+        await writeJson(jwksFile, jwks.toJSON());
+      }
     } catch (e) {
       info(e.message || e);
       const keystore = await generate();
-      await writeJson(jwksFile, keystore.toJSON());
-      info(`New JWK file created. Saved under ${jwksFile}`);
+      await Promise.all([
+        writeJson(jwksFile, keystore.toJSON()),
+        writeJson(keysFile, keystore.toJSON(true)),
+      ]);
+      info(`New JWK files created. Saved under 
+        - Public: ${jwksFile},
+        - Private: ${keysFile}`);
       jwks = keystore;
     }
   }

@@ -1,19 +1,19 @@
 import * as debug from 'debug';
-import { ensureDir, pathExists, readJson, writeJson } from 'fs-extra';
+import { pathExists, readJson, writeJson } from 'fs-extra';
 import { resolve } from 'path';
 
-import { configDir } from '../tools/directory';
+import { privateDir, publicDir } from '../tools/directory';
 import generatedConfig from './config';
 
 const info = debug('info');
 
-const configFile = resolve(configDir, './openid-configuration');
+const configFile = resolve(privateDir, './openid-configuration');
+const publicFile = resolve(publicDir, './openid-configuration');
 let config;
 
 export async function loadConfig() {
   try {
-    const exists = await ensureDir(configDir).then(() => pathExists(configFile));
-    if (!exists) {
+    if (!await pathExists(configFile)) {
       throw new Error('OpenID Configuration does not exist!');
     }
     info(`${configFile} exists. Attempting to use that file.`);
@@ -29,7 +29,10 @@ export default async function getConfig() {
     config = {
       ...fileContents,
     };
-    await writeJson(configFile, config);
+    await Promise.all([
+      writeJson(configFile, config),
+      writeJson(publicFile, config),
+    ]);
   }
   return config;
 }
