@@ -1,18 +1,17 @@
 import debug from 'debug';
 import { pathExists, readJson, writeJson } from 'fs-extra';
-import { JWK } from 'node-jose';
+import { asKeyStore, createKeyStore } from 'oidc-provider';
 import { resolve } from 'path';
 
-import { privateDir, publicDir } from '../tools/directory';
+import { privateDir } from '../tools/directory';
 
 const info = debug('info');
 
 const keysFile = resolve(privateDir, './jwks.json');
-const jwksFile = resolve(publicDir, './jwks.json');
 let jwks;
 
 async function generate() {
-  const keystore = JWK.createKeyStore();
+  const keystore = createKeyStore();
   return Promise.all([
     keystore.generate('oct', 256, {
       alg: 'HS256',
@@ -88,20 +87,16 @@ export default async function loadKeystore() {
       }
 
       info(`${keysFile} file exists, attempting to use that one.`);
-      jwks = await JWK.asKeyStore(await readJson(keysFile));
-
-      if (!await pathExists(jwksFile)) {
-        await writeJson(jwksFile, jwks.toJSON());
-      }
+      jwks = await asKeyStore(await readJson(keysFile));
     } catch (e) {
       info(e.message || e);
       const keystore = await generate();
       await Promise.all([
-        writeJson(jwksFile, keystore.toJSON()),
-        writeJson(keysFile, keystore.toJSON(true)),
+        writeJson(keysFile, keystore.toJSON(true), {
+          spaces: 2,
+        }),
       ]);
       info(`New JWK files created. Saved under 
-        - Public: ${jwksFile},
         - Private: ${keysFile}`);
       jwks = keystore;
     }

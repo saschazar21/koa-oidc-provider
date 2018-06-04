@@ -5,16 +5,14 @@ import * as helmet from 'koa-helmet';
 import { Nuxt, Builder } from 'nuxt';
 
 import * as config from '../nuxt.config';
-import { directory, getConfig, loadKeystore } from './lib';
+import { directory, loadKeystore } from './lib';
+import bootstrapProvider from './provider';
 import router from './routes';
 
 async function bootstrap() {
-  await Promise.all([
-    ensureDir(directory.publicDir),
-    ensureDir(directory.privateDir),
-  ])
+  return ensureDir(directory.privateDir)
     .then(() => loadKeystore())
-    .then(() => getConfig());
+    .then(() => bootstrapProvider());
 }
 
 async function start() {
@@ -58,4 +56,4 @@ async function start() {
 }
 
 bootstrap()
-  .then(() => start());
+  .then(provider => start(provider));
