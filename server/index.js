@@ -1,11 +1,12 @@
 import { ensureDir } from 'fs-extra';
 import Koa from 'koa';
-import * as bodyParser from 'koa-bodyparser';
-import * as helmet from 'koa-helmet';
+import bodyParser from 'koa-bodyparser';
+import helmet from 'koa-helmet';
+import mount from 'koa-mount';
 import { Nuxt, Builder } from 'nuxt';
 
 import * as config from '../nuxt.config';
-import { directory, loadKeystore } from './lib';
+import { directory, loadKeystore, url } from './lib';
 import bootstrapProvider from './provider';
 import router from './routes';
 
@@ -15,7 +16,7 @@ async function bootstrap() {
     .then(() => bootstrapProvider());
 }
 
-async function start() {
+async function start(provider) {
   const app = new Koa();
   const host = process.env.HOST || '127.0.0.1';
   const port = process.env.PORT || 3000;
@@ -36,6 +37,7 @@ async function start() {
   app.use(bodyParser(), async (ctx) => {
     ctx.body = ctx.request.body;
   });
+  app.use(mount(url.oidcPrefix, provider.app));
   app.use(router.routes());
 
   app.use(async (ctx, next) => {
