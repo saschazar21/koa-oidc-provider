@@ -1,5 +1,8 @@
 const pkg = require('./package.json');
 
+const nuxtEnv = process.env.NUXT_PATH;
+const nuxtPrefix = `/${nuxtEnv ? nuxtEnv.split('/').filter(el => el.length > 0).join('/') : 'web'}/`;
+
 module.exports = {
   /*
   ** Headers of the page
@@ -45,5 +48,9 @@ module.exports = {
         });
       }
     },
+  },
+
+  router: {
+    base: nuxtPrefix,
   },
 };

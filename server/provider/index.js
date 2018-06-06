@@ -1,10 +1,19 @@
 import Provider from 'oidc-provider';
-import { Configuration, url } from '../lib';
+
+import { Configuration, loadKeystore, url } from '../lib';
 
 export default async function bootstrapProvider() {
   const config = new Configuration();
-  const oidc = new Provider(url.baseUrl, await config.getConfig());
+  const keystore = await loadKeystore();
+  const oidc = new Provider(url.oidcUrl, await config.getConfig());
 
-  await oidc.initialize();
-  return oidc;
+  /**
+   * Config object for initialize contains the following properties:
+   * adapter, clients = [], keystore
+   */
+  await oidc.initialize({
+    keystore,
+  });
+
+  return oidc.app;
 }
