@@ -2,6 +2,7 @@ import * as debug from 'debug';
 import { pathExists, readJson, writeJson } from 'fs-extra';
 import { resolve } from 'path';
 
+import defaultConfiguration from './default';
 import { privateDir } from '../tools/directory';
 
 const error = debug('error');
@@ -18,7 +19,10 @@ export default class Configuration {
 
   async getConfig() {
     if (!this.config) {
-      this.config = await this.loadConfig();
+      this.config = {
+        ...defaultConfiguration,
+        ...await this.loadConfig(),
+      };
       return this.config;
     }
     return this.config;

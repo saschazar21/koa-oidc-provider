@@ -1,9 +1,11 @@
-import * as alg from './alg';
 import * as url from './url';
 import * as directory from './directory';
+import * as validators from './validators';
+import * as values from './values';
 
 export {
-  alg,
   directory,
   url as default,
+  validators,
+  values,
 };
