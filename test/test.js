@@ -1,7 +1,7 @@
 /* eslint-env node, mocha */
 /* eslint prefer-arrow-callback: [ "off", { "allowNamedFunctions": true } ] */
 /* eslint func-names: ["off", "always"] */
-import { assert, expect } from 'chai';
+import { expect } from 'chai';
 
 import { validators, values } from '../server/lib/tools';
 import Configuration from '../server/lib/config';
@@ -37,7 +37,7 @@ describe('Validators', function () {
       const supported = await validators.filter(this.encryptionAlg, 'idTokenEncryptionAlgValues', this.config);
       expect(supported.length).to.be.greaterThan(0);
       expect(values[this.encryptionAlg].length).to.be.greaterThan(0);
-      assert(supported.length, values[this.encryptionAlg].length, 'should return all available encryption alg values');
+      expect(supported).to.have.lengthOf(values[this.encryptionAlg].length);
       expect(await validators.idTokenEncryptedResponseAlg('RS256')).to.equal(false);
       expect(await validators.idTokenEncryptedResponseAlg('A192KW')).to.equal(true);
     });

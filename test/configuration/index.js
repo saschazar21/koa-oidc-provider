@@ -1,11 +1,10 @@
 /* eslint-env node, mocha */
 /* eslint prefer-arrow-callback: [ "off", { "allowNamedFunctions": true } ] */
 /* eslint func-names: ["off", "always"] */
-import { assert, expect } from 'chai';
+import { expect } from 'chai';
 import { ensureDir, pathExists, readJson } from 'fs-extra';
 
-import { directory } from '../../server/lib';
-import Configuration from '../../server/lib/config';
+import { Configuration, directory, getClients } from '../../server/lib';
 import defaultConfig from '../../server/lib/config/default';
 
 describe('Configuration', function () {
@@ -15,18 +14,18 @@ describe('Configuration', function () {
 
   describe(directory.privateDir, async function () {
     it('should exist', async function () {
-      assert(await ensureDir(directory.privateDir), true);
+      return ensureDir(directory.privateDir);
     });
   });
 
   describe(Configuration.getConfigFileUrl(), function () {
     it('should exist', async function () {
       await this.config.getConfig();
-      assert(await pathExists(Configuration.getConfigFileUrl()), true, 'should be able to read the configuration file');
+      expect(await pathExists(Configuration.getConfigFileUrl())).to.equal(true);
     });
 
     it('should be a parseable JSON file', async function () {
-      assert(typeof await readJson(Configuration.getConfigFileUrl()), Object, 'should be of type Object');
+      expect(typeof await readJson(Configuration.getConfigFileUrl())).to.equal('object');
     });
   });
 
@@ -38,6 +37,16 @@ describe('Configuration', function () {
       };
       expect(await this.config.getConfig()).to.deep.equal(config);
       expect(await this.config.getConfig()).to.not.equal({});
+    });
+  });
+});
+
+describe('Clients', function () {
+  describe('default clients', function () {
+    it('should return an empty array as default setting', async function () {
+      const clients = await getClients();
+      expect(Array.isArray(clients)).to.equal(true);
+      expect(clients).to.have.lengthOf(0);
     });
   });
 });
