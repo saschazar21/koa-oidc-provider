@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    "transform-es2015-spread",
+    "syntax-object-rest-spread"
+  ],
+  "presets": [
+    ["env", {
+      "targets": {
+        "node": "current"
+      }
+    }]
+  ]
+}

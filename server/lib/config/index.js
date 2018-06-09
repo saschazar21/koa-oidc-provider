@@ -1,4 +1,4 @@
-import * as debug from 'debug';
+import debug from 'debug';
 import { pathExists, readJson, writeJson } from 'fs-extra';
 import { resolve } from 'path';
 

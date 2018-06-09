@@ -25,7 +25,8 @@
     "build": "nuxt build && backpack build",
     "start": "cross-env NODE_ENV=production node build/main.js",
     "precommit": "npm run lint",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore ."
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "test": "mocha --require babel-core/register"
   },
   "dependencies": {
     "cross-env": "^5.1.6",
@@ -42,8 +43,13 @@
     "source-map-support": "^0.5.6"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",
+    "babel-plugin-syntax-object-rest-spread": "^6.13.0",
+    "babel-plugin-transform-es2015-spread": "^6.22.0",
+    "babel-preset-env": "^1.7.0",
     "backpack-core": "^0.7.0",
+    "chai": "^4.1.2",
     "dotenv-safe": "^5.0.1",
     "dotenv-webpack": "^1.5.5",
     "eslint": "^4.19.1",
@@ -57,6 +63,7 @@
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-react": "^7.4.0",
     "eslint-plugin-standard": "^3.1.0",
+    "mocha": "^5.2.0",
     "node-sass": "^4.9.0",
     "nodemon": "^1.11.0",
     "sass-loader": "^7.0.1",

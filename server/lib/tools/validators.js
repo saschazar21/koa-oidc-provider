@@ -14,10 +14,10 @@ const compare = (comp, truth) => {
   return filtered.length === c.length;
 };
 
-export async function filter(compareIdentifier, filterIdentifier) {
+export async function filter(compareIdentifier, filterIdentifier, externalConfig) {
   let supported = values[compareIdentifier] || [];
   try {
-    const config = await configuration.getConfig();
+    const config = externalConfig || await configuration.getConfig();
     if (!config.unsupported || !config.unsupported[filterIdentifier]) {
       throw new Error('No unsupported algorithms found to filter. Using default.');
     }
