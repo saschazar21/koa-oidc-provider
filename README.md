@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/saschazar21/koa-oidc-provider.svg?branch=master)](https://travis-ci.org/saschazar21/koa-oidc-provider)
+
 # koa-oidc-provider
 
 > An OpenID Connect Provider based on Nuxt/Koa
