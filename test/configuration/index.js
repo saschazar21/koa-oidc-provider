@@ -2,14 +2,21 @@
 /* eslint prefer-arrow-callback: [ "off", { "allowNamedFunctions": true } ] */
 /* eslint func-names: ["off", "always"] */
 import { assert, expect } from 'chai';
-import { pathExists, readJson } from 'fs-extra';
+import { ensureDir, pathExists, readJson } from 'fs-extra';
 
+import { directory } from '../../server/lib';
 import Configuration from '../../server/lib/config';
 import defaultConfig from '../../server/lib/config/default';
 
 describe('Configuration', function () {
-  before(function () {
+  before(async function () {
     this.config = new Configuration();
+  });
+
+  describe(directory.privateDir, async function () {
+    it('should exist', async function () {
+      assert(await ensureDir(directory.privateDir), true);
+    });
   });
 
   describe(Configuration.getConfigFileUrl(), function () {
