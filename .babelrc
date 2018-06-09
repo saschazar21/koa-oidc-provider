@@ -4,6 +4,7 @@
     "syntax-object-rest-spread"
   ],
   "presets": [
+    ["backpack"],
     ["env", {
       "targets": {
         "node": "current"

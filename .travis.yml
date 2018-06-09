@@ -5,5 +5,5 @@ jobs:
   include:
     - stage: build
       script:
-      - npm run lint
+      - npm run test
       - npm run build
