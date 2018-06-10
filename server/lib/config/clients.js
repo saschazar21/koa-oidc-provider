@@ -2,11 +2,11 @@ import debug from 'debug';
 import { pathExists, readJson } from 'fs-extra';
 import { resolve } from 'path';
 
-import { directory } from '../tools/';
+import { privateDir } from '../tools/directory';
 
 const error = debug('error');
 const info = debug('info');
-const clients = resolve(directory.privateDir, './clients.js');
+const clients = resolve(privateDir, './clients.js');
 
 let available;
 

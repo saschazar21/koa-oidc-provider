@@ -3,7 +3,8 @@
 /* eslint func-names: ["off", "always"] */
 import { expect } from 'chai';
 
-import { validators, values } from '../server/lib/tools';
+import * as validators from '../server/lib/tools/validators';
+import * as values from '../server/lib/tools/values';
 import Configuration from '../server/lib/config';
 
 describe('Validators', function () {

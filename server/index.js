@@ -4,13 +4,14 @@ import bodyParser from 'koa-bodyparser';
 import helmet from 'koa-helmet';
 import mount from 'koa-mount';
 
-import { directory, url } from './lib';
+import { privateDir } from './lib/tools/directory';
+import * as url from './lib/tools/url';
 import bootstrapNuxt from './nuxt';
 import bootstrapProvider from './provider';
 import router from './routes';
 
 async function bootstrap() {
-  return ensureDir(directory.privateDir);
+  return ensureDir(privateDir);
 }
 
 async function start() {
