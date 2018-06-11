@@ -38,6 +38,7 @@
     "koa-mount": "^3.0.0",
     "koa-rewrite": "^3.0.1",
     "koa-router": "^7.4.0",
+    "nanoid": "^1.0.3",
     "nuxt": "^1.4.0",
     "oidc-provider": "^4.0.1",
     "source-map-support": "^0.5.6"

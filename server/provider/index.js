@@ -1,6 +1,9 @@
 import Provider from 'oidc-provider';
 
-import { Configuration, getClients, loadKeystore, url } from '../lib';
+import Configuration from '../lib/config';
+import getClients from '../lib/config/clients';
+import loadKeystore from '../lib/keys';
+import * as url from '../lib/tools/url';
 
 export default async function bootstrapProvider() {
   const configuration = new Configuration();

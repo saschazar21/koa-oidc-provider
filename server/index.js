@@ -4,13 +4,14 @@ import bodyParser from 'koa-bodyparser';
 import helmet from 'koa-helmet';
 import mount from 'koa-mount';
 
-import { directory, url } from './lib';
+import { privateDir } from './lib/tools/directory';
+import * as url from './lib/tools/url';
 import bootstrapNuxt from './nuxt';
 import bootstrapProvider from './provider';
 import router from './routes';
 
 export async function bootstrap() {
-  return ensureDir(directory.privateDir);
+  return ensureDir(privateDir);
 }
 
 export async function start() {
@@ -23,13 +24,13 @@ export async function start() {
     ctx.body = ctx.request.body;
   });
 
+  app.use(router.routes());
   app.use(mount(url.oidcPrefix, await bootstrapProvider()));
   app.use(mount(await bootstrapNuxt()));
-  app.use(router.routes());
 
-  app.listen(port, host);
+  const server = app.listen(port, host);
   console.log(`Server listening on ${host}:${port}`); // eslint-disable-line no-console
-  return app;
+  return server;
 }
 
 bootstrap()
