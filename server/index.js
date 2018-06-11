@@ -9,11 +9,11 @@ import bootstrapNuxt from './nuxt';
 import bootstrapProvider from './provider';
 import router from './routes';
 
-async function bootstrap() {
+export async function bootstrap() {
   return ensureDir(directory.privateDir);
 }
 
-async function start() {
+export async function start() {
   const app = new Koa();
   const host = process.env.HOST || '127.0.0.1';
   const port = process.env.PORT || 3000;
@@ -29,6 +29,7 @@ async function start() {
 
   app.listen(port, host);
   console.log(`Server listening on ${host}:${port}`); // eslint-disable-line no-console
+  return app;
 }
 
 bootstrap()

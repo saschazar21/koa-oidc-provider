@@ -50,6 +50,7 @@
     "babel-preset-env": "^1.7.0",
     "backpack-core": "^0.7.0",
     "chai": "^4.1.2",
+    "chai-http": "^4.0.0",
     "dotenv-safe": "^5.0.1",
     "dotenv-webpack": "^1.5.5",
     "eslint": "^4.19.1",

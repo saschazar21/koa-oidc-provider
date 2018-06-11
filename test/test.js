@@ -1,55 +1,22 @@
 /* eslint-env node, mocha */
 /* eslint prefer-arrow-callback: [ "off", { "allowNamedFunctions": true } ] */
 /* eslint func-names: ["off", "always"] */
-import { expect } from 'chai';
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 
-import { validators, values } from '../server/lib/tools';
-import Configuration from '../server/lib/config';
+import { start } from '../server';
 
-describe('Validators', function () {
+chai.use(chaiHttp);
+
+describe('Server', function () {
   before(async function () {
-    const configuration = new Configuration();
-    this.config = {
-      ...await configuration.getConfig(),
-      unsupported: {
-        idTokenEncryptionAlgValues: [],
-        idTokenEncryptionEncValues: [],
-        idTokenSigningAlgValues: ['RS512', 'ES256'],
-        requestObjectEncryptionAlgValues: [],
-        requestObjectEncryptionEncValues: [],
-        requestObjectSigningAlgValues: ['RS512', 'ES256'],
-        tokenEndpointAuthSigningAlgValues: ['RS512', 'ES256'],
-        introspectionEndpointAuthSigningAlgValues: ['RS512', 'ES256'],
-        revocationEndpointAuthSigningAlgValues: ['RS512', 'ES256'],
-        userinfoEncryptionAlgValues: [],
-        userinfoEncryptionEncValues: [],
-        userinfoSigningAlgValues: [],
-      },
-    };
-
-    this.signatureAlg = 'signatureAlg';
-    this.encryptionAlg = 'encryptionAlg';
-    this.encryptionEnc = 'encryptionEnc';
+    this.app = await start();
+    this.request = chai.request(this.app);
   });
-
-  describe('ID Token Encryption', function () {
-    it('should return all available encryption alg values', async function () {
-      const supported = await validators.filter(this.encryptionAlg, 'idTokenEncryptionAlgValues', this.config);
-      expect(supported.length).to.be.greaterThan(0);
-      expect(values[this.encryptionAlg].length).to.be.greaterThan(0);
-      expect(supported).to.have.lengthOf(values[this.encryptionAlg].length);
-      expect(await validators.idTokenEncryptedResponseAlg('RS256')).to.equal(false);
-      expect(await validators.idTokenEncryptedResponseAlg('A192KW')).to.equal(true);
-    });
-  });
-
-  describe('ID Token Signing', function () {
-    it('should exclude unsupported signing values', async function () {
-      const d = values.signatureAlg.length - this.config.unsupported.idTokenSigningAlgValues.length;
-      const supported = await validators.filter(this.signatureAlg, 'idTokenSigningAlgValues', this.config);
-      expect(supported).to.not.include(this.config.unsupported.idTokenSigningAlgValues[0]);
-      expect(supported).to.include('RS256');
-      expect(supported).to.have.length(d);
+  describe('Koa', function () {
+    it('should return HTTP Status 302 on /', async function () {
+      const res = await this.request.get('/');
+      chai.expect(res).to.have.status(302);
     });
   });
 });
