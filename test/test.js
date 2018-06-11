@@ -5,7 +5,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 
 import Configuration from '../server/lib/config';
-import { start } from '../server';
+import { start } from '../server/server';
 
 chai.use(chaiHttp);
 
