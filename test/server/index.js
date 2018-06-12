@@ -12,17 +12,18 @@ import bootstrapProvider from '../../server/provider';
 chai.use(http);
 
 describe('OpenID Connect', function () {
+  this.timeout(15000);
   before(async function () {
-    const koa = new Koa();
-    this.config = new Configuration();
     this.provider = await bootstrapProvider();
-    koa.use(mount(this.provider));
-    this.app = koa.listen();
-    this.request = chai.request(this.app).keepOpen();
+
+    this.app = new Koa();
+    this.config = new Configuration();
+    this.app.use(mount(this.provider));
+    const req = this.app.listen();
+    this.request = chai.request(req).keepOpen();
   });
 
   describe('Provider', function () {
-    this.timeout(15000);
     it('should provide a route for /.well-known/openid-configuration', async function () {
       const res = await this.request.get('/.well-known/openid-configuration');
       chai.expect(res).to.have.status(200);
@@ -42,5 +43,6 @@ describe('OpenID Connect', function () {
 
   after(async function () {
     this.request.close();
+    this.app.close();
   });
 });
