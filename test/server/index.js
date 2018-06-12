@@ -16,11 +16,11 @@ describe('OpenID Connect', function () {
   before(async function () {
     this.provider = await bootstrapProvider();
 
-    this.app = new Koa();
+    const koa = new Koa();
     this.config = new Configuration();
-    this.app.use(mount(this.provider));
-    const req = this.app.listen();
-    this.request = chai.request(req).keepOpen();
+    koa.use(mount(this.provider));
+    this.app = koa.listen();
+    this.request = chai.request(this.app).keepOpen();
   });
 
   describe('Provider', function () {
