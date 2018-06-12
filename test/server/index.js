@@ -22,6 +22,7 @@ describe('OpenID Connect', function () {
   });
 
   describe('Provider', function () {
+    this.timeout(15000);
     it('should provide a route for /.well-known/openid-configuration', async function () {
       const res = await this.request.get('/.well-known/openid-configuration');
       chai.expect(res).to.have.status(200);
@@ -40,11 +41,7 @@ describe('OpenID Connect', function () {
   });
 
   after(async function () {
-    if (this.request) {
-      this.request.close();
-    }
-    if (this.app) {
-      this.app.close();
-    }
+    this.request.close();
+    this.app.close();
   });
 });
