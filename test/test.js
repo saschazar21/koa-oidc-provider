@@ -10,6 +10,7 @@ import router from '../server/routes';
 chai.use(chaiHttp);
 
 describe('Server', function () {
+  this.timeout(10000);
   before(async function () {
     const koa = new Koa();
     koa.use(router.routes());
