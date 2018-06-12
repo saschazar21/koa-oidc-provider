@@ -8,19 +8,20 @@ import { Nuxt, Builder } from 'nuxt';
 import config from '../../nuxt.config';
 
 chai.use(http);
+const PORT = 49935;
 
 describe('Nuxt.js', function () {
   this.timeout(15000);
   before(async function () {
     this.nuxt = new Nuxt(config);
     await new Builder(this.nuxt).build();
-    this.nuxt.listen(49935, '127.0.0.1');
-    this.request = chai.request('http://127.0.0.1:49935').keepOpen();
+    await this.nuxt.listen(PORT, 'localhost');
+    this.request = chai.request(`http://localhost:${PORT}`).keepOpen();
   });
 
   after(async function () {
     this.request.close();
-    this.nuxt.close();
+    return this.nuxt.close();
   });
 
   describe('Application', function () {
