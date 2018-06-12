@@ -10,8 +10,7 @@ import config from '../../nuxt.config';
 chai.use(http);
 const PORT = 49935;
 
-// TODO: Unskip test
-describe.skip('Nuxt.js', function () {
+describe('Nuxt.js', function () {
   this.timeout(15000);
   before(async function () {
     this.nuxt = new Nuxt(config);
@@ -21,8 +20,7 @@ describe.skip('Nuxt.js', function () {
   });
 
   after(async function () {
-    this.request.close();
-    return this.nuxt.close();
+    await this.nuxt.close(this.request.close.bind(this));
   });
 
   describe('Application', function () {
