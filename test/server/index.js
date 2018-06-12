@@ -42,6 +42,5 @@ describe('OpenID Connect', function () {
 
   after(async function () {
     this.request.close();
-    this.app.close();
   });
 });
