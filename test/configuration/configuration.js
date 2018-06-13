@@ -11,21 +11,22 @@ import getClients from '../../server/lib/config/clients';
 let config;
 
 test.before(async () => {
+  await ensureDir(privateDir);
   config = new Configuration();
+  await config.getConfig();
 });
 
 test(privateDir, async () => ensureDir(privateDir));
 
 test(Configuration.getConfigFileUrl(), async () => {
-  await config.getConfig();
   expect(await pathExists(Configuration.getConfigFileUrl())).to.equal(true);
 });
 
-test('should be a parseable JSON file', async () => {
+test('Configuration should be a parseable JSON file', async () => {
   expect(typeof await readJson(Configuration.getConfigFileUrl())).to.equal('object');
 });
 
-test('getConfig()', async () => {
+test('Configuration.getConfig()', async () => {
   const conf = {
     ...defaultConfig,
     ...await readJson(Configuration.getConfigFileUrl()),
