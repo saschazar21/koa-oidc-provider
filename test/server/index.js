@@ -1,6 +1,4 @@
-/* eslint-env node, mocha */
-/* eslint prefer-arrow-callback: [ "off", { "allowNamedFunctions": true } ] */
-/* eslint func-names: ["off", "always"] */
+import test from 'ava';
 import chai from 'chai';
 import http from 'chai-http';
 import Koa from 'koa';
@@ -11,38 +9,37 @@ import bootstrapProvider from '../../server/provider';
 
 chai.use(http);
 
-describe('OpenID Connect', function () {
-  this.timeout(15000);
-  before(async function () {
-    this.provider = await bootstrapProvider();
+let config;
+let app;
+let request;
 
-    const koa = new Koa();
-    this.config = new Configuration();
-    koa.use(mount(this.provider));
-    this.app = koa.listen();
-    this.request = chai.request(this.app).keepOpen();
-  });
+test.before(async () => {
+  const provider = await bootstrapProvider();
 
-  describe('Provider', function () {
-    it('should provide a route for /.well-known/openid-configuration', async function () {
-      const res = await this.request.get('/.well-known/openid-configuration');
-      chai.expect(res).to.have.status(200);
-      chai.expect(res).to.have.header('content-type');
-      chai.expect(res.type).to.equal('application/json');
-    });
+  const koa = new Koa();
+  config = new Configuration();
+  koa.use(mount(provider));
+  app = koa.listen();
+  request = chai.request(app).keepOpen();
+}, 15000);
 
-    it('should provide a route for JWKs', async function () {
-      const config = await this.config.getConfig();
-      const url = config.routes && config.routes.certificates ? config.routes.certificates : '/certs';
-      const res = await this.request.get(url);
-      chai.expect(res).to.have.status(200);
-      chai.expect(res).to.have.header('content-type');
-      chai.expect(res.type).to.equal('application/json');
-    });
-  });
+test.after(async () => {
+  request.close();
+  app.close();
+});
 
-  after(async function () {
-    this.request.close();
-    this.app.close();
-  });
+test('Provider should provide a route for /.well-known/openid-configuration', async () => {
+  const res = await request.get('/.well-known/openid-configuration');
+  chai.expect(res).to.have.status(200);
+  chai.expect(res).to.have.header('content-type');
+  chai.expect(res.type).to.equal('application/json');
+});
+
+test('Provider should provide a route for JWKs', async () => {
+  const conf = await config.getConfig();
+  const url = conf.routes && conf.routes.certificates ? conf.routes.certificates : '/certs';
+  const res = await request.get(url);
+  chai.expect(res).to.have.status(200);
+  chai.expect(res).to.have.header('content-type');
+  chai.expect(res.type).to.equal('application/json');
 });

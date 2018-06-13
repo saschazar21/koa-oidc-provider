@@ -1,6 +1,5 @@
-/* eslint-env node, mocha */
-/* eslint prefer-arrow-callback: [ "off", { "allowNamedFunctions": true } ] */
-/* eslint func-names: ["off", "always"] */
+/* eslint no-param-reassign: "off" */
+import test from 'ava';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import Koa from 'koa';
@@ -8,25 +7,22 @@ import Koa from 'koa';
 import router from '../server/routes';
 
 chai.use(chaiHttp);
+let koa;
+let request;
 
-describe('Server', function () {
-  this.timeout(10000);
-  before(async function () {
-    const koa = new Koa();
-    koa.use(router.routes());
-    this.app = koa.listen();
-    this.request = chai.request(this.app).keepOpen();
-  });
+test.before(() => {
+  const k = new Koa();
+  k.use(router.routes());
+  koa = k.listen();
+  request = chai.request(koa).keepOpen();
+}, 15000);
 
-  after(async function () {
-    this.request.close();
-    this.app.close();
-  });
+test.after(async () => {
+  await koa.close();
+  await request.close();
+});
 
-  describe('Base', function () {
-    it('should redirect to /web', async function () {
-      const res = await this.request.get('/');
-      return chai.expect(res).to.redirect;
-    });
-  });
+test('Server should redirect to /web', async () => {
+  const res = await request.get('/');
+  return chai.expect(res).to.redirect;
 });

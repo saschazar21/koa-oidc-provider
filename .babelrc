@@ -1,5 +1,7 @@
 {
   "plugins": [
+    "transform-runtime",
+    "transform-class-properties",
     "transform-es2015-spread",
     "syntax-object-rest-spread"
   ],
@@ -9,6 +11,7 @@
       "targets": {
         "node": "current"
       }
-    }]
+    }],
+    ["@ava/stage-4"]
   ]
 }

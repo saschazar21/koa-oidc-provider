@@ -1,35 +1,31 @@
-/* eslint-env node, mocha */
-/* eslint prefer-arrow-callback: [ "off", { "allowNamedFunctions": true } ] */
-/* eslint func-names: ["off", "always"] */
-// import chai from 'chai';
-// import http from 'chai-http';
-// import { Nuxt, Builder } from 'nuxt';
+import test from 'ava';
+import chai from 'chai';
+import http from 'chai-http';
+import { Nuxt, Builder } from 'nuxt';
 
-// import config from '../../nuxt.config';
+import config from '../../nuxt.config';
 
-// chai.use(http);
+chai.use(http);
 
-// describe('Nuxt.js', function () {
-//   this.timeout(15000);
-//   before(async function () {
-//     this.nuxt = new Nuxt(config);
-//     await new Builder(this.nuxt).build();
-//     this.app = this.nuxt.render.listen();
-//     this.request = chai.request(this.app).keepOpen();
-//   });
+let app;
+let nuxt;
+let request;
 
-//   after(function (done) {
-//     this.request.close();
-//     this.app.close();
-//     this.nuxt.close()
-//       .then(done);
-//   });
+test.before(async () => {
+  nuxt = new Nuxt(config);
+  await new Builder(nuxt).build();
+  app = nuxt.render.listen();
+  request = chai.request(app).keepOpen();
+});
 
-//   describe('Application', function () {
-//     it('should resolve /web/login as HTML', async function () {
-//       const res = await this.request.get('/web/login');
-//       chai.expect(res).to.have.status(200);
-//       chai.expect(res.type).to.equal('text/html');
-//     });
-//   });
-// });
+test.after(async () => {
+  request.close();
+  app.close();
+  nuxt.close();
+});
+
+test('Application should resolve /web/login as HTML', async () => {
+  const res = await request.get('/web/login');
+  chai.expect(res).to.have.status(200);
+  chai.expect(res.type).to.equal('text/html');
+});
