@@ -8,7 +8,6 @@ module.exports = {
     conf.entry.main = './server/index.js';
     const env = new DotEnv({
       path: resolve(process.cwd(), './.env'),
-      safe: resolve(process.cwd(), './.env.sample'),
       systemvars: true,
     });
     const idx = conf.plugins.findIndex(el => Object.prototype.hasOwnProperty.call(el, 'definitions'));

@@ -22,7 +22,6 @@ export async function start() {
   const port = process.env.PORT || 3000;
 
   app.keys = keys();
-
   app.use(session());
   app.use(helmet());
   app.use(bodyParser(), async (ctx) => {
