@@ -23,7 +23,7 @@ test.before(() => {
   redis.set('TEST_KEY', timestamp);
 });
 
-test('retrieve test key to redis', async () => {
+test('retrieve test key from redis', async () => {
   const result = await redis.getAsync('TEST_KEY');
   expect(result).to.equal(timestamp);
 });
