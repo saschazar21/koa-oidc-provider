@@ -1,8 +1,11 @@
+import bluebird from 'bluebird';
 import debug from 'debug';
 import redis from 'redis';
 
+bluebird.promisifyAll(redis);
+
 const info = debug('info');
-const config = {
+export const configuration = {
   host: process.env.REDIS_HOST,
   port: process.env.REDIS_PORT,
   path: process.env.REDIS_PATH,
@@ -11,9 +14,10 @@ const config = {
   user: process.env.REDIS_USER,
 };
 
-export default function initRedis() {
+export function initRedis(externalConfig) {
   let client;
   const parsed = {};
+  const config = externalConfig || configuration;
   if ((config.path && config.user) || (config.path && config.host)) {
     throw new Error('Redis configuration error! Path cannot be used in conjunction with user or host!');
   }
@@ -32,3 +36,5 @@ export default function initRedis() {
 
   return client;
 }
+
+export { initRedis as default };
