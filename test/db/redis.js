@@ -20,10 +20,19 @@ test.before(() => {
     user: process.env.REDIS_USER,
   };
   redis = initRedis(conf);
-  redis.set('TEST_KEY', timestamp);
 });
 
-test('retrieve test key from redis', async () => {
+test.serial('store timestamp into TEST_KEY', async () => {
+  const result = await redis.setAsync('TEST_KEY', timestamp);
+  expect(result).to.equal('OK');
+});
+
+test.serial('retrieve test key from redis', async () => {
   const result = await redis.getAsync('TEST_KEY');
   expect(result).to.equal(timestamp);
+});
+
+test('should delete TEST_KEY', async () => {
+  const result = await redis.delAsync('TEST_KEY');
+  expect(result).to.equal(1);
 });
