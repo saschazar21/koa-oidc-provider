@@ -2,7 +2,6 @@ import bluebird from 'bluebird';
 import debug from 'debug';
 import mongoose from 'mongoose';
 
-const error = debug('error');
 const info = debug('info');
 
 export const configuration = {
@@ -18,14 +17,9 @@ export async function initMongo(host, port, config) {
   const portNo = port || process.env.MONGO_PORT || 27017;
   const conf = config || configuration;
 
-  try {
-    const connection = await mongoose.connect(`mongodb://${hostname}:${portNo}/${db || ''}`, conf);
-    info(`Connected to MongoDB ${hostname}:${portNo}`);
-    return connection;
-  } catch (e) {
-    error(e.message || e);
-    return mongoose.connect('127.0.0.1:27017');
-  }
+  const connection = await mongoose.connect(`mongodb://${hostname}:${portNo}/${db}`, conf);
+  info(`Connected to MongoDB ${hostname}:${portNo}`);
+  return connection;
 }
 
 export { initMongo as default };
