@@ -34,7 +34,7 @@ export default async function userModel(customClient) {
 
   const userSchema = new mongoose.Schema({
     _id: {
-      default: safeIdFactory,
+      default: () => safeIdFactory(16),
       type: String,
     },
     password: {
