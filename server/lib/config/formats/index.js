@@ -1,5 +1,5 @@
 export const formats = {
-  default: 'legacy',
+  default: 'opaque',
   AccessToken: undefined,
   AuthorizationCode: undefined,
   RefreshToken: undefined,
