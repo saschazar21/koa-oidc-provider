@@ -76,15 +76,19 @@ export default async function abstractTokenModel(customClient) {
     },
     sid: String,
     sub: {
-      default: this.accountId,
+      default() {
+        return this.accountId;
+      },
       type: String,
     },
     consumed: Date,
     expiresAt: {
-      default: this.exp,
+      default() {
+        return this.exp;
+      },
       type: Date,
     },
-  });
+  }, abstractOptions);
 
-  return mongoose.model('Token', tokenSchema, abstractOptions);
+  return mongoose.model('Token', tokenSchema);
 }
