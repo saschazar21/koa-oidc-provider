@@ -30,14 +30,14 @@ export default async function clientModel(customClient) {
       ref: 'User',
     },
     client_secret: {
-      default: idFactory,
+      default: () => idFactory(64),
       type: String,
     },
     redirect_uris: {
       lowercase: true,
       type: [String],
       validate: {
-        validator: function validateURI(value) {
+        validator(value) {
           const sane = value.filter((v) => {
             const u = parse(v);
             if (!this.application_type || this.application_type === 'web') {
