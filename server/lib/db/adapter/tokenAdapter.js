@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import debug from 'debug';
 
 import { initMongo } from '../mongo';
@@ -60,18 +61,36 @@ export default class TokenAdapter {
     }
   }
 
-  async find(id, fields) {
+  async consumed(id) {
     const Token = await this.model;
 
     try {
-      const result = await Token.findById(id, fields);
-      if (Array.isArray(result) && result.length === 0) {
+      const result = await Token.findByIdAndUpdate(id, { $set: { consumed: new Date() } }, {
+        new: true,
+        upsert: false,
+      });
+      if (!result) {
         throw new Error(`No token found with ID: ${id}`);
       }
       return result;
     } catch (e) {
       error(e.message || e);
-      return null;
+      return Promise.reject(e);
+    }
+  }
+
+  async find(id, fields) {
+    const Token = await this.model;
+
+    try {
+      const result = await Token.findById(id, fields);
+      if (!result) {
+        throw new Error(`No token found with ID: ${id}`);
+      }
+      return result;
+    } catch (e) {
+      error(e.message || e);
+      return Promise.reject(e);
     }
   }
 
@@ -80,13 +99,13 @@ export default class TokenAdapter {
 
     try {
       const result = await Token.findByIdAndRemove(id);
-      if (Array.isArray(result) && result.length === 0) {
+      if (!result) {
         throw new Error(`No token found with ID: ${id}`);
       }
       return result;
     } catch (e) {
       error(e.message || e);
-      return null;
+      return Promise.reject(e);
     }
   }
 }

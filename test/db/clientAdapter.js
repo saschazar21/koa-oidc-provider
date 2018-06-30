@@ -58,3 +58,11 @@ test('should return null, when creating invalid model', async () => {
   };
   return chai.expect(clientAdapter.upsert(null, model)).to.be.rejectedWith('localhost');
 });
+
+test('should reject Promise with Error, when no client was found', async () => {
+  chai.expect(clientAdapter.find('123')).to.be.rejectedWith(Error);
+});
+
+test('should reject Promise with Error, when no client was deleted', async () => {
+  chai.expect(clientAdapter.destroy('123')).to.be.rejectedWith(Error);
+});

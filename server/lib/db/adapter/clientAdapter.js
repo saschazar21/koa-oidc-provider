@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import debug from 'debug';
 
 import { initMongo } from '../mongo';
@@ -37,13 +38,13 @@ export default class ClientAdapter {
 
     try {
       const result = await Client.findById(id, fields);
-      if (Array.isArray(result) && result.length === 0) {
+      if (!result) {
         throw new Error(`No client found with ID: ${id}`);
       }
       return result;
     } catch (e) {
       error(e.message || e);
-      return null;
+      return Promise.reject(e);
     }
   }
 
@@ -52,13 +53,13 @@ export default class ClientAdapter {
 
     try {
       const result = await Client.findByIdAndRemove(id);
-      if (Array.isArray(result) && result.length === 0) {
+      if (!result) {
         throw new Error(`No client found with ID: ${id}`);
       }
       return result;
     } catch (e) {
       error(e.message || e);
-      return null;
+      return Promise.reject(e);
     }
   }
 }
