@@ -28,20 +28,15 @@ export default class ClientAdapter {
       });
     } catch (e) {
       error(e.message || e);
-      try {
-        return new Client(payload).save();
-      } catch (err) {
-        error(err.message || err);
-        return null;
-      }
+      return new Client(payload).save();
     }
   }
 
-  async find(id) {
+  async find(id, fields) {
     const Client = await this.model;
 
     try {
-      const result = await Client.findById(id);
+      const result = await Client.findById(id, fields);
       if (Array.isArray(result) && result.length === 0) {
         throw new Error(`No client found with ID: ${id}`);
       }

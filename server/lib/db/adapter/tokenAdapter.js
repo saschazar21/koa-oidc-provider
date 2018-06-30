@@ -56,20 +56,15 @@ export default class TokenAdapter {
       });
     } catch (e) {
       error(e.message || e);
-      try {
-        return new Token(payload).save();
-      } catch (err) {
-        error(err.message || err);
-        return null;
-      }
+      return new Token(payload).save();
     }
   }
 
-  async find(id) {
+  async find(id, fields) {
     const Token = await this.model;
 
     try {
-      const result = await Token.findById(id);
+      const result = await Token.findById(id, fields);
       if (Array.isArray(result) && result.length === 0) {
         throw new Error(`No token found with ID: ${id}`);
       }
