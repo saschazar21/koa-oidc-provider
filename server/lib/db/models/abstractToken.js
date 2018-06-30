@@ -1,4 +1,5 @@
 import { initMongo } from '../mongo';
+import { idFactory } from '../../tools/id';
 
 /**
   * when `opaque`
@@ -30,6 +31,12 @@ export default async function abstractTokenModel(customClient) {
   };
 
   const tokenSchema = new mongoose.Schema({
+    _id: {
+      default() {
+        return idFactory(64);
+      },
+      type: String,
+    },
     accountId: {
       required: true,
       type: String,
@@ -82,12 +89,6 @@ export default async function abstractTokenModel(customClient) {
       type: String,
     },
     consumed: Date,
-    expiresAt: {
-      default() {
-        return this.exp;
-      },
-      type: Date,
-    },
     createdAt: {
       default: Date.now,
       type: Date,

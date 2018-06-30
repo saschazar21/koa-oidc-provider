@@ -55,7 +55,7 @@ test.serial('should create an Access Token model', async () => {
     accountId: user.toJSON()._id,
     clientId: client.toJSON()._id,
     aud: [client.toJSON()._id],
-    exp: Date.now(),
+    exp: Date.now() + 3600000,
     grantId: 'someId',
     iat: Date.now(),
     iss: 'AVA Test Server',
