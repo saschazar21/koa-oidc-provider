@@ -2,40 +2,39 @@ import Promise from 'bluebird';
 import debug from 'debug';
 
 import { initMongo } from '../mongo';
-import clientModel from '../models/client';
+import sessionModel from '../models/session';
 
 const error = debug('error');
 
-export default class ClientAdapter {
+export default class SessionAdapter {
   constructor(name, customClient) {
     this.name = name;
     this.client = customClient ? Promise.resolve(customClient) : initMongo();
-    this.model = this.client.then(clientModel.bind(this));
+    this.model = this.client.then(sessionModel.bind(this));
   }
 
   async upsert(id, payload) {
-    const Client = await this.model;
+    const Session = await this.model;
 
     try {
-      const client = await Client.findById(id);
-      return client.update({ $set: payload }, {
+      const result = Session.findByIdAndUpdate(id, payload, {
         new: true,
-        runValidators: true,
         setDefaultsOnInsert: true,
       });
+      return result;
     } catch (e) {
       error(e.message || e);
-      return new Client(payload).save();
+      return new Session(payload).save();
     }
   }
 
-  async find(id, fields) {
-    const Client = await this.model;
+  async find(id) {
+    const Session = await this.model;
 
     try {
-      const result = await Client.findById(id, fields);
+      const result = await Session.findById(id);
       if (!result) {
-        throw new Error(`No client found with ID: ${id}`);
+        throw new Error(`No session found with ID: ${id}`);
       }
       return result;
     } catch (e) {
@@ -45,12 +44,12 @@ export default class ClientAdapter {
   }
 
   async destroy(id) {
-    const Client = await this.model;
+    const Session = await this.model;
 
     try {
-      const result = await Client.findByIdAndRemove(id);
+      const result = await Session.findByIdAndRemove(id);
       if (!result) {
-        throw new Error(`No client found with ID: ${id}`);
+        throw new Error(`No session found with ID: ${id}`);
       }
       return result;
     } catch (e) {

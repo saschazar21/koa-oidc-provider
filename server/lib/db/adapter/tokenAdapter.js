@@ -36,15 +36,11 @@ export default class TokenAdapter {
       default:
         tokenModel = authorizationCodeModel;
     }
-    this.client = customClient || initMongo();
-    if (customClient) {
-      this.model = tokenModel(customClient);
-    } else {
-      this.model = initMongo().then(tokenModel.bind(this));
-    }
+    this.client = customClient ? Promise.resolve(customClient) : initMongo();
+    this.model = initMongo().then(tokenModel.bind(this));
   }
 
-  async upsert(id, payload) {
+  async upsert(id, payload, expiresIn) {
     const Token = await this.model;
 
     try {
@@ -53,11 +49,18 @@ export default class TokenAdapter {
         new: true,
         runValidators: true,
         setDefaultsOnInsert: true,
-        upsert: true,
       });
     } catch (e) {
       error(e.message || e);
-      return new Token(payload).save();
+      let model = payload;
+      // eslint-disable-next-line no-restricted-globals
+      if (expiresIn && !isNaN(parseInt(expiresIn.toString(), 10))) {
+        model = {
+          ...payload,
+          expiresAt: new Date(Date.now() + (expiresIn * 1000.0)),
+        };
+      }
+      return new Token(model).save();
     }
   }
 

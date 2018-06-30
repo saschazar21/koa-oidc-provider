@@ -21,14 +21,14 @@ test.before(async () => {
     user: process.env.MONGO_USER,
   };
   const mongoose = await initMongo(process.env.MONGO_HOST, process.env.MONGO_PORT, config);
-  clientAdapter = new ClientAdapter(mongoose);
+  clientAdapter = new ClientAdapter('client', mongoose);
 });
 
 test.serial('should create a client model via adapter', async () => {
   const model = {
     owner: safeIdFactory(),
-    redirect_uris: 'https://localme.com',
-    client_name: 'Pizzabot',
+    redirect_uris: 'https://localspaghetti.com',
+    client_name: 'Spaghettibot',
   };
   client = await clientAdapter.upsert(null, model);
   chai.expect(client).to.have.property('owner', client.owner);

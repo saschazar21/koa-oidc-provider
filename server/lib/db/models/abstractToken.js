@@ -88,6 +88,10 @@ export default async function abstractTokenModel(customClient) {
       },
       type: Date,
     },
+    createdAt: {
+      default: Date.now,
+      type: Date,
+    },
   }, abstractOptions);
 
   return mongoose.model('Token', tokenSchema);
