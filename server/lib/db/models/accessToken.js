@@ -1,6 +1,7 @@
 import Configuration from '../../config';
 import { initMongo } from '../mongo';
 import abstractTokenModel from './abstractToken';
+import { ttl } from '../../config/ttl';
 
 const configuration = new Configuration();
 
@@ -14,7 +15,7 @@ export default async function accessTokenModel(customClient) {
       default() {
         return this.exp;
       },
-      expires: config.ttl && config.ttl.AccessToken ? config.ttl.AccessToken : 3600,
+      expires: config.ttl && config.ttl.AccessToken ? config.ttl.AccessToken : ttl.AccessToken,
       type: Date,
     },
   }));
