@@ -1,5 +1,6 @@
 import Provider from 'oidc-provider';
 
+import Adapter from '../lib/db/adapter';
 import Configuration from '../lib/config';
 import getClients from '../lib/config/clients';
 import loadKeystore from '../lib/keys';
@@ -17,6 +18,7 @@ export default async function bootstrapProvider() {
    * adapter, clients = [], keystore
    */
   await oidc.initialize({
+    adapter: Adapter,
     clients,
     keystore,
   });
