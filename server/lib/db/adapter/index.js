@@ -21,29 +21,25 @@ export default class Adapter {
         this.Adapter = TokenAdapter;
         break;
     }
-
-    this.init();
   }
 
   async init() {
-    this.adapter = new this.Adapter(this.name, await this.client);
+    this.adapter = this.adapter || new this.Adapter(this.name, await this.client);
+    return this.adapter;
   }
 
   async upsert(id, payload, expiresIn) {
     const SubAdapter = this.adapter || await this.init();
-
     return SubAdapter.upsert(id, payload, expiresIn);
   }
 
   async find(id) {
     const SubAdapter = this.adapter || await this.init();
-
     return SubAdapter.find(id);
   }
 
   async destroy(id) {
     const SubAdapter = this.adapter || await this.init();
-
     return SubAdapter.destroy(id);
   }
 }
