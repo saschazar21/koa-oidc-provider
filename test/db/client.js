@@ -40,7 +40,7 @@ test.serial('should delete the client model', async () => {
   chai.expect(deleted.n).to.be.greaterThan(0);
 });
 
-test('should fail with dulicate client_name', async () => {
+test('should fail with duplicate client_name', async () => {
   const newClient = {
     ...client,
   };
