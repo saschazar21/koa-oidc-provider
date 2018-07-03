@@ -13,13 +13,8 @@ dotenv.config();
 chai.use(chaiAsPromised);
 const { AdapterTest } = Provider;
 let adapter;
+let mongoConfig;
 let provider;
-
-const mongoConfig = {
-  ...configuration,
-  pass: process.env.MONGO_PASSWORD,
-  user: process.env.MONGO_USER,
-};
 
 test.before(async () => {
   const providerConfig = new Configuration();
@@ -28,6 +23,11 @@ test.before(async () => {
 });
 
 test('should resolve internal adapter test', async () => {
+  mongoConfig = {
+    ...configuration,
+    pass: process.env.MONGO_PASSWORD,
+    user: process.env.MONGO_USER,
+  };
   const mongoClient = await initMongo(process.env.MONGO_HOST, process.env.MONGO_PORT, mongoConfig);
 
   class TestAdapter extends Adapter {
