@@ -15,7 +15,12 @@ export async function initMongo(host, port, config) {
   const db = process.env.MONGO_DB || '';
   const hostname = host || process.env.MONGO_HOST || '127.0.0.1';
   const portNo = port || process.env.MONGO_PORT || 27017;
-  const conf = config || configuration;
+  let conf = config || configuration;
+  conf = {
+    ...conf,
+    pass: conf.pass || process.env.MONGO_PASSWORD || null,
+    user: conf.user || process.env.MONGO_USER || null,
+  };
 
   const connection = await mongoose.connect(`mongodb://${hostname}:${portNo}/${db}`, conf);
   info(`Connected to MongoDB ${hostname}:${portNo}`);

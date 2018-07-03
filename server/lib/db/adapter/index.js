@@ -1,9 +1,12 @@
 import Promise from 'bluebird';
+import debug from 'debug';
 
 import { initMongo } from '../mongo';
 import ClientAdapter from './clientAdapter';
 import SessionAdapter from './sessionAdapter';
 import TokenAdapter from './tokenAdapter';
+
+const error = debug('error:adapter');
 
 export default class Adapter {
   constructor(name, customClient) {
@@ -30,16 +33,39 @@ export default class Adapter {
 
   async upsert(id, payload, expiresIn) {
     const SubAdapter = this.adapter || await this.init();
-    return SubAdapter.upsert(id, payload, expiresIn);
+    try {
+      const result = await SubAdapter.upsert(id, payload, expiresIn);
+      return result.toJSON();
+    } catch (e) {
+      error(e.message || e);
+      return Promise.reject(e);
+    }
   }
 
   async find(id) {
     const SubAdapter = this.adapter || await this.init();
-    return SubAdapter.find(id);
+    try {
+      const result = await SubAdapter.find(id);
+      return result.toJSON();
+    } catch (e) {
+      error(e.message || e);
+      return Promise.reject(e);
+    }
+  }
+
+  async consume(id) {
+    const SubAdapter = this.adapter || await this.init();
+    return SubAdapter.consume(id);
   }
 
   async destroy(id) {
     const SubAdapter = this.adapter || await this.init();
-    return SubAdapter.destroy(id);
+    try {
+      const result = await SubAdapter.destroy(id);
+      return result.toJSON();
+    } catch (e) {
+      error(e.message || e);
+      return Promise.reject(e);
+    }
   }
 }

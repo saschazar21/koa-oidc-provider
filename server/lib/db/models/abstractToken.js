@@ -33,7 +33,7 @@ export default async function abstractTokenModel(customClient) {
   const tokenSchema = new mongoose.Schema({
     _id: {
       default() {
-        return idFactory(64);
+        return this.jti || idFactory(64);
       },
       type: String,
     },
@@ -42,7 +42,7 @@ export default async function abstractTokenModel(customClient) {
       type: String,
       ref: 'User',
     },
-    authTime: Date,
+    authTime: Number,
     claims: mongoose.SchemaTypes.Mixed,
     clientId: {
       required: true,

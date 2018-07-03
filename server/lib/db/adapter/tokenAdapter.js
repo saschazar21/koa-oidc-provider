@@ -42,7 +42,6 @@ export default class TokenAdapter {
 
   async upsert(id, payload, expiresIn) {
     const Token = await this.model;
-
     try {
       const result = await Token.findById(id);
       return result.update({ $set: payload }, {
@@ -64,7 +63,7 @@ export default class TokenAdapter {
     }
   }
 
-  async consumed(id) {
+  async consume(id) {
     const Token = await this.model;
 
     try {
