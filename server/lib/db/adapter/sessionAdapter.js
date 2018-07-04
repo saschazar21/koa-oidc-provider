@@ -17,7 +17,10 @@ export default class SessionAdapter {
     const Session = await this.model;
 
     try {
-      const result = Session.findByIdAndUpdate(id, payload, {
+      const result = Session.findByIdAndUpdate(id, {
+        $set: payload,
+        $inc: { __v: 1 },
+      }, {
         new: true,
         setDefaultsOnInsert: true,
       });

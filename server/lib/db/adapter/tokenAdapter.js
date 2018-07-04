@@ -37,14 +37,17 @@ export default class TokenAdapter {
         tokenModel = authorizationCodeModel;
     }
     this.client = customClient ? Promise.resolve(customClient) : initMongo();
-    this.model = initMongo().then(tokenModel.bind(this));
+    this.model = this.client.then(tokenModel.bind(this));
   }
 
   async upsert(id, payload, expiresIn) {
     const Token = await this.model;
     try {
       const result = await Token.findById(id);
-      return result.update({ $set: payload }, {
+      return result.update({
+        $set: payload,
+        $inc: { __v: 1 },
+      }, {
         new: true,
         runValidators: true,
         setDefaultsOnInsert: true,
@@ -67,7 +70,10 @@ export default class TokenAdapter {
     const Token = await this.model;
 
     try {
-      const result = await Token.findByIdAndUpdate(id, { $set: { consumed: new Date() } }, {
+      const result = await Token.findByIdAndUpdate(id, {
+        $set: { consumed: new Date() },
+        $inc: { __v: 1 },
+      }, {
         new: true,
         upsert: false,
       });

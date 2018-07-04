@@ -24,6 +24,10 @@ export default async function clientModel(customClient) {
       default: safeIdFactory,
       type: String,
     },
+    active: {
+      default: true,
+      type: Boolean,
+    },
     owner: {
       required: true,
       type: String,

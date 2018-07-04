@@ -18,7 +18,10 @@ export default class ClientAdapter {
 
     try {
       const client = await Client.findById(id);
-      return client.update({ $set: payload }, {
+      return client.update({
+        $set: payload,
+        $inc: { __v: 1 },
+      }, {
         new: true,
         runValidators: true,
         setDefaultsOnInsert: true,

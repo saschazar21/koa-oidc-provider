@@ -25,6 +25,10 @@ import { idFactory } from '../../tools/id';
 export default async function abstractTokenModel(customClient) {
   const mongoose = customClient || await initMongo();
 
+  if (mongoose.models.Token) {
+    return mongoose.models.Token;
+  }
+
   const abstractOptions = {
     collection: 'tokens',
     discriminatorKey: 'kind',

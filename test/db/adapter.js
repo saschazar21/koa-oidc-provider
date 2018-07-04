@@ -33,6 +33,7 @@ const data = {
 };
 
 let ac;
+let at;
 let provider;
 
 test.before(async () => {
@@ -42,9 +43,9 @@ test.before(async () => {
 });
 
 test.serial('should create an Authorization Code', async () => {
-  ac = new provider.AuthorizationCode(data);
-  ac = await ac.save();
+  ac = await new provider.AuthorizationCode(data).save();
   chai.expect(typeof ac).to.equal('string');
+  chai.expect(ac.length).to.be.greaterThan(0);
 });
 
 test.serial('should find the newly created Authorization Code', async () => {
@@ -54,9 +55,34 @@ test.serial('should find the newly created Authorization Code', async () => {
 });
 
 test.serial('should consume the newly created Authorization Code', async () => {
-  chai.expect(await ac.consume()).to.have.property('consumed');
+  const result = await ac.consume();
+  chai.expect(result).to.have.property('consumed');
+  chai.expect(result.__v).to.be.greaterThan(0);
+});
+
+test.serial('should create an Access Token based on Authorization Code', async () => {
+  at = await new provider.AccessToken({
+    accountId: data.accountId,
+    claims: data.claims,
+    clientId: data.clientId,
+    grantId: data.grantId,
+    scope: data.scope,
+  }).save();
+  chai.expect(typeof at).to.equal('string');
+  chai.expect(at.length).to.be.greaterThan(0);
+});
+
+test.serial('should find the newly created Access Token', async () => {
+  at = await provider.AccessToken.find(at);
+  chai.expect(at).to.have.property('sub', ac.accountId);
+  chai.expect(at.iat).to.be.below(Date.now() * 0.001);
+  chai.expect(at.exp).to.be.greaterThan(Math.floor(Date.now() * 0.001));
 });
 
 test.serial('should destroy the Authorization Code', async () => {
   chai.expect(await ac.destroy()).to.have.property('accountId', data.accountId);
+});
+
+test.serial('should destroy the Access Token', async () => {
+  chai.expect(await at.destroy()).to.have.property('accountId', data.accountId);
 });
