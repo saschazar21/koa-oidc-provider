@@ -8,15 +8,15 @@ import { privateDir } from './lib/tools/directory';
 import * as url from './lib/tools/url';
 import bootstrapNuxt from './nuxt';
 import bootstrapProvider from './provider';
+import bootstrapRoutes from './routes';
 import keys from './lib/tools/cookie';
-import router from './routes';
 import session from './lib/tools/session';
 
 export async function bootstrap() {
-  return ensureDir(privateDir);
+  return ensureDir(privateDir).then(bootstrapProvider.bind(this));
 }
 
-export async function start() {
+export async function start(provider) {
   const app = new Koa();
   const host = process.env.HOST || '127.0.0.1';
   const port = process.env.PORT || 3000;
@@ -27,9 +27,9 @@ export async function start() {
   app.use(bodyParser(), async (ctx) => {
     ctx.body = ctx.request.body;
   });
-
+  const router = await bootstrapRoutes(provider);
   app.use(router.routes());
-  app.use(mount(url.oidcPrefix, await bootstrapProvider()));
+  app.use(mount(url.oidcPrefix.length === 0 ? '/' : url.oidcPrefix, provider.app));
   app.use(mount(await bootstrapNuxt()));
 
   const server = app.listen(port, host);

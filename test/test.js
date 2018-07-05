@@ -4,13 +4,14 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import Koa from 'koa';
 
-import router from '../server/routes';
+import bootstrapRoutes from '../server/routes';
 
 chai.use(chaiHttp);
 let koa;
 let request;
 
-test.before(() => {
+test.before(async () => {
+  const router = await bootstrapRoutes(null);
   const k = new Koa();
   k.use(router.routes());
   koa = k.listen();

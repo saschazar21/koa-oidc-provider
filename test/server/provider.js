@@ -18,7 +18,7 @@ test.before(async () => {
 
   const koa = new Koa();
   config = new Configuration();
-  koa.use(mount(provider));
+  koa.use(mount(provider.app));
   app = koa.listen();
   request = chai.request(app).keepOpen();
 }, 15000);

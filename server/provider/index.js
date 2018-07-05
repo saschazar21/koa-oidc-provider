@@ -23,5 +23,5 @@ export default async function bootstrapProvider() {
     keystore,
   });
 
-  return oidc.app;
+  return oidc;
 }
