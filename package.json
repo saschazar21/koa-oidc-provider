@@ -47,6 +47,7 @@
     "nanoid": "^1.0.3",
     "nuxt": "^1.4.0",
     "oidc-provider": "^4.0.1",
+    "openid-client": "^2.2.0",
     "redis": "^2.8.0",
     "source-map-support": "^0.5.6"
   },
