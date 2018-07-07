@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import test from 'ava';
 import chai from 'chai';
 import http from 'chai-http';
@@ -8,6 +9,7 @@ import Configuration from '../../server/lib/config';
 import bootstrapProvider from '../../server/provider';
 
 chai.use(http);
+dotenv.config();
 
 let config;
 let app;

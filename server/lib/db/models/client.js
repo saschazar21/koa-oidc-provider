@@ -19,6 +19,10 @@ import { compareHash } from '../../tools/password';
 export default async function clientModel(customClient) {
   const mongoose = customClient || await initMongo();
 
+  if (mongoose.models.Client) {
+    return mongoose.models.Client;
+  }
+
   const clientSchema = new mongoose.Schema({
     _id: {
       default: safeIdFactory,
@@ -32,6 +36,13 @@ export default async function clientModel(customClient) {
       required: true,
       type: String,
       ref: 'User',
+    },
+    client_id: {
+      default() {
+        // eslint-disable-next-line no-underscore-dangle
+        return this._id;
+      },
+      type: String,
     },
     client_secret: {
       default: () => idFactory(64),

@@ -12,4 +12,4 @@ export const nuxtUrl = `${baseUrl}${nuxtPrefix}`;
 
 export const oidcPrefix = process.env.SUB_PATH ? `/${process.env.SUB_PATH.split('/').filter(el => el.length > 0).join('/')}` : '';
 // TODO: check for trailing /
-export const oidcUrl = oidcPrefix === '/' ? `${baseUrl}${oidcPrefix}` : baseUrl;
+export const oidcUrl = oidcPrefix.length !== 0 ? `${baseUrl}${oidcPrefix}` : baseUrl;

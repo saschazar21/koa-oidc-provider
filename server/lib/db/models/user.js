@@ -32,6 +32,10 @@ import { isEmail, isUrl } from '../../tools/validators';
 export default async function userModel(customClient) {
   const mongoose = customClient || await initMongo();
 
+  if (mongoose.models.User) {
+    return mongoose.models.User;
+  }
+
   const userSchema = new mongoose.Schema({
     _id: {
       default: () => safeIdFactory(16),

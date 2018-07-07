@@ -1,8 +1,9 @@
+import Promise from 'bluebird';
 import Provider from 'oidc-provider';
 
 import Adapter from '../lib/db/adapter';
 import Configuration from '../lib/config';
-import getClients from '../lib/config/clients';
+import { getBaseClient, getClients } from '../lib/config/clients';
 import loadKeystore from '../lib/keys';
 import * as url from '../lib/tools/url';
 
@@ -10,8 +11,19 @@ export default async function bootstrapProvider() {
   const configuration = new Configuration();
   const config = await configuration.getConfig();
   const keystore = await loadKeystore();
-  const clients = config.clients ? [...config.clients, ...await getClients()] : await getClients();
   const oidc = new Provider(url.oidcUrl, config);
+
+  let clients;
+
+  try {
+    const baseClient = await getBaseClient();
+    clients = [
+      baseClient,
+      ...await getClients(),
+    ];
+  } catch (e) {
+    return Promise.reject(e);
+  }
 
   /**
    * Config object for initialize contains the following properties:
