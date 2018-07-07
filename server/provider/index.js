@@ -7,7 +7,13 @@ import { getBaseClient, getClients } from '../lib/config/clients';
 import loadKeystore from '../lib/keys';
 import * as url from '../lib/tools/url';
 
+let provider;
+
 export default async function bootstrapProvider() {
+  if (provider) {
+    return provider;
+  }
+
   const configuration = new Configuration();
   const config = await configuration.getConfig();
   const keystore = await loadKeystore();
@@ -35,5 +41,6 @@ export default async function bootstrapProvider() {
     keystore,
   });
 
-  return oidc;
+  provider = oidc;
+  return provider;
 }

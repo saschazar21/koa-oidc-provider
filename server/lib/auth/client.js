@@ -46,9 +46,9 @@ export async function openidClient() {
 
   try {
     const client = new openidIssuer.Client({
+      ...baseClient,
       // eslint-disable-next-line no-underscore-dangle
       client_id: baseClient._id,
-      client_secret: baseClient.client_secret,
     });
     return client;
   } catch (e) {
