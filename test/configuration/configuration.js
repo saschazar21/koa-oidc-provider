@@ -6,7 +6,7 @@ import { privateDir } from '../../server/lib/tools/directory';
 import { defaultIdLength, idFactory, safeIdFactory } from '../../server/lib/tools/id';
 import Configuration from '../../server/lib/config';
 import defaultConfig from '../../server/lib/config/default';
-import getClients from '../../server/lib/config/clients';
+import { getClients } from '../../server/lib/config/clients';
 
 let config;
 
