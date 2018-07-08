@@ -9,6 +9,7 @@ import * as url from './lib/tools/url';
 import bootstrapNuxt from './nuxt';
 import bootstrapProvider from './provider';
 import bootstrapRoutes from './routes';
+import { bootstrapPassport } from './lib/auth';
 import keys from './lib/tools/cookie';
 import session from './lib/tools/session';
 
@@ -27,6 +28,11 @@ export async function start(provider) {
   app.use(bodyParser(), async (ctx) => {
     ctx.body = ctx.request.body;
   });
+
+  const passport = await bootstrapPassport();
+  app.use(passport.initialize());
+  app.use(passport.session());
+
   const router = await bootstrapRoutes(provider);
   app.use(router.routes());
   app.use(mount(url.oidcPrefix.length === 0 ? '/' : url.oidcPrefix, provider.app));

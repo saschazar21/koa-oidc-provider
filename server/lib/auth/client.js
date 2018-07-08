@@ -26,23 +26,17 @@ export async function googleClient() {
 
 export async function openidClient() {
   const configuration = new Configuration();
-  const config = await configuration.getConfig();
-  const baseClient = await getBaseClient();
-  const discovery = config.features.discovery ? `${oidcUrl}` : null;
+  const result = await Promise.all([configuration.getConfig(), getBaseClient()]);
+  const config = result[0];
+  const baseClient = result[1];
 
-  let openidIssuer;
-
-  if (discovery) {
-    openidIssuer = await Issuer.discover(discovery);
-  } else {
-    openidIssuer = new Issuer({
-      issuer: oidcUrl,
-      authorization_endpoint: `${oidcUrl}${config.routes.authorization}`,
-      token_endpoint: `${oidcUrl}${config.routes.token}`,
-      userinfo_endpoint: `${oidcUrl}${config.routes.userinfo}`,
-      jwks_uri: `${oidcUrl}${config.routes.certificates}`,
-    });
-  }
+  const openidIssuer = new Issuer({
+    issuer: oidcUrl,
+    authorization_endpoint: `${oidcUrl}${config.routes.authorization}`,
+    token_endpoint: `${oidcUrl}${config.routes.token}`,
+    userinfo_endpoint: `${oidcUrl}${config.routes.userinfo}`,
+    jwks_uri: `${oidcUrl}${config.routes.certificates}`,
+  });
 
   try {
     const client = new openidIssuer.Client({

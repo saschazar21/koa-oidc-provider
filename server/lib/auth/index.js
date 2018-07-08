@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 import debug from 'debug';
-import passport from 'passport';
+import passport from 'koa-passport';
 import { Strategy } from 'openid-client';
 
 import { openidClient } from './client';
@@ -23,7 +23,6 @@ export async function bootstrapOidc() {
       client,
       params,
       passReqToCallback: true,
-      usePKCE: true,
     },
     async (req, tokenset, userinfo, done) => {
       if (!tokenset.id_token) {
