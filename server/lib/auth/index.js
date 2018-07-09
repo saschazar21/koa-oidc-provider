@@ -1,45 +1,54 @@
-import Promise from 'bluebird';
 import debug from 'debug';
 import passport from 'koa-passport';
-import { Strategy } from 'openid-client';
-
-import { openidClient } from './client';
 import userModel from '../db/models/user';
+import LocalPassport from './passport/local';
+import ExternalPassport from './passport/external';
+import { isGoogleEnabled, isMicrosoftEnabled, isYahooEnabled } from '../tools/auth';
 
 const error = debug('error');
 const info = debug('info');
 
-export async function bootstrapOidc() {
-  const result = await Promise.all([userModel(), openidClient()]);
-  const User = result[0];
-  const client = result[1];
+let pass;
 
-  const params = {
-    scope: 'openid profile',
-  };
+export async function bootstrapPassport() {
+  if (pass) {
+    return pass;
+  }
 
-  passport.use('oidc', new Strategy(
-    {
-      client,
-      params,
-      passReqToCallback: true,
-    },
-    async (req, tokenset, userinfo, done) => {
-      if (!tokenset.id_token) {
-        throw new Error('No ID Token present.');
-      }
-      try {
-        await User.findById(tokenset.claims.sub, '_id email family_name given_name picture');
-        info(`${userinfo.name} successfully retrieved from DB.`);
-        return done(null, userinfo);
-      } catch (e) {
-        error(e.message || e);
-        return done(e);
-      }
-    },
-  ));
+  const local = new LocalPassport(passport);
 
-  passport.deserializeUser(async (profile, done) => {
+  try {
+    pass = await local.init();
+  } catch (e) {
+    error(e.message || e);
+    throw e;
+  }
+
+  const external = new ExternalPassport(pass);
+  try {
+    const enabled = [];
+    const providers = [];
+    if (isGoogleEnabled) {
+      enabled.push('google');
+      providers.push(external.init('google'));
+    }
+    if (isMicrosoftEnabled) {
+      enabled.push('microsoft');
+      providers.push(external.init('microsoft'));
+    }
+    if (isYahooEnabled) {
+      enabled.push('yahoo');
+      providers.push(external.init('yahoo'));
+    }
+    await Promise.all(providers);
+    info(`Registered external providers: ${enabled.join(', ')}`);
+  } catch (e) {
+    error(e.message || e);
+    throw e;
+  }
+
+  const User = await userModel();
+  pass.deserializeUser(async (profile, done) => {
     try {
       await User.findById(profile.sub, '_id email family_name given_name picture');
       return done(null, profile);
@@ -49,13 +58,9 @@ export async function bootstrapOidc() {
     }
   });
 
-  passport.serializeUser((profile, done) => done(null, profile));
+  pass.serializeUser((profile, done) => done(null, profile));
 
-  return passport;
-}
-
-export async function bootstrapPassport() {
-  return bootstrapOidc();
+  return pass;
 }
 
 export { bootstrapPassport as default };
