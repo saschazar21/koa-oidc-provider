@@ -1,48 +1,21 @@
-import debug from 'debug';
+import Promise from 'bluebird';
 import Router from 'koa-router';
-import * as url from '../lib/tools/url';
 
-const info = debug('info');
-const error = debug('error');
+import oidcRoutes from './oidc';
+import { nuxtPrefix } from '../lib/tools/url';
+
 const router = new Router();
 
-export default async function bootstrapRoutes(provider) {
-  router.get(`${url.oidcPrefix}/interaction/:grant`, async (ctx) => {
-    try {
-      const details = await provider.interactionDetails(ctx.req);
-      info(details);
+export default async function bootstrapRoutes() {
+  const result = await Promise.all([oidcRoutes()]);
+  const oidc = result[0];
 
-      const redirect = details.interaction.error === 'login_required'
-        ? `${url.nuxtPrefix}/login?client_id=${details.params.client_id}&grant=${ctx.params.grant}`
-        : `${url.nuxtPrefix}/interaction/${ctx.params.grant}?client_id=${details.params.client_id}`;
-      ctx.redirect(redirect);
-    } catch (e) {
-      error(e.message || e);
-      ctx.redirect(`${url.nuxtPrefix}/error?status=${e.status || 500}`);
-    }
-    ctx.status = 302;
-  });
-
-  router.post(`${url.oidcPrefix}/interaction/:grant/confirm`, async (ctx, next) => {
-    const result = {};
-    await provider.interactionFinished(ctx.req, ctx.res, result);
-    await next();
-  });
-
-  router.post(`${url.oidcPrefix}/interaction/:grant/login`, async (ctx) => {
-    // TODO: Read user's accountId and store it in session
-    await provider.setProviderSession(ctx.req, ctx.res, {
-      account: 'user accountId',
-    });
-    ctx.redirect(`${url.oidcPrefix}/interaction/${ctx.params.grant}`);
-    ctx.status = 302;
-  });
+  router.use('/', oidc.routes());
 
   router.all('/', (ctx) => {
-    ctx.redirect(url.nuxtPrefix);
+    ctx.redirect(nuxtPrefix);
     ctx.status = 301;
   });
 
   return router;
 }
-

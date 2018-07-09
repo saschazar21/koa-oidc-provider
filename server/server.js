@@ -19,8 +19,7 @@ export async function bootstrap() {
 
 export async function start(provider) {
   const app = new Koa();
-  const host = process.env.HOST || '127.0.0.1';
-  const port = process.env.PORT || 3000;
+  const port = process.env.NODE_PORT || 3000;
 
   app.keys = keys();
   app.use(session());
@@ -33,13 +32,13 @@ export async function start(provider) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  const router = await bootstrapRoutes(provider);
+  const router = await bootstrapRoutes();
   app.use(router.routes());
   app.use(mount(url.oidcPrefix.length === 0 ? '/' : url.oidcPrefix, provider.app));
   app.use(mount(await bootstrapNuxt()));
 
-  const server = app.listen(port, host);
-  console.log(`Server listening on ${host}:${port}`); // eslint-disable-line no-console
+  const server = app.listen(port);
+  console.log(`Server listening on port ${port}`); // eslint-disable-line no-console
   return server;
 }
 
