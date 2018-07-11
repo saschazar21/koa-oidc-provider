@@ -2,6 +2,7 @@ import Koa from 'koa';
 import { Nuxt, Builder } from 'nuxt';
 
 import config from '../../nuxt.config';
+import { nuxtPrefix } from '../lib/tools/url';
 
 export default async function bootstrapNuxt() {
   const app = new Koa();
@@ -20,7 +21,9 @@ export default async function bootstrapNuxt() {
 
   app.use(async (ctx, next) => {
     await next();
-    ctx.status = 200; // koa defaults to 404 when it sees that status is unset
+    if (ctx.path.startsWith(nuxtPrefix) || ctx.path.startsWith('/favicon')) {
+      ctx.status = 200; // koa defaults to 404 when it sees that status is unset
+    }
     return new Promise((resolve, reject) => {
       ctx.res.on('close', resolve);
       ctx.res.on('finish', resolve);

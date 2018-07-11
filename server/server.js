@@ -21,6 +21,7 @@ export async function start(provider) {
   const app = new Koa();
   const port = process.env.NODE_PORT || 3000;
 
+  app.proxy = true;
   app.keys = keys();
   app.use(session());
   app.use(helmet());

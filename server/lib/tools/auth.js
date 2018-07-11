@@ -1,6 +1,24 @@
-export const isGoogleEnabled = !process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET;
+import debug from 'debug';
 
-export const isMicrosoftEnabled = !process.env.MICROSOFT_CLIENT_ID
-  || !process.env.MICROSOFT_CLIENT_SECRET;
+import userModel from '../db/models/user';
 
-export const isYahooEnabled = !process.env.YAHOO_CLIENT_ID || !process.env.YAHOO_CLIENT_SECRET;
+const error = debug('error');
+
+export const isGoogleEnabled = process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET;
+
+export const isMicrosoftEnabled = process.env.MICROSOFT_CLIENT_ID
+  && process.env.MICROSOFT_CLIENT_SECRET;
+
+export const isYahooEnabled = process.env.YAHOO_CLIENT_ID && process.env.YAHOO_CLIENT_SECRET;
+
+export async function registeredUsers() {
+  const User = await userModel();
+
+  try {
+    const users = User.find({}, '-password');
+    return users.length;
+  } catch (e) {
+    error(e.message || e);
+    return 0;
+  }
+}

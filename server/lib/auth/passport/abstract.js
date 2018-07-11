@@ -23,10 +23,11 @@ export default class AbstractPassport {
       const result = await Promise.all([userModel(), this.provider()]);
       const User = result[0];
       const provider = result[1];
+      const sanitized = name ? name.toLowerCase() : 'oidc';
 
-      this.passport.use(name || 'oidc', new Strategy(
+      this.passport.use(sanitized, new Strategy(
         {
-          client: await provider.client(name),
+          client: await provider.client(sanitized),
           params: this.params,
           passReqToCallback: true,
         },

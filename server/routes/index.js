@@ -12,8 +12,8 @@ export default async function bootstrapRoutes() {
   const oidc = result[0];
   const auth = result[1];
 
-  router.use('/', auth.routes());
-  router.use('/', oidc.routes());
+  router.use(auth.routes());
+  router.use(oidc.routes());
 
   router.all('/', (ctx) => {
     ctx.redirect(nuxtPrefix);
