@@ -18,6 +18,9 @@ export default class ClientAdapter {
 
     try {
       const client = await Client.findById(id);
+      if (!client) {
+        throw new Error(`No client found w/ ID: ${id}. Attempting to create new one.`);
+      }
       return client.update({
         $set: payload,
         $inc: { __v: 1 },

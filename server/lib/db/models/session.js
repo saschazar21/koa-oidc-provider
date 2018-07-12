@@ -11,7 +11,6 @@ export default async function sessionModel(customClient) {
     },
     account: {
       ref: 'User',
-      required: true,
       type: String,
     },
     authorizations: mongoose.Schema.Types.Mixed,
@@ -19,7 +18,6 @@ export default async function sessionModel(customClient) {
     exp: Date,
     accountId: {
       ref: 'User',
-      required: true,
       type: String,
     },
     returnTo: String,

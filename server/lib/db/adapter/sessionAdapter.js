@@ -17,17 +17,23 @@ export default class SessionAdapter {
     const Session = await this.model;
 
     try {
-      const result = Session.findByIdAndUpdate(id, {
+      const result = await Session.findByIdAndUpdate(id, {
         $set: payload,
         $inc: { __v: 1 },
       }, {
         new: true,
         setDefaultsOnInsert: true,
       });
+      if (!result) {
+        throw new Error(`No session found w/ ID: ${id}. Attempting to create new one.`);
+      }
       return result;
     } catch (e) {
       error(e.message || e);
-      return new Session(payload).save();
+      return new Session({
+        ...payload,
+        _id: id,
+      }).save();
     }
   }
 

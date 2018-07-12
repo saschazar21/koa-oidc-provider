@@ -44,6 +44,9 @@ export default class TokenAdapter {
     const Token = await this.model;
     try {
       const result = await Token.findById(id);
+      if (!result) {
+        throw new Error(`No token found w/ ID: ${id}. Attempting to create new one.`);
+      }
       return result.update({
         $set: payload,
         $inc: { __v: 1 },
