@@ -5,7 +5,7 @@ import LocalPassport from './passport/local';
 import ExternalPassport from './passport/external';
 import { isGoogleEnabled, isMicrosoftEnabled, isYahooEnabled } from '../tools/auth';
 
-const error = debug('error');
+const error = debug('error:router');
 const info = debug('info');
 
 let pass;

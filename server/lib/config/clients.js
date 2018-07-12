@@ -8,7 +8,7 @@ import { privateDir } from '../tools/directory';
 import clientModel from '../db/models/client';
 import { oidcUrl, port } from '../tools/url';
 
-const error = debug('error');
+const error = debug('error:setup');
 const info = debug('info');
 const clients = resolve(privateDir, './clients.js');
 

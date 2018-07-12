@@ -4,7 +4,7 @@ import debug from 'debug';
 import { initMongo } from '../mongo';
 import sessionModel from '../models/session';
 
-const error = debug('error');
+const error = debug('error:db');
 
 export default class SessionAdapter {
   constructor(name, customClient) {

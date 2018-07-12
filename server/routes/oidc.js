@@ -4,7 +4,7 @@ import * as url from '../lib/tools/url';
 import bootstrapProvider from '../provider';
 
 const info = debug('info');
-const error = debug('error');
+const error = debug('error:setup');
 const router = new Router();
 
 export default async function oidcRoutes() {

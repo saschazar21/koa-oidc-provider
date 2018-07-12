@@ -5,7 +5,7 @@ import { resolve } from 'path';
 import defaultConfiguration from './default';
 import { privateDir } from '../tools/directory';
 
-const error = debug('error');
+const error = debug('error:setup');
 const info = debug('info');
 
 export default class Configuration {

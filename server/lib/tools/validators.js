@@ -4,7 +4,7 @@ import Configuration from '../config';
 import * as values from './values';
 
 const configuration = new Configuration();
-const error = debug('error');
+const error = debug('error:setup');
 
 const compare = (comp, truth) => {
   const c = Array.isArray(comp) ? comp : [comp];

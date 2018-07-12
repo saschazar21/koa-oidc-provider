@@ -9,7 +9,7 @@ import initialAccessTokenModel from '../models/initialAccessToken';
 import refreshTokenModel from '../models/refreshToken';
 import registrationAccessTokenModel from '../models/registrationAccessToken';
 
-const error = debug('error');
+const error = debug('error:db');
 
 export default class TokenAdapter {
   constructor(name, customClient) {

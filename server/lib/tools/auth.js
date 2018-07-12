@@ -2,7 +2,7 @@ import debug from 'debug';
 
 import userModel from '../db/models/user';
 
-const error = debug('error');
+const error = debug('error:router');
 
 export const isGoogleEnabled = process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET;
 

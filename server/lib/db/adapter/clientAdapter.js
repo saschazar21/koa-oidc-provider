@@ -4,7 +4,7 @@ import debug from 'debug';
 import { initMongo } from '../mongo';
 import clientModel from '../models/client';
 
-const error = debug('error');
+const error = debug('error:db');
 
 export default class ClientAdapter {
   constructor(name, customClient) {
