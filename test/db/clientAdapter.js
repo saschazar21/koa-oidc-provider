@@ -37,7 +37,7 @@ test.serial('should create a client model via adapter', async () => {
 test.serial('should return the created model via adapter', async () => {
   const result = await clientAdapter.find(client._id);
   chai.expect(result.toJSON()).to.have.property('client_id');
-  chai.expect(result.toJSON()).to.deep.equal(client.toJSON());
+  chai.expect(result.toJSON()).to.have.property('client_name', client.toJSON().client_name);
 });
 
 test.serial('should exclude fields based on string', async () => {
