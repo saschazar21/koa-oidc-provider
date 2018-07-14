@@ -2,6 +2,7 @@ import debug from 'debug';
 import Router from 'koa-router';
 import * as url from '../lib/tools/url';
 import bootstrapProvider from '../provider';
+import userModel from '../lib/db/models/user';
 
 const info = debug('info');
 const error = debug('error:setup');
@@ -26,19 +27,43 @@ export default async function oidcRoutes() {
     ctx.status = 302;
   });
 
-  router.post(`${url.oidcPrefix}/interaction/:grant/confirm`, async (ctx, next) => {
-    const result = {};
+  router.post(`${url.oidcPrefix}/interaction/:grant`, async (ctx, next) => {
+    const {
+      email,
+      password,
+      remember,
+      scope,
+      ts,
+    } = ctx.body;
+    const User = await userModel();
+
+    let result = {};
+    try {
+      const found = await User.findOne({ email });
+      if (!found || !await found.correctPassword(password)) {
+        throw new Error(`No user found with e-mail: ${email}, or wrong password given!`);
+      }
+      const user = found.toJSON();
+      result = {
+        login: {
+          account: user.sub,
+          acr: user.acr,
+          remember,
+          ts,
+        },
+        consent: {
+          scope,
+        },
+      };
+    } catch (e) {
+      error(e.message || e);
+      result = {
+        error: 'access_denied',
+        error_description: e.message,
+      };
+    }
     await provider.interactionFinished(ctx.req, ctx.res, result);
     await next();
-  });
-
-  router.post(`${url.oidcPrefix}/interaction/:grant/login`, async (ctx) => {
-    // TODO: Read user's accountId and store it in session
-    await provider.setProviderSession(ctx.req, ctx.res, {
-      account: 'user accountId',
-    });
-    ctx.redirect(`${url.oidcPrefix}/interaction/${ctx.params.grant}`);
-    ctx.status = 302;
   });
 
   return router;

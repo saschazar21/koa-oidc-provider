@@ -15,7 +15,7 @@ export default async function sessionModel(customClient) {
     },
     authorizations: mongoose.Schema.Types.Mixed,
     loginTs: Number,
-    exp: Date,
+    exp: Number,
     accountId: {
       ref: 'User',
       type: String,
@@ -26,6 +26,10 @@ export default async function sessionModel(customClient) {
     params: mongoose.Schema.Types.Mixed,
     signed: [],
     result: mongoose.Schema.Types.Mixed,
+    expiresAt: {
+      default() { return this.exp * 1000; },
+      type: Date,
+    },
   });
 
   return mongoose.model('Session', sessionSchema);
