@@ -1,3 +1,4 @@
+/* eslint no-underscore-dangle: 0 */
 import Promise from 'bluebird';
 import debug from 'debug';
 
@@ -15,10 +16,14 @@ export default class SessionAdapter {
 
   async upsert(id, payload) {
     const Session = await this.model;
+    const data = payload;
+    if (data.__v) {
+      delete data.__v;
+    }
 
     try {
       const result = await Session.findByIdAndUpdate(id, {
-        $set: payload,
+        $set: data,
         $inc: { __v: 1 },
       }, {
         new: true,
@@ -31,7 +36,7 @@ export default class SessionAdapter {
     } catch (e) {
       error(e.message || e);
       return new Session({
-        ...payload,
+        ...data,
         _id: id,
       }).save();
     }

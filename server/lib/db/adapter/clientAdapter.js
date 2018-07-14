@@ -1,3 +1,4 @@
+/* eslint  no-underscore-dangle: 0 */
 import Promise from 'bluebird';
 import debug from 'debug';
 
@@ -15,6 +16,10 @@ export default class ClientAdapter {
 
   async upsert(id, payload) {
     const Client = await this.model;
+    const data = payload;
+    if (data.__v) {
+      delete data.__v;
+    }
 
     try {
       const client = await Client.findById(id);
@@ -22,7 +27,7 @@ export default class ClientAdapter {
         throw new Error(`No client found w/ ID: ${id}. Attempting to create new one.`);
       }
       return client.update({
-        $set: payload,
+        $set: data,
         $inc: { __v: 1 },
       }, {
         new: true,
@@ -31,7 +36,7 @@ export default class ClientAdapter {
       });
     } catch (e) {
       error(e.message || e);
-      return new Client(payload).save();
+      return new Client(data).save();
     }
   }
 

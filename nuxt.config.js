@@ -54,5 +54,7 @@ module.exports = {
     base: nuxtPrefix,
   },
 
-  serverMiddleware: [],
+  serverMiddleware: [
+    '~/middleware/server/passport',
+  ],
 };

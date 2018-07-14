@@ -1,5 +1,6 @@
 import { initMongo } from '../mongo';
 import { safeIdFactory } from '../../tools/id';
+import { ttl } from '../../config/ttl';
 
 export default async function sessionModel(customClient) {
   const mongoose = customClient || await initMongo();
@@ -28,6 +29,7 @@ export default async function sessionModel(customClient) {
     result: mongoose.Schema.Types.Mixed,
     expiresAt: {
       default() { return this.exp * 1000; },
+      expires: ttl && ttl.AccessToken ? ttl.AccessToken : 3600,
       type: Date,
     },
   });

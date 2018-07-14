@@ -1,3 +1,4 @@
+/* eslint no-underscore-dangle: 0 */
 import Promise from 'bluebird';
 import debug from 'debug';
 
@@ -42,13 +43,18 @@ export default class TokenAdapter {
 
   async upsert(id, payload, expiresIn) {
     const Token = await this.model;
+    const data = payload;
+
+    if (data.__v) {
+      delete data.__v;
+    }
     try {
       const result = await Token.findById(id);
       if (!result) {
         throw new Error(`No token found w/ ID: ${id}. Attempting to create new one.`);
       }
       return result.update({
-        $set: payload,
+        $set: data,
         $inc: { __v: 1 },
       }, {
         new: true,
@@ -57,11 +63,11 @@ export default class TokenAdapter {
       });
     } catch (e) {
       error(e.message || e);
-      let model = payload;
+      let model = data;
       // eslint-disable-next-line no-restricted-globals
       if (expiresIn && !isNaN(parseInt(expiresIn.toString(), 10))) {
         model = {
-          ...payload,
+          ...data,
           expiresAt: new Date(Date.now() + (expiresIn * 1000.0)),
         };
       }
