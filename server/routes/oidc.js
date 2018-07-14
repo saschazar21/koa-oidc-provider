@@ -27,7 +27,13 @@ export default async function oidcRoutes() {
     ctx.status = 302;
   });
 
-  router.post(`${url.oidcPrefix}/interaction/:grant`, async (ctx, next) => {
+  router.post(`${url.oidcPrefix}/interaction/:grant/confirm`, async (ctx, next) => {
+    const result = {};
+    await provider.interactionFinished(ctx.req, ctx.redirect, result);
+    await next();
+  });
+
+  router.post(`${url.oidcPrefix}/interaction/:grant/login`, async (ctx, next) => {
     const {
       email,
       password,
