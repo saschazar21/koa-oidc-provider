@@ -18,7 +18,7 @@ export default async function oidcRoutes() {
 
       const redirect = details.interaction.error === 'login_required'
         ? `${url.nuxtPrefix}/login?client_id=${details.params.client_id}&grant=${ctx.params.grant}`
-        : `${url.nuxtPrefix}/interaction/${ctx.params.grant}?client_id=${details.params.client_id}`;
+        : `${url.nuxtPrefix}/interaction?client_id=${details.params.client_id}&grant=${ctx.params.grant}`;
       ctx.redirect(redirect);
     } catch (e) {
       error(e.message || e);
@@ -28,6 +28,7 @@ export default async function oidcRoutes() {
   });
 
   router.post(`${url.oidcPrefix}/interaction/:grant/confirm`, async (ctx, next) => {
+    // TODO: Interaction handler
     const result = {};
     await provider.interactionFinished(ctx.req, ctx.redirect, result);
     await next();
@@ -38,7 +39,6 @@ export default async function oidcRoutes() {
       email,
       password,
       remember,
-      scope,
       ts,
     } = ctx.body;
     const User = await userModel();
@@ -57,9 +57,7 @@ export default async function oidcRoutes() {
           remember,
           ts,
         },
-        consent: {
-          scope,
-        },
+        consent: { },
       };
     } catch (e) {
       error(e.message || e);

@@ -53,4 +53,6 @@ module.exports = {
   router: {
     base: nuxtPrefix,
   },
+
+  serverMiddleware: [],
 };
