@@ -16,10 +16,6 @@ export default class ClientAdapter {
 
   async upsert(id, payload) {
     const Client = await this.model;
-    const data = payload;
-    if (data.__v) {
-      delete data.__v;
-    }
 
     try {
       const client = await Client.findById(id);
@@ -27,7 +23,7 @@ export default class ClientAdapter {
         throw new Error(`No client found w/ ID: ${id}. Attempting to create new one.`);
       }
       return client.update({
-        $set: data,
+        $set: payload,
         $inc: { __v: 1 },
       }, {
         new: true,
@@ -36,7 +32,7 @@ export default class ClientAdapter {
       });
     } catch (e) {
       error(e.message || e);
-      return new Client(data).save();
+      return new Client(payload).save();
     }
   }
 
@@ -44,7 +40,7 @@ export default class ClientAdapter {
     const Client = await this.model;
 
     try {
-      const result = await Client.findById(id, fields);
+      const result = await Client.findById(id, fields || '-__v');
       if (!result) {
         throw new Error(`No client found with ID: ${id}`);
       }

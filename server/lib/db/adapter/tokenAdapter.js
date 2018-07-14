@@ -43,18 +43,13 @@ export default class TokenAdapter {
 
   async upsert(id, payload, expiresIn) {
     const Token = await this.model;
-    const data = payload;
-
-    if (data.__v) {
-      delete data.__v;
-    }
     try {
       const result = await Token.findById(id);
       if (!result) {
         throw new Error(`No token found w/ ID: ${id}. Attempting to create new one.`);
       }
       return result.update({
-        $set: data,
+        $set: payload,
         $inc: { __v: 1 },
       }, {
         new: true,
@@ -63,11 +58,11 @@ export default class TokenAdapter {
       });
     } catch (e) {
       error(e.message || e);
-      let model = data;
+      let model = payload;
       // eslint-disable-next-line no-restricted-globals
       if (expiresIn && !isNaN(parseInt(expiresIn.toString(), 10))) {
         model = {
-          ...data,
+          ...payload,
           expiresAt: new Date(Date.now() + (expiresIn * 1000.0)),
         };
       }

@@ -16,15 +16,9 @@ export default class SessionAdapter {
 
   async upsert(id, payload) {
     const Session = await this.model;
-    const data = payload;
-    if (data.__v) {
-      delete data.__v;
-    }
-
     try {
       const result = await Session.findByIdAndUpdate(id, {
-        $set: data,
-        $inc: { __v: 1 },
+        $set: payload,
       }, {
         new: true,
         setDefaultsOnInsert: true,
@@ -36,7 +30,7 @@ export default class SessionAdapter {
     } catch (e) {
       error(e.message || e);
       return new Session({
-        ...data,
+        ...payload,
         _id: id,
       }).save();
     }
