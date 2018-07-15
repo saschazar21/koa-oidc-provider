@@ -39,7 +39,7 @@ $breakpoints: (
 );
 
 $sizes: (
-  aside: calc(map-get($breakpoints, l) - 920px),
+  aside: map-get($breakpoints, l) - 920px,
   text: 900px,
   full: map-get($breakpoints, l),
 );

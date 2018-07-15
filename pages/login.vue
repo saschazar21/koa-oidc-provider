@@ -2,6 +2,7 @@
   <div class="form-container">
     <div class="header-container">
       <h1>Login</h1>
+      <error-list v-if="errors.length > 0"></error-list>
     </div>
     <form class="form--border shadow" @submit="checkForm" :action="action" method="post">
       <div class="form-group">
@@ -28,6 +29,7 @@
 </template>
 
 <script>
+import errorList from '~/components/error/error-list.vue';
 import navList from '~/components/nav-list.vue';
 /* eslint-disable-next-line import/extensions */
 import { oidcPrefix } from '~/server/lib/tools/url.js';
@@ -35,19 +37,31 @@ import { oidcPrefix } from '~/server/lib/tools/url.js';
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default {
-  asyncData({ query }) {
+  asyncData({ route, store }) {
+    if (route.query.error || route.hash.error) {
+      store.commit('error/add', {
+        error: route.query.error || route.hash.error,
+        error_description: route.query.error_description || route.hash.error_description,
+      });
+    }
     return {
-      client_id: query.client_id,
-      grant: query.grant,
+      client_id: route.query.client_id,
+      grant: route.query.grant,
     };
   },
   components: {
+    'error-list': errorList,
     'nav-list': navList,
   },
   computed: {
     action: {
       get() {
         return `${oidcPrefix}/interaction/${this.grant}/login`;
+      },
+    },
+    errors: {
+      get() {
+        return this.$store.state.errors;
       },
     },
   },
