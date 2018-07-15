@@ -1,6 +1,5 @@
 <template>
-  <div class="block">
-    <h2>Errors</h2>
+  <div class="container--s">
     <ul class="list--blank">
       <li v-for="(error, index) in errors" :key="index">
         <error-item error="error"></error-item>

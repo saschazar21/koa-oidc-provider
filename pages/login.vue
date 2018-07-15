@@ -2,16 +2,17 @@
   <div class="form-container">
     <div class="header-container">
       <h1>Login</h1>
-      <error-list v-if="errors.length > 0"></error-list>
     </div>
     <form class="form--border shadow" @submit="checkForm" :action="action" method="post">
       <div class="form-group">
         <label for="input-username">Enter E-Mail:</label>
-        <input id="input-username" v-model.lazy="email" type="text" name="email" class="input--full input--round" autofocus>
+        <input id="input-username" v-model.trim ="email" type="text" name="email" class="input--full input--round" :class="{'input--alert': formErrors.email }" autofocus>
+        <small class="form-error" v-if="isEmailInvalid()">{{ formErrors.email }}</small>
       </div>
       <div class="form-group">
         <label for="input-password">Enter Password:</label>
-        <input id="input-password" v-model.lazy="password" type="password" name="password" class="input--full input--round">
+        <input id="input-password" v-model.lazy="password" type="password" name="password" class="input--full input--round" :class="{ 'input--alert': formErrors.password }">
+        <small class="form-error" v-if="isPasswordInvalid()">{{ formErrors.password }}</small>
       </div>
       <div class="form-group button-group">
         <button class="button--success button--round" :disabled="isFormInvalid()">Login</button>
@@ -29,21 +30,15 @@
 </template>
 
 <script>
+/* eslint-disable import/extensions */
 import errorList from '~/components/error/error-list.vue';
 import navList from '~/components/nav-list.vue';
-/* eslint-disable-next-line import/extensions */
 import { oidcPrefix } from '~/server/lib/tools/url.js';
 /* eslint-disable-next-line no-useless-escape */
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default {
-  asyncData({ route, store }) {
-    if (route.query.error || route.hash.error) {
-      store.commit('error/add', {
-        error: route.query.error || route.hash.error,
-        error_description: route.query.error_description || route.hash.error_description,
-      });
-    }
+  asyncData({ route }) {
     return {
       client_id: route.query.client_id,
       grant: route.query.grant,
@@ -59,16 +54,11 @@ export default {
         return `${oidcPrefix}/interaction/${this.grant}/login`;
       },
     },
-    errors: {
-      get() {
-        return this.$store.state.errors;
-      },
-    },
   },
   data() {
     return {
       email: null,
-      errors: {},
+      formErrors: {},
       password: null,
       prefix: oidcPrefix,
     };
@@ -79,11 +69,26 @@ export default {
         e.preventDefault();
       }
     },
-    isFormInvalid() {
-      this.errors.email = !this.email || this.email.length === 0 || !emailRegex.test(this.email)
+    isEmailInvalid() {
+      if (this.email === null) {
+        return true;
+      }
+      this.formErrors.email = this.email.length === 0 || !emailRegex.test(this.email)
         ? 'Please enter a valid e-mail address!'
         : null;
-      return this.errors.email || !this.password || this.password.length === 0;
+      return this.formErrors.email;
+    },
+    isFormInvalid() {
+      return this.isEmailInvalid() || this.isPasswordInvalid();
+    },
+    isPasswordInvalid() {
+      if (this.password === null) {
+        return true;
+      }
+      this.formErrors.password = this.password.length === 0
+        ? 'Please enter your password!'
+        : null;
+      return this.formErrors.password;
     },
   },
 };
@@ -121,6 +126,10 @@ export default {
     align-items: center;
     display: flex;
     justify-content: space-between;
+  }
+
+  .form-error {
+    color: $color-alert;
   }
 
   .form-container {
