@@ -83,6 +83,10 @@ button {
           lighten($color, 7%)
         );
       }
+
+      &[disabled] {
+        background: rgba($color-shadow, .3);
+      }
     }
 
     .button--#{$state}-inverted {

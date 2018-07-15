@@ -25,9 +25,7 @@ export async function start(provider) {
   app.keys = keys();
   app.use(session());
   app.use(helmet());
-  app.use(bodyParser(), async (ctx) => {
-    ctx.body = ctx.request.body;
-  });
+  app.use(bodyParser());
 
   const passport = await bootstrapPassport();
   app.use(passport.initialize());

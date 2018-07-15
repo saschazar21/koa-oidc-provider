@@ -1,15 +1,18 @@
 <template>
   <ul class="list--inline list--blank">
-    <li><a href="/">Home</a></li>
-    <li><a href="/login">Login</a></li>
-    <li><a href="/logout">Logout</a></li>
+    <li><nuxt-link to="/">Home</nuxt-link></li>
+    <li v-if="user.sub"><nuxt-link to="/logout">Logout</nuxt-link></li>
     <li><strong><a href="https://sascha.work">sascha.work</a></strong></li>
   </ul>
 </template>
 
 <script>
 export default {
-
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+  },
 };
 </script>
 

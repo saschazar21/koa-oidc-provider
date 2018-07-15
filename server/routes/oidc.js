@@ -39,8 +39,7 @@ export default async function oidcRoutes() {
       email,
       password,
       remember,
-      ts,
-    } = ctx.body;
+    } = ctx.request.body;
     const User = await userModel();
 
     let result = {};
@@ -54,8 +53,8 @@ export default async function oidcRoutes() {
         login: {
           account: user.sub,
           acr: user.acr,
-          remember,
-          ts,
+          remember: remember && remember === 'on',
+          ts: Date.now(),
         },
         consent: { },
       };
