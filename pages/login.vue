@@ -1,52 +1,47 @@
 <template>
-  <div class="form-container">
-    <div class="header-container">
-      <h1>Login</h1>
-    </div>
     <form class="form--border shadow" @submit="checkForm" :action="action" method="post">
       <div class="form-group">
-        <label for="input-username">Enter E-Mail:</label>
-        <input id="input-username" v-model.trim ="email" type="text" name="email" class="input--full input--round" :class="{'input--alert': formErrors.email }" autofocus>
-        <small class="form-error" v-if="isEmailInvalid()">{{ formErrors.email }}</small>
+        <div class="label-group">
+          <label for="input-username">Enter E-Mail:</label>
+          <small class="form-error" v-if="isEmailInvalid()">{{ formErrors.email }}</small>
+        </div>
+        <input id="input-username" v-model.trim.lazy="email" type="text" name="email" class="input--full input--round" :class="{'input--alert': formErrors.email }" autofocus>
       </div>
       <div class="form-group">
-        <label for="input-password">Enter Password:</label>
-        <input id="input-password" v-model.lazy="password" type="password" name="password" class="input--full input--round" :class="{ 'input--alert': formErrors.password }">
-        <small class="form-error" v-if="isPasswordInvalid()">{{ formErrors.password }}</small>
+        <div class="label-group">
+          <label for="input-password">Enter Password:</label>
+          <small class="form-error" v-if="isPasswordInvalid()">{{ formErrors.password }}</small>
+        </div>
+        <input id="input-password" v-model="password" type="password" name="password" class="input--full input--round" :class="{ 'input--alert': formErrors.password }">
       </div>
       <div class="form-group button-group">
-        <button class="button--success button--round" :disabled="isFormInvalid()">Login</button>
+        <button class="button--success button--round">Login</button>
         <div class="form-group--inline">
           <input type="checkbox" id="input-remember" name="remember">
           <label for="input-remember">Remember for next time?</label>
         </div>
-        <button class="button--inverted button--round">Cancel</button>
+        <a class="button--inverted button--round" :href="return_to || '/'">Cancel</a>
       </div>
     </form>
-    <div class="footer-container">
-      <nav-list></nav-list>
-    </div>
-  </div>
 </template>
 
 <script>
 /* eslint-disable import/extensions */
-import errorList from '~/components/error/error-list.vue';
-import navList from '~/components/nav-list.vue';
 import { oidcPrefix } from '~/server/lib/tools/url.js';
 /* eslint-disable-next-line no-useless-escape */
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default {
-  asyncData({ route }) {
+  asyncData({ req, store }) {
+    store.commit('form/setHeader', 'Login');
+    if (!req.meta) {
+      return {};
+    }
     return {
-      client_id: route.query.client_id,
-      grant: route.query.grant,
+      client: req.meta.params.client,
+      grant: req.meta.uuid,
+      return_to: req.meta.returnTo,
     };
-  },
-  components: {
-    'error-list': errorList,
-    'nav-list': navList,
   },
   computed: {
     action: {
@@ -54,41 +49,56 @@ export default {
         return `${oidcPrefix}/interaction/${this.grant}/login`;
       },
     },
+    email: {
+      get() {
+        return this.sanitizedEmail;
+      },
+      set(value) {
+        this.formErrors.email = value.length === 0 || !emailRegex.test(value)
+          ? 'Please enter a valid e-mail address!'
+          : null;
+        this.sanitizedEmail = value;
+      },
+    },
+    password: {
+      get() {
+        return this.sanitizedPassword;
+      },
+      set(value) {
+        this.formErrors.password = value.length === 0
+          ? 'Please enter your password!'
+          : null;
+        this.sanitizedPassword = value;
+      },
+    },
   },
   data() {
     return {
-      email: null,
       formErrors: {},
-      password: null,
       prefix: oidcPrefix,
+      sanitizedEmail: undefined,
+      sanitizedPassword: undefined,
     };
   },
+  layout: 'form',
   methods: {
     checkForm(e) {
       if (this.isFormInvalid()) {
-        e.preventDefault();
+        return e.preventDefault();
       }
+      return true;
     },
     isEmailInvalid() {
-      if (this.email === null) {
-        return true;
-      }
-      this.formErrors.email = this.email.length === 0 || !emailRegex.test(this.email)
-        ? 'Please enter a valid e-mail address!'
-        : null;
-      return this.formErrors.email;
+      return !!this.formErrors.email;
     },
     isFormInvalid() {
-      return this.isEmailInvalid() || this.isPasswordInvalid();
+      return !this.password
+        || !this.email
+        || this.isEmailInvalid()
+        || this.isPasswordInvalid();
     },
     isPasswordInvalid() {
-      if (this.password === null) {
-        return true;
-      }
-      this.formErrors.password = this.password.length === 0
-        ? 'Please enter your password!'
-        : null;
-      return this.formErrors.password;
+      return !!this.formErrors.password;
     },
   },
 };
@@ -97,10 +107,6 @@ export default {
 <style lang="scss" scoped>
   @import "~assets/css/_partials/variables";
   @import "~assets/css/_partials/forms";
-
-  h1 {
-    text-align: center;
-  }
 
   form {
     background-color: $bg-main;
@@ -122,6 +128,12 @@ export default {
     margin-top: 2rem;
   }
 
+  .label-group {
+    display: grid;
+    grid-template-areas: 'a a';
+    justify-content: space-between;
+  }
+
   .button-group {
     align-items: center;
     display: flex;
@@ -130,19 +142,6 @@ export default {
 
   .form-error {
     color: $color-alert;
-  }
-
-  .form-container {
-    align-items: center;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 3fr;
-    height: 100vh;
-    justify-content: center;
-    left: 0;
-    width: 100%;
-    position: absolute;
-    top: 0;
   }
 
   @media screen and (min-width: map-get($breakpoints, s)) {

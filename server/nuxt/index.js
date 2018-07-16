@@ -4,15 +4,19 @@ import { Nuxt, Builder } from 'nuxt';
 import config from '../../nuxt.config';
 import { nuxtPrefix } from '../lib/tools/url';
 
+
+const app = new Koa();
+// Import and Set Nuxt.js options
+config.dev = !(app.env === 'production');
+
+// Instantiate nuxt.js
+const nuxt = new Nuxt(config);
+
+export function getNuxt() {
+  return nuxt;
+}
+
 export default async function bootstrapNuxt() {
-  const app = new Koa();
-
-  // Import and Set Nuxt.js options
-  config.dev = !(app.env === 'production');
-
-  // Instantiate nuxt.js
-  const nuxt = new Nuxt(config);
-
   // Build in development
   if (config.dev) {
     const builder = new Builder(nuxt);

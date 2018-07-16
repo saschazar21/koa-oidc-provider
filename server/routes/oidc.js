@@ -1,6 +1,8 @@
 import debug from 'debug';
 import Router from 'koa-router';
+
 import * as url from '../lib/tools/url';
+import { getNuxt } from '../nuxt';
 import bootstrapProvider from '../provider';
 import userModel from '../lib/db/models/user';
 
@@ -9,22 +11,46 @@ const error = debug('error:setup');
 const router = new Router();
 
 export default async function oidcRoutes() {
+  const nuxt = getNuxt();
   const provider = await bootstrapProvider();
 
   router.get(`${url.oidcPrefix}/interaction/:grant`, async (ctx) => {
     try {
       const details = await provider.interactionDetails(ctx.req);
+      const client = await provider.Client.find(details.params.client_id);
       info(details);
 
-      const redirect = details.interaction.error === 'login_required'
-        ? `${url.nuxtPrefix}/login?client_id=${details.params.client_id}&grant=${ctx.params.grant}`
-        : `${url.nuxtPrefix}/interaction?client_id=${details.params.client_id}&grant=${ctx.params.grant}`;
-      ctx.redirect(redirect);
+      const context = {
+        req: {
+          ...ctx.req,
+          meta: {
+            ...details,
+            params: {
+              ...details.params,
+              client: {
+                ...client,
+                client_secret: null,
+              },
+            },
+          },
+        },
+      };
+      const result = await nuxt.renderRoute(details.interaction.error === 'login_required' ? '/login' : '/interaction', context);
+      if (result.error || result.redirect) {
+        throw new Error('Something went wrong while redirecting to login');
+      }
+      ctx.status = 200;
+      ctx.body = result.html;
     } catch (e) {
       error(e.message || e);
-      ctx.redirect(`${url.nuxtPrefix}/error?status=${e.status || 500}`);
+      ctx.req.meta = {
+        error: e.name || e.status,
+        error_description: e.message,
+      };
+      ctx.status = e.status || 500;
+      const result = await nuxt.renderRoute('/error', ctx);
+      ctx.body = result.html;
     }
-    ctx.status = 302;
   });
 
   router.post(`${url.oidcPrefix}/interaction/:grant/confirm`, async (ctx, next) => {
