@@ -2,7 +2,7 @@ import debug from 'debug';
 import Router from 'koa-router';
 import { URL } from 'url';
 
-import { oidcPrefix, nuxtUrl } from '../lib/tools/url';
+import { oidcPrefix, oidcUrl, nuxtUrl } from '../lib/tools/url';
 import { getNuxt } from '../nuxt';
 import bootstrapProvider from '../provider';
 import userModel from '../lib/db/models/user';
@@ -17,9 +17,10 @@ export default async function oidcRoutes() {
   router.get(`${oidcPrefix}/interaction/:grant`, async (ctx) => {
     try {
       const details = await provider.interactionDetails(ctx.req);
-      const redirect = new URL(`${nuxtUrl}${details.interaction.error === 'login_required' ? '/login' : '/interaction'}`);
+      const route = details.interaction.error === 'login_required' ? '/login' : '/interaction';
+      const redirect = new URL(`${nuxtUrl}${route}`);
       redirect.searchParams.append('client_id', details.params.client_id);
-      redirect.searchParams.append('return_to', details.returnTo);
+      redirect.searchParams.append('return_to', `${oidcUrl}/interaction/${ctx.params.grant}`);
       ctx.redirect(redirect.href);
     } catch (e) {
       error(e.message || e);

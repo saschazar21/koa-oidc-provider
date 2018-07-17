@@ -84,6 +84,12 @@
       $contrast: map-get(map-get($states, contrast), $state);
       background-color: $color;
       color: $contrast;
+
+      &--inverted {
+        background-color: inherit;
+        border-color: $color;
+        color: $color;
+      }
     }
   }
 }

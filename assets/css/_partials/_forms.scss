@@ -10,6 +10,8 @@ form {
   border-color: transparent;
   border-style: solid;
   border-width: $border-width;
+  max-height: 100%;
+  max-width: 100%;
   padding: 2rem;
   position: relative;
 }

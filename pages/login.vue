@@ -1,31 +1,35 @@
 <template>
-    <form class="form--border shadow" @submit="checkForm" :action="return_to" method="post">
-      <div class="form-group">
-        <div class="label-group">
-          <label for="input-username">Enter E-Mail:</label>
-          <small class="form-error" v-if="isEmailInvalid()">{{ formErrors.email }}</small>
-        </div>
-        <input id="input-username" v-model.trim.lazy="email" type="text" name="email" class="input--full input--round" :class="{'input--alert': formErrors.email }" autofocus>
+  <form class="form--border shadow" @submit="checkForm" :action="return_to" method="post">
+    <div v-if="hash">
+      <error-hash :error-hash="hash"></error-hash>
+    </div>
+    <div class="form-group">
+      <div class="label-group">
+        <label for="input-username">Enter E-Mail:</label>
+        <small class="form-error" v-if="isEmailInvalid()">{{ formErrors.email }}</small>
       </div>
-      <div class="form-group">
-        <div class="label-group">
-          <label for="input-password">Enter Password:</label>
-          <small class="form-error" v-if="isPasswordInvalid()">{{ formErrors.password }}</small>
-        </div>
-        <input id="input-password" v-model="password" type="password" name="password" class="input--full input--round" :class="{ 'input--alert': formErrors.password }">
+      <input id="input-username" v-model.trim.lazy="email" type="text" name="email" class="input--full input--round" :class="{'input--alert': formErrors.email }" autofocus>
+    </div>
+    <div class="form-group">
+      <div class="label-group">
+        <label for="input-password">Enter Password:</label>
+        <small class="form-error" v-if="isPasswordInvalid()">{{ formErrors.password }}</small>
       </div>
-      <div class="form-group button-group">
-        <button class="button--success button--round" :disabled="isFormInvalid()">Login</button>
-        <div class="form-group--inline">
-          <input type="checkbox" id="input-remember" name="remember">
-          <label for="input-remember">Remember for next time?</label>
-        </div>
-        <a class="button--inverted button--round" :href="return_to || '/'">Cancel</a>
+      <input id="input-password" v-model="password" type="password" name="password" class="input--full input--round" :class="{ 'input--alert': formErrors.password }">
+    </div>
+    <div class="form-group button-group">
+      <button class="button--success button--round" :disabled="isFormInvalid()">Login</button>
+      <div class="form-group--inline">
+        <input type="checkbox" id="input-remember" name="remember">
+        <label for="input-remember">Remember for next time?</label>
       </div>
-    </form>
+      <a class="button--inverted button--round" :href="return_to || '/'">Cancel</a>
+    </div>
+  </form>
 </template>
 
 <script>
+import errorHash from '~/components/error/error-hash.vue';
 /* eslint-disable import/extensions */
 import { oidcPrefix } from '~/server/lib/tools/url.js';
 /* eslint-disable-next-line no-useless-escape */
@@ -39,6 +43,9 @@ export default {
       return_to: query.return_to,
     };
   },
+  components: {
+    'error-hash': errorHash,
+  },
   computed: {
     email: {
       get() {
@@ -49,6 +56,11 @@ export default {
           ? 'Please enter a valid e-mail address!'
           : null;
         this.sanitizedEmail = value;
+      },
+    },
+    hash: {
+      get() {
+        return this.$route.hash;
       },
     },
     password: {
