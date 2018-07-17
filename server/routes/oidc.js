@@ -1,12 +1,12 @@
 import debug from 'debug';
 import Router from 'koa-router';
+import { URL } from 'url';
 
-import * as url from '../lib/tools/url';
+import { oidcPrefix, nuxtUrl } from '../lib/tools/url';
 import { getNuxt } from '../nuxt';
 import bootstrapProvider from '../provider';
 import userModel from '../lib/db/models/user';
 
-const info = debug('info');
 const error = debug('error:setup');
 const router = new Router();
 
@@ -14,33 +14,13 @@ export default async function oidcRoutes() {
   const nuxt = getNuxt();
   const provider = await bootstrapProvider();
 
-  router.get(`${url.oidcPrefix}/interaction/:grant`, async (ctx) => {
+  router.get(`${oidcPrefix}/interaction/:grant`, async (ctx) => {
     try {
       const details = await provider.interactionDetails(ctx.req);
-      const client = await provider.Client.find(details.params.client_id);
-      info(details);
-
-      const context = {
-        req: {
-          ...ctx.req,
-          meta: {
-            ...details,
-            params: {
-              ...details.params,
-              client: {
-                ...client,
-                client_secret: null,
-              },
-            },
-          },
-        },
-      };
-      const result = await nuxt.renderRoute(details.interaction.error === 'login_required' ? '/login' : '/interaction', context);
-      if (result.error || result.redirect) {
-        throw new Error('Something went wrong while redirecting to login');
-      }
-      ctx.status = 200;
-      ctx.body = result.html;
+      const redirect = new URL(`${nuxtUrl}${details.interaction.error === 'login_required' ? '/login' : '/interaction'}`);
+      redirect.searchParams.append('client_id', details.params.client_id);
+      redirect.searchParams.append('return_to', details.returnTo);
+      ctx.redirect(redirect.href);
     } catch (e) {
       error(e.message || e);
       ctx.req.meta = {
@@ -53,14 +33,7 @@ export default async function oidcRoutes() {
     }
   });
 
-  router.post(`${url.oidcPrefix}/interaction/:grant/confirm`, async (ctx, next) => {
-    // TODO: Interaction handler
-    const result = {};
-    await provider.interactionFinished(ctx.req, ctx.redirect, result);
-    await next();
-  });
-
-  router.post(`${url.oidcPrefix}/interaction/:grant/login`, async (ctx, next) => {
+  router.post(`${oidcPrefix}/interaction/:grant`, async (ctx, next) => {
     const {
       email,
       password,

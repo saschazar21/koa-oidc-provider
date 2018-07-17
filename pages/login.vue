@@ -1,5 +1,5 @@
 <template>
-    <form class="form--border shadow" @submit="checkForm" :action="action" method="post">
+    <form class="form--border shadow" @submit="checkForm" :action="return_to" method="post">
       <div class="form-group">
         <div class="label-group">
           <label for="input-username">Enter E-Mail:</label>
@@ -15,7 +15,7 @@
         <input id="input-password" v-model="password" type="password" name="password" class="input--full input--round" :class="{ 'input--alert': formErrors.password }">
       </div>
       <div class="form-group button-group">
-        <button class="button--success button--round">Login</button>
+        <button class="button--success button--round" :disabled="isFormInvalid()">Login</button>
         <div class="form-group--inline">
           <input type="checkbox" id="input-remember" name="remember">
           <label for="input-remember">Remember for next time?</label>
@@ -32,23 +32,14 @@ import { oidcPrefix } from '~/server/lib/tools/url.js';
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default {
-  asyncData({ req, store }) {
+  asyncData({ query, store }) {
     store.commit('form/setHeader', 'Login');
-    if (!req.meta) {
-      return {};
-    }
     return {
-      client: req.meta.params.client,
-      grant: req.meta.uuid,
-      return_to: req.meta.returnTo,
+      client: query.client_id,
+      return_to: query.return_to,
     };
   },
   computed: {
-    action: {
-      get() {
-        return `${oidcPrefix}/interaction/${this.grant}/login`;
-      },
-    },
     email: {
       get() {
         return this.sanitizedEmail;
