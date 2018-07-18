@@ -1,8 +1,6 @@
 <template>
   <form class="form--border shadow" @submit="checkForm" :action="return_to" method="post">
-    <div v-if="hash">
-      <error-hash :error-hash="hash"></error-hash>
-    </div>
+    <error-hash v-show="hash"></error-hash>
     <div class="form-group">
       <div class="label-group">
         <label for="input-username">Enter E-Mail:</label>
@@ -20,7 +18,7 @@
     <div class="form-group button-group">
       <button class="button--success button--round" :disabled="isFormInvalid()">Login</button>
       <div class="form-group--inline">
-        <input type="checkbox" id="input-remember" name="remember">
+        <input type="checkbox" id="input-remember" v-model="remember" name="remember">
         <label for="input-remember">Remember for next time?</label>
       </div>
       <a class="button--inverted button--round" :href="return_to || '/'">Cancel</a>
@@ -30,8 +28,7 @@
 
 <script>
 import errorHash from '~/components/error/error-hash.vue';
-/* eslint-disable import/extensions */
-import { oidcPrefix } from '~/server/lib/tools/url.js';
+
 /* eslint-disable-next-line no-useless-escape */
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -49,13 +46,13 @@ export default {
   computed: {
     email: {
       get() {
-        return this.sanitizedEmail;
+        return this.$store.state.form.body.email;
       },
       set(value) {
         this.formErrors.email = value.length === 0 || !emailRegex.test(value)
           ? 'Please enter a valid e-mail address!'
           : null;
-        this.sanitizedEmail = value;
+        return this.$store.commit('form/updateBody', { email: value });
       },
     },
     hash: {
@@ -65,22 +62,27 @@ export default {
     },
     password: {
       get() {
-        return this.sanitizedPassword;
+        return this.$store.state.form.body.password;
       },
       set(value) {
         this.formErrors.password = value.length === 0
           ? 'Please enter your password!'
           : null;
-        this.sanitizedPassword = value;
+        return this.$store.commit('form/updateBody', { password: value });
+      },
+    },
+    remember: {
+      get() {
+        return this.$store.state.form.body.remember;
+      },
+      set(value) {
+        return this.$store.commit('form/updateBody', { remember: value });
       },
     },
   },
   data() {
     return {
       formErrors: {},
-      prefix: oidcPrefix,
-      sanitizedEmail: undefined,
-      sanitizedPassword: undefined,
     };
   },
   layout: 'form',
@@ -89,7 +91,7 @@ export default {
       if (this.isFormInvalid()) {
         return e.preventDefault();
       }
-      return true;
+      return this.$store.commit('form/reset');
     },
     isEmailInvalid() {
       return !!this.formErrors.email;
@@ -118,7 +120,7 @@ export default {
     max-width: 100%;
   }
 
-  input[type="checkbox"] {
+  input[type=checkbox] {
     height: 1rem;
     width: 1rem;
   }

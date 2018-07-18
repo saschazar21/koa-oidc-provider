@@ -9,10 +9,10 @@ export default {
   computed: {
     error: {
       get() {
-        if (!this.errorHash) {
+        if (!this.$route.hash) {
           return {};
         }
-        return this.parseHash(this.errorHash);
+        return this.parseHash(this.$route.hash);
       },
     },
     error_description: {
