@@ -1,33 +1,37 @@
 <template>
-  <form class="form--border shadow" @submit="checkForm" :action="return_to" method="post">
-    <error-hash v-show="hash"></error-hash>
-    <div class="form-group">
-      <div class="label-group">
-        <label for="input-username">Enter E-Mail:</label>
-        <small class="form-error" v-if="isEmailInvalid()">{{ formErrors.email }}</small>
+  <main>
+    <form class="form--border shadow" @submit="checkForm" :action="return_to" method="post">
+      <error-hash v-show="hash"></error-hash>
+      <div class="form-group">
+        <div class="label-group">
+          <label for="input-username">Enter E-Mail:</label>
+          <small class="form-error" v-if="isEmailInvalid()">{{ formErrors.email }}</small>
+        </div>
+        <input id="input-username" v-model.trim.lazy="email" type="text" name="email" class="input--full input--round" :class="{'input--alert': formErrors.email }" autofocus>
       </div>
-      <input id="input-username" v-model.trim.lazy="email" type="text" name="email" class="input--full input--round" :class="{'input--alert': formErrors.email }" autofocus>
-    </div>
-    <div class="form-group">
-      <div class="label-group">
-        <label for="input-password">Enter Password:</label>
-        <small class="form-error" v-if="isPasswordInvalid()">{{ formErrors.password }}</small>
+      <div class="form-group">
+        <div class="label-group">
+          <label for="input-password">Enter Password:</label>
+          <small class="form-error" v-if="isPasswordInvalid()">{{ formErrors.password }}</small>
+        </div>
+        <input id="input-password" v-model="password" type="password" name="password" class="input--full input--round" :class="{ 'input--alert': formErrors.password }">
       </div>
-      <input id="input-password" v-model="password" type="password" name="password" class="input--full input--round" :class="{ 'input--alert': formErrors.password }">
-    </div>
-    <div class="form-group button-group">
-      <button class="button--success button--round" :disabled="isFormInvalid()">Login</button>
-      <div class="form-group--inline">
-        <input type="checkbox" id="input-remember" v-model="remember" name="remember">
-        <label for="input-remember">Remember for next time?</label>
+      <div class="form-group button-group">
+        <button class="button--success button--round" :disabled="isFormInvalid()">Login</button>
+        <div class="form-group--inline">
+          <input type="checkbox" id="input-remember" v-model="remember" name="remember">
+          <label for="input-remember">Remember for next time?</label>
+        </div>
+        <a class="button--inverted button--round" :href="return_to || '/'">Cancel</a>
       </div>
-      <a class="button--inverted button--round" :href="return_to || '/'">Cancel</a>
-    </div>
-  </form>
+    </form>
+    <scope-block></scope-block>
+  </main>
 </template>
 
 <script>
 import errorHash from '~/components/error/error-hash.vue';
+import scopeBlock from '~/components/scope-block.vue';
 
 /* eslint-disable-next-line no-useless-escape */
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -42,6 +46,7 @@ export default {
   },
   components: {
     'error-hash': errorHash,
+    'scope-block': scopeBlock,
   },
   computed: {
     email: {
