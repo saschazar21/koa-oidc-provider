@@ -1,6 +1,6 @@
 <template>
   <main>
-    <form class="form--border shadow" @submit="checkForm" :action="return_to" method="post">
+    <form class="form--border shadow" @submit="checkForm" :action="`/interaction/${grant}`" method="post">
       <error-hash v-show="hash"></error-hash>
       <div class="form-group">
         <div class="label-group">
@@ -41,6 +41,7 @@ export default {
     store.commit('form/setHeader', 'Login');
     return {
       client: query.client_id,
+      grant: query.grant,
       return_to: query.return_to,
     };
   },
