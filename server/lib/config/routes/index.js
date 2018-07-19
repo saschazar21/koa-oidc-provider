@@ -4,10 +4,10 @@ export const routes = {
   check_session: '/session/check',
   end_session: '/session/end',
   introspection: '/token/introspection',
-  registration: '/reg',
+  registration: '/api/client',
   revocation: '/token/revocation',
   token: '/token',
-  userinfo: '/me',
+  userinfo: '/profile',
 };
 
 export { routes as default };
