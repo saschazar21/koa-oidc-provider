@@ -14,6 +14,39 @@ export default class ClientAdapter {
     this.model = this.client.then(clientModel.bind(this));
   }
 
+  async get(owner) {
+    const Client = await this.model;
+
+    try {
+      const clients = await Client.find({ owner });
+      if (!Array.isArray(clients)) {
+        throw new Error('Something went wrong while querying for clients.');
+      }
+      return clients.map(client => Object({
+        ...client,
+        client_secret: null,
+      }));
+    } catch (e) {
+      error(e.message || e);
+      return Promise.reject(e);
+    }
+  }
+
+  async reset(id) {
+    const Client = await this.model;
+
+    try {
+      const result = await Client.findById(id);
+      if (!result) {
+        throw new Error(`No client found with ID: ${id}`);
+      }
+      return result.resetPassword();
+    } catch (e) {
+      error(e.message || e);
+      return Promise.reject(e);
+    }
+  }
+
   async upsert(id, payload) {
     const Client = await this.model;
 

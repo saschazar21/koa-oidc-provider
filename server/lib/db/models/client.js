@@ -16,6 +16,10 @@ import { compareHash } from '../../tools/password';
   },
   */
 
+function clientSecret() {
+  return idFactory(64);
+}
+
 export default async function clientModel(customClient) {
   const mongoose = customClient || await initMongo();
 
@@ -45,7 +49,7 @@ export default async function clientModel(customClient) {
       type: String,
     },
     client_secret: {
-      default: () => idFactory(64),
+      default: clientSecret,
       type: String,
     },
     redirect_uris: {
@@ -326,7 +330,7 @@ export default async function clientModel(customClient) {
   };
 
   clientSchema.methods.resetPassword = async function resetPasswd() {
-    const secret = idFactory();
+    const secret = clientSecret();
     return this.update({ $set: { client_secret: secret } })
       .then(() => secret);
   };
