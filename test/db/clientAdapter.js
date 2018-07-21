@@ -40,10 +40,25 @@ test.serial('should return the created model via adapter', async () => {
   chai.expect(result.toJSON()).to.have.property('client_name', client.toJSON().client_name);
 });
 
+test.serial('should return all clients registered by user ID', async () => {
+  const result = await clientAdapter.get(client.owner);
+  chai.expect(Array.isArray(result)).to.equal(true);
+  chai.expect(result.length).to.equal(1);
+  chai.expect(result[0].get('client_secret')).to.equal(undefined);
+  chai.expect(result[0].toJSON()).to.have.property('_id', client.client_id);
+});
+
 test.serial('should exclude fields based on string', async () => {
   const result = await clientAdapter.find(client._id, '-client_secret');
   chai.expect(result.toJSON()).to.not.have.property('client_secret');
   chai.expect(result.toJSON()).to.not.deep.equal(client.toJSON());
+});
+
+test.serial('should reset client secret', async () => {
+  const result = await clientAdapter.reset(client.client_id);
+  chai.expect(typeof result.get('client_secret')).to.equal('string');
+  chai.expect(result.get('client_secret')).to.not.equal(client.get('client_secret'));
+  client = result;
 });
 
 test.serial('should delete a client model via adapter', async () => {

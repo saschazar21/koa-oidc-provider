@@ -330,9 +330,11 @@ export default async function clientModel(customClient) {
   };
 
   clientSchema.methods.resetPassword = async function resetPasswd() {
-    const secret = clientSecret();
-    return this.update({ $set: { client_secret: secret } })
-      .then(() => secret);
+    this.set({
+      client_secret: clientSecret(),
+      __v: this.get('__v') + 1,
+    });
+    return this.save();
   };
 
   return mongoose.model('Client', clientSchema);

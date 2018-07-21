@@ -18,14 +18,11 @@ export default class ClientAdapter {
     const Client = await this.model;
 
     try {
-      const clients = await Client.find({ owner });
-      if (!Array.isArray(clients)) {
-        throw new Error('Something went wrong while querying for clients.');
+      const clients = await Client.find({ owner }, '-client_secret -__v -owner');
+      if (!Array.isArray(clients) || clients.length === 0) {
+        throw new Error(`No clients found for user: ${owner}`);
       }
-      return clients.map(client => Object({
-        ...client,
-        client_secret: null,
-      }));
+      return clients;
     } catch (e) {
       error(e.message || e);
       return Promise.reject(e);
