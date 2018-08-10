@@ -1,6 +1,7 @@
 import debug from 'debug';
 import passport from 'koa-passport';
 import userModel from '../db/models/user';
+import BearerPassport from './passport/bearer';
 import LocalPassport from './passport/local';
 import ExternalPassport from './passport/external';
 import { isGoogleEnabled, isMicrosoftEnabled, isYahooEnabled } from '../tools/auth';
@@ -15,8 +16,15 @@ export async function bootstrapPassport() {
     return pass;
   }
 
-  const local = new LocalPassport(passport);
+  const bearer = new BearerPassport(passport);
+  try {
+    pass = await bearer.init();
+  } catch (e) {
+    error(e.message || e);
+    throw e;
+  }
 
+  const local = new LocalPassport(passport);
   try {
     pass = await local.init();
   } catch (e) {

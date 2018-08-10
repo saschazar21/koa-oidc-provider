@@ -26,7 +26,7 @@ export default class BearerPassport {
             .findById(token)
             .populate({
               path: 'clientId',
-              select: '-client_secret __v',
+              select: '-client_secret -__v',
             })
             .populate({
               path: 'accountId',
