@@ -9,7 +9,7 @@ const router = new Router({
   prefix: '/client',
 });
 
-export default function clientRoutes() {
+export default async function clientRoutes() {
   router.get('/', async (ctx) => {
     try {
       // eslint-disable-next-line no-underscore-dangle

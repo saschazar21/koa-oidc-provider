@@ -8,7 +8,9 @@ const router = new Router({
 });
 
 export default async function apiRoutes() {
-  const result = await Promise.all([clientRoutes]);
+  const result = await Promise.all([
+    clientRoutes(),
+  ]);
 
   result.forEach(route => router.use(route.routes()));
 

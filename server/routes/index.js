@@ -1,19 +1,21 @@
 import Promise from 'bluebird';
 import Router from 'koa-router';
 
+import apiRoutes from './api';
+import authRoutes from './auth';
 import oidcRoutes from './oidc';
 import { nuxtPrefix } from '../lib/tools/url';
-import authRoutes from './auth';
 
 const router = new Router();
 
 export default async function bootstrapRoutes() {
-  const result = await Promise.all([oidcRoutes(), authRoutes()]);
-  const oidc = result[0];
-  const auth = result[1];
+  const result = await Promise.all([
+    apiRoutes(),
+    authRoutes(),
+    oidcRoutes(),
+  ]);
 
-  router.use(auth.routes());
-  router.use(oidc.routes());
+  result.forEach(route => router.use(route.routes()));
 
   router.all('/', (ctx) => {
     ctx.redirect(nuxtPrefix);
