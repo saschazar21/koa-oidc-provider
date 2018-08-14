@@ -31,7 +31,22 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+  @import "~assets/css/_partials/variables";
+  @import "~assets/css/_partials/forms";
+
+  form {
+    background-color: $bg-main;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    max-width: 100%;
+  }
+
+  input[type=checkbox] {
+    height: 1rem;
+    width: 1rem;
+  }
+
   h1 {
     text-align: center;
   }
@@ -47,5 +62,38 @@ export default {
     width: 100%;
     position: absolute;
     top: 0;
+  }
+
+  .form-group--inline {
+    align-items: center;
+  }
+
+  .form-group + .form-group {
+    margin-top: 2rem;
+  }
+
+  .label-group {
+    display: grid;
+    grid-template-areas: 'a a';
+    justify-content: space-between;
+  }
+
+  .button-group {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .form-error {
+    color: $color-alert;
+  }
+
+  @media screen and (min-width: map-get($breakpoints, s)) {
+    form {
+      margin-left: auto;
+      margin-right: auto;
+      padding: 3rem 2rem;
+      width: map-get($breakpoints, s);
+    }
   }
 </style>

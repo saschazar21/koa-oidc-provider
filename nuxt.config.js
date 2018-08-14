@@ -1,5 +1,6 @@
 const pkg = require('./package.json');
 
+const isProd = process.env.NODE_ENV === 'production';
 const nuxtEnv = process.env.NUXT_PATH;
 const nuxtPrefix = `/${nuxtEnv ? nuxtEnv.split('/').filter(el => el.length > 0).join('/') : 'web'}/`;
 
@@ -48,6 +49,16 @@ module.exports = {
         });
       }
     },
+  },
+
+  modules: [
+    '@nuxtjs/axios',
+  ],
+
+  axios: {
+    debug: !isProd,
+    https: isProd,
+    port: isProd ? 443 : (process.env.PORT || 3000),
   },
 
   router: {

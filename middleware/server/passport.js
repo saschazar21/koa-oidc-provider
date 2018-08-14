@@ -11,7 +11,7 @@ passport.isAuthenticated = (req, res, next) => {
 };
 
 module.exports = (req, res, next) => {
-  if (req.url.startsWith('/login')) {
+  if (req.url.startsWith('/login') || req.url.startsWith('/register')) {
     return next();
   }
   if (!req.isAuthenticated) {

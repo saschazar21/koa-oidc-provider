@@ -29,6 +29,7 @@
     "test": "npm run lint && ava"
   },
   "dependencies": {
+    "@nuxtjs/axios": "^5.3.1",
     "bcrypt": "^2.0.1",
     "bluebird": "^3.5.1",
     "cross-env": "^5.1.6",
