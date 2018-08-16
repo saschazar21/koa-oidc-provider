@@ -74,6 +74,7 @@ export default {
 
   .label-group {
     display: grid;
+    grid-column-gap: .5em;
     grid-template-areas: 'a a';
     justify-content: space-between;
   }
