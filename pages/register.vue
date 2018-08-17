@@ -48,6 +48,12 @@ import { emailRegex } from '~/pages/login.vue';
 import errorHash from '~/components/error/error-hash.vue';
 
 export default {
+  asyncData(ctx) {
+    if (ctx.registrationEnabled) {
+      return ctx.redirect('/');
+    }
+    return ctx.store.commit('form/setHeader', 'Register');
+  },
   components: {
     'error-hash': errorHash,
   },

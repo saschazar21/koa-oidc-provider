@@ -2,15 +2,14 @@ const debug = require('debug');
 
 const error = debug('error:router');
 
-export default async function registrationEnabled({ app, redirect, store }) {
+export default async function registrationEnabled(ctx) {
   try {
-    const setup = await app.$axios.$get('/api/setup');
-    if (!setup || !setup.registration) {
-      throw new Error('Registration not enabled.');
+    const setup = await ctx.app.$axios.$get('/api/setup');
+    if (setup && setup.registration) {
+      ctx.registrationEnabled = setup.registration;
     }
-    return store.commit('form/setHeader', 'Register');
   } catch (e) {
     error(e.message || e);
-    return redirect('/');
+    ctx.redirect('/');
   }
 }

@@ -24,6 +24,9 @@
         </div>
         <a class="button--inverted button--round" :href="return_to || '/'">Cancel</a>
       </div>
+      <div class="form-group" v-show="registrationEnabled">
+        <span>No user account yet? <nuxt-link to="register">Register an account.</nuxt-link></span>
+      </div>
     </form>
     <scope-block></scope-block>
   </main>
@@ -37,12 +40,13 @@ import scopeBlock from '~/components/scope-block.vue';
 export const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default {
-  asyncData({ query, store }) {
-    store.commit('form/setHeader', 'Login');
+  asyncData(ctx) {
+    ctx.store.commit('form/setHeader', 'Login');
     return {
-      client: query.client_id,
-      grant: query.grant,
-      return_to: query.return_to,
+      client: ctx.query.client_id,
+      grant: ctx.query.grant,
+      registrationEnabled: ctx.registrationEnabled,
+      return_to: ctx.query.return_to,
     };
   },
   components: {
@@ -112,5 +116,6 @@ export default {
       return !!this.formErrors.password;
     },
   },
+  middleware: 'registrationEnabled',
 };
 </script>
