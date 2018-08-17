@@ -1,7 +1,7 @@
 <template>
   <main>
     <form class="form--border shadow" action="#" @submit="checkForm" method="post">
-      <error-hash v-show="error"></error-hash>
+      <error-hash v-show="error" :hash="error"></error-hash>
       <div class="form-group">
         <div class="label-group">
           <label for="input-username">Enter E-Mail:</label>
@@ -100,7 +100,7 @@ export default {
         return this.passwordCheck;
       },
       set(value) {
-        this.formErrors.password = value !== this.password ? 'Passwords do not match' : null;
+        this.formErrors.password = value.length < 6 || value !== this.password ? 'Passwords do not match' : null;
         this.passwordCheck = value;
       },
     },
@@ -123,7 +123,7 @@ export default {
           this.$store.commit('form/reset');
           this.$router.push('index');
         } catch (err) {
-          this.error = err.message || err || 'An error occurred, please reload!';
+          this.error = `${err.message || err} - please reload!`;
         }
       }
     },

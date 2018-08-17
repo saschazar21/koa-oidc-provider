@@ -10,7 +10,9 @@ export default {
     error: {
       get() {
         if (!this.$route.hash) {
-          return {};
+          return {
+            error_description: this.hash || 'An error occurred, please reload!',
+          };
         }
         return this.parseHash(this.$route.hash);
       },
@@ -32,6 +34,7 @@ export default {
       return obj;
     },
   },
+  props: ['hash'],
 };
 </script>
 
