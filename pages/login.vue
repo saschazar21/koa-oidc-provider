@@ -40,13 +40,13 @@ import scopeBlock from '~/components/scope-block.vue';
 export const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default {
-  asyncData(ctx) {
-    ctx.store.commit('form/setHeader', 'Login');
+  asyncData({ query, route, store }) {
+    store.commit('form/setHeader', 'Login');
     return {
-      client: ctx.query.client_id,
-      grant: ctx.query.grant,
-      registrationEnabled: ctx.registrationEnabled,
-      return_to: ctx.query.return_to,
+      client: query.client_id,
+      grant: query.grant,
+      registrationEnabled: route.meta.registration,
+      return_to: query.return_to,
     };
   },
   components: {
