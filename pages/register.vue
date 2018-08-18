@@ -113,6 +113,7 @@ export default {
   },
   data() {
     return {
+      client: this.$store.state.client,
       error: null,
       formErrors: {},
       passwordCheck: null,

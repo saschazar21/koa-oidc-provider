@@ -33,6 +33,8 @@ export async function getBaseClient() {
     baseClient = client.toJSON();
     info('Base Client created, it uses the following configuration:');
     info(baseClient);
+    process.env.CLIENT_ID = baseClient.client_id;
+    process.env.CLIENT_SECRET = baseClient.client_secret;
     return baseClient;
   } catch (e) {
     error(e.message || e);

@@ -2,7 +2,13 @@ const debug = require('debug');
 
 const error = debug('error:router');
 
-export default async function registrationEnabled({ app, redirect, route }) {
+export default async function registrationEnabled({
+  app,
+  redirect,
+  req,
+  route,
+  store,
+}) {
   try {
     const setup = await app.$axios.$get('/api/setup');
     if (setup && setup.registration) {
@@ -11,6 +17,9 @@ export default async function registrationEnabled({ app, redirect, route }) {
         ...route.meta,
         ...setup,
       };
+    }
+    if (req && req.client) {
+      store.commit('client/set', req.client);
     }
   } catch (e) {
     error(e.message || e);

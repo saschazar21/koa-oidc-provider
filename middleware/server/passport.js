@@ -11,6 +11,12 @@ passport.isAuthenticated = (req, res, next) => {
 };
 
 module.exports = (req, res, next) => {
+  if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
+    req.client = {
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+    };
+  }
   if (req.url.startsWith('/login') || req.url.startsWith('/register')) {
     return next();
   }

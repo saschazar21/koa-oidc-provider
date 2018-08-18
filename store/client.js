@@ -4,6 +4,9 @@ export const getters = {
   clientId(current) {
     return current.client_id;
   },
+  clientSecret(current) {
+    return current.client_secret;
+  },
 };
 
 export const mutations = {
