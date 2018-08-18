@@ -43,7 +43,7 @@ export default {
   asyncData({ query, route, store }) {
     store.commit('form/setHeader', 'Login');
     return {
-      client: query.client_id,
+      client: route.meta.client,
       grant: query.grant,
       registrationEnabled: route.meta.registration,
       return_to: query.return_to,

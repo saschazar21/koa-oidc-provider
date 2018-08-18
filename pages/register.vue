@@ -52,7 +52,10 @@ export default {
     if (!route.meta.registration) {
       return redirect('/error');
     }
-    return store.commit('form/setHeader', 'Register');
+    store.commit('form/setHeader', 'Register');
+    return {
+      client: route.meta.client,
+    };
   },
   components: {
     'error-hash': errorHash,
@@ -113,7 +116,6 @@ export default {
   },
   data() {
     return {
-      client: this.$store.state.client,
       error: null,
       formErrors: {},
       passwordCheck: null,
@@ -126,7 +128,15 @@ export default {
       if (!this.isFormInvalid()) {
         this.formErrors = {};
         try {
-          await this.$axios.$post('/api/user', this.$store.state.form.body);
+          await this.$axios({
+            auth: {
+              password: this.client.client_secret,
+              username: this.client.client_id,
+            },
+            data: this.$store.state.form.body,
+            method: 'post',
+            url: '/api/user',
+          });
           this.$store.commit('form/reset');
           this.$router.push('index');
         } catch (err) {

@@ -2,27 +2,24 @@ const debug = require('debug');
 
 const error = debug('error:router');
 
-export default async function registrationEnabled({
-  app,
-  redirect,
-  req,
-  route,
-  store,
-}) {
+export default async function registrationEnabled(ctx) {
   try {
-    const setup = await app.$axios.$get('/api/setup');
+    const setup = await ctx.app.$axios.$get('/api/setup');
     if (setup && setup.registration) {
       /* eslint-disable-next-line no-param-reassign */
-      route.meta = {
-        ...route.meta,
+      ctx.route.meta = {
+        ...ctx.route.meta,
         ...setup,
       };
     }
-    if (req && req.client) {
-      store.commit('client/set', req.client);
+    if (process.server && ctx.req && ctx.req.client) {
+      ctx.route.meta = {
+        ...ctx.route.meta,
+        client: ctx.req.client,
+      };
     }
   } catch (e) {
     error(e.message || e);
-    redirect('/error');
+    ctx.redirect('/error');
   }
 }
