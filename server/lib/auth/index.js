@@ -5,8 +5,9 @@ import BearerPassport from './passport/bearer';
 import LocalPassport from './passport/local';
 import ExternalPassport from './passport/external';
 import { isGoogleEnabled, isMicrosoftEnabled, isYahooEnabled } from '../tools/auth';
+import BasicPassport from './passport/basic';
 
-const error = debug('error:router');
+const error = debug('error:auth');
 const info = debug('info');
 
 let pass;
@@ -14,6 +15,14 @@ let pass;
 export async function bootstrapPassport() {
   if (pass) {
     return pass;
+  }
+
+  const basic = new BasicPassport(passport);
+  try {
+    pass = await basic.init();
+  } catch (e) {
+    error(e.message || e);
+    throw e;
   }
 
   const bearer = new BearerPassport(passport);

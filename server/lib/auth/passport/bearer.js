@@ -5,7 +5,7 @@ import BearerStrategy from 'passport-http-bearer';
 
 import accessTokenModel from '../../db/models/accessToken';
 
-const error = debug('error:router');
+const error = debug('error:auth');
 
 export default class BearerPassport {
   constructor(pass) {

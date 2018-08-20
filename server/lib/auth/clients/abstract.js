@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 import debug from 'debug';
 import { Issuer } from 'openid-client';
 
-const error = debug('error:router');
+const error = debug('error:auth');
 
 export default class AbstractProvider {
   constructor(providerConfig) {

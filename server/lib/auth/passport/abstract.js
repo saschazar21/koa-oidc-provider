@@ -5,7 +5,7 @@ import { Strategy } from 'openid-client';
 
 import userModel from '../../db/models/user';
 
-const error = debug('error:router');
+const error = debug('error:auth');
 const info = debug('info');
 
 export default class AbstractPassport {
