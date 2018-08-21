@@ -8,8 +8,12 @@ const configuration = new Configuration();
 export default async function initialAccessTokenModel(customClient) {
   const config = await configuration.getConfig();
   const mongoose = customClient || await initMongo();
-
   const Token = await abstractTokenModel(mongoose);
+
+  if (Token.discriminators && Token.discriminators.initialAccessToken) {
+    return Token;
+  }
+
   return Token.discriminator('InitialAccessToken', new mongoose.Schema({
     expiresAt: {
       default() {

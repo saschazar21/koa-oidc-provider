@@ -8,8 +8,12 @@ const configuration = new Configuration();
 export default async function clientCredentialModel(customClient) {
   const config = await configuration.getConfig();
   const mongoose = customClient || await initMongo();
-
   const Token = await abstractTokenModel(mongoose);
+
+  if (Token.discriminators && Token.discriminators.ClientCredentials) {
+    return Token;
+  }
+
   return Token.discriminator('ClientCredentials', new mongoose.Schema({
     expiresAt: {
       default() {

@@ -8,8 +8,12 @@ const configuration = new Configuration();
 export default async function refreshTokenModel(customClient) {
   const config = await configuration.getConfig();
   const mongoose = customClient || await initMongo();
-
   const Token = await abstractTokenModel(mongoose);
+
+  if (Token.discriminators && Token.discriminators.RefreshToken) {
+    return Token;
+  }
+
   return Token.discriminator('RefreshToken', new mongoose.Schema({
     expiresAt: {
       default() {

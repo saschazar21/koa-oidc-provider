@@ -10,6 +10,10 @@ export default async function accessTokenModel(customClient) {
   const mongoose = customClient || await initMongo();
   const Token = await abstractTokenModel(mongoose);
 
+  if (Token.discriminators && Token.discriminators.AccessToken) {
+    return Token;
+  }
+
   return Token.discriminator('AccessToken', new mongoose.Schema({
     expiresAt: {
       default() {
