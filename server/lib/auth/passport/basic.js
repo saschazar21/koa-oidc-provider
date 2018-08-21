@@ -18,10 +18,9 @@ export default class BasicPassport {
 
       this.passport.use('basic', new BasicStrategy(async (user, password, done) => {
         try {
-          const client = await provider.Client.find(user, 'client_secret');
-          // eslint-disable-next-line no-underscore-dangle
-          info(`Found client: ${client._id}`);
-          if (password !== client.client_secret) {
+          const client = await provider.Client.find(user);
+          info(`Found client: ${client.clientId}`);
+          if (password !== client.clientSecret) {
             throw new Error('Client secret mismatch!');
           }
           return done(null, client);

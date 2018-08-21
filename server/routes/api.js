@@ -4,6 +4,7 @@ import debug from 'debug';
 
 import clientRoutes from './api/client';
 import registrationEnabled from '../lib/tools/registration';
+import userRoutes from './api/user';
 
 const error = debug('error:router');
 
@@ -14,6 +15,7 @@ const router = new Router({
 export default async function apiRoutes() {
   const result = await Promise.all([
     clientRoutes(),
+    userRoutes(),
   ]);
 
   result.forEach(route => router.use(route.routes()));
