@@ -138,7 +138,7 @@ export default {
             url: '/api/user',
           });
           this.$store.commit('form/reset');
-          this.$router.push('index');
+          this.$router.push('/login');
         } catch (err) {
           this.error = `${err.message || err} - please reload!`;
         }
