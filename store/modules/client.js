@@ -15,7 +15,7 @@ const getters = {
 };
 
 const mutations = {
-  setClient(current, payload) {
+  set(current, payload) {
     current.client_id = payload.client_id;
     current.client_secret = payload.client_secret;
   },

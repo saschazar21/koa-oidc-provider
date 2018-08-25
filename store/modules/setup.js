@@ -1,12 +1,12 @@
 /* eslint-disable no-param-reassign */
 
-const state = () => ({});
+const state = () => ({
+  registration: null,
+});
 
 const mutations = {
-  setup(current, payload) {
-    current = {
-      ...payload,
-    };
+  set(current, payload) {
+    current.registration = payload.registration;
   },
 };
 

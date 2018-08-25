@@ -40,11 +40,11 @@ import scopeBlock from '~/components/scope-block.vue';
 export const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default {
-  asyncData({ query, req, store }) {
+  asyncData({ query, store }) {
     return {
       grant: query.grant,
       return_to: query.return_to,
-      registrationEnabled: req ? req.setup.registration : store.state.setup.registration,
+      registrationEnabled: store.state.setup.registration,
     };
   },
   async fetch({ store }) {
