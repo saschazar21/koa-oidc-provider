@@ -48,34 +48,22 @@ import { emailRegex } from '~/pages/login.vue';
 import errorHash from '~/components/error/error-hash.vue';
 
 export default {
-  asyncData(ctx) {
-    let obj = {
-      client: {
-        client_id: ctx.store.getters.clientId,
-        client_secret: ctx.store.getters.clientSecret,
-      },
-    };
-    ctx.store.commit('form/setHeader', 'Register');
-    if (!ctx.store.getters.clientId && process.server && ctx.req.client) {
-      const client = {
-        client_id: `${ctx.req.client.client_id}`,
-        client_secret: `${ctx.req.client.client_secret}`,
-      };
-      ctx.store.commit('client/setClient', client);
-      obj = {
-        ...obj,
-        client,
-      };
+  async fetch({ redirect, req, store }) {
+    store.commit('form/setHeader', 'Register');
+    if (process.server && (!req.setup || !req.setup.registration)) {
+      return redirect('/error');
     }
-    if (process.server && (!ctx.req.setup || !ctx.req.setup.registration)) {
-      return ctx.redirect('/error');
-    }
-    return obj;
+    return true;
   },
   components: {
     'error-hash': errorHash,
   },
   computed: {
+    client: {
+      get() {
+        return this.$store.state.client;
+      },
+    },
     email: {
       get() {
         return this.$store.state.form.body.email;
@@ -143,13 +131,13 @@ export default {
       if (!this.isFormInvalid()) {
         this.formErrors = {};
         try {
-          if (!this.$store.getters.clientId) {
+          if (!this.client.clientId) {
             throw new Error('An error occurred');
           }
           await this.$axios({
             auth: {
-              password: this.$store.getters.clientSecret,
-              username: this.$store.getters.clientId,
+              password: this.client.client_secret,
+              username: this.client.client_id,
             },
             data: this.$store.state.form.body,
             method: 'post',
@@ -183,7 +171,6 @@ export default {
       return this.formErrors.password !== null;
     },
   },
-  // middleware: 'registrationEnabled',
 };
 </script>
 

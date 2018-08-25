@@ -25,7 +25,7 @@
         <a class="button--inverted button--round" :href="return_to || '/'">Cancel</a>
       </div>
       <div class="form-group" v-show="registrationEnabled">
-        <span>No user account yet? <a href="/web/register">Register an account.</a></span>
+        <span>No user account yet? <nuxt-link to="register">Register an account.</nuxt-link></span>
       </div>
     </form>
     <scope-block></scope-block>
@@ -40,25 +40,15 @@ import scopeBlock from '~/components/scope-block.vue';
 export const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default {
-  asyncData({ query, req, store }) {
-    let obj = {
+  asyncData({ query, req }) {
+    return {
       grant: query.grant,
       return_to: query.return_to,
+      registrationEnabled: req ? req.setup.registration : false,
     };
+  },
+  async fetch({ store }) {
     store.commit('form/setHeader', 'Login');
-    if (process.server && req) {
-      const client = {
-        client_id: `${req.client.client_id}`,
-        client_secret: `${req.client.client_secret}`,
-      };
-      store.commit('client/setClient', client);
-      obj = {
-        ...obj,
-        client,
-        registrationEnabled: req.setup.registration,
-      };
-    }
-    return obj;
   },
   components: {
     'error-hash': errorHash,
@@ -127,6 +117,5 @@ export default {
       return !!this.formErrors.password;
     },
   },
-  middleware: 'registrationEnabled',
 };
 </script>

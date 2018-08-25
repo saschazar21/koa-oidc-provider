@@ -1,10 +1,10 @@
 /* eslint-disable no-param-reassign */
-export const state = () => Object({
+const state = () => Object({
   header: null,
   body: {},
 });
 
-export const mutations = {
+const mutations = {
   /* eslint-disable-next-line no-unused-vars */
   reset(current) {
     current = {
@@ -21,4 +21,10 @@ export const mutations = {
       ...payload,
     };
   },
+};
+
+export default {
+  mutations,
+  namespaced: true,
+  state,
 };
