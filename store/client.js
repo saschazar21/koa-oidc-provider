@@ -10,8 +10,10 @@ export const getters = {
 };
 
 export const mutations = {
-  set(current, payload) {
+  setClient(current, payload) {
     // eslint-disable-next-line no-param-reassign
-    current = payload;
+    current = {
+      ...payload,
+    };
   },
 };

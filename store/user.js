@@ -2,7 +2,9 @@
 export const state = () => Object({});
 
 export const mutations = {
-  set(current, user) {
-    current = user;
+  reset(current, user) {
+    current = {
+      ...user,
+    };
   },
 };

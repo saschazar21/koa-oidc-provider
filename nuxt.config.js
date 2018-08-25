@@ -66,6 +66,6 @@ module.exports = {
   },
 
   serverMiddleware: [
-    '~/middleware/server/passport',
+    // '~/middleware/server/passport',
   ],
 };

@@ -1,9 +1,13 @@
 import Koa from 'koa';
 import { Nuxt, Builder } from 'nuxt';
+import debug from 'debug';
 
 import config from '../../nuxt.config';
 import { nuxtPrefix } from '../lib/tools/url';
+import { getBaseClient } from '../lib/config/clients';
+import registrationEnabled from '../lib/tools/registration';
 
+const error = debug('error:setup');
 
 const app = new Koa();
 // Import and Set Nuxt.js options
@@ -16,6 +20,22 @@ export function getNuxt() {
   return nuxt;
 }
 
+export async function middleware(ctx, next) {
+  let registration = await registrationEnabled();
+  try {
+    const client = await getBaseClient();
+    ctx.req.client = client;
+  } catch (e) {
+    error(e.message || e);
+    error('Unable to store client in request object. User registration disabled.');
+    registration = false;
+  }
+  ctx.req.setup = {
+    registration,
+  };
+  return next();
+}
+
 export default async function bootstrapNuxt() {
   // Build in development
   if (config.dev) {
@@ -23,6 +43,7 @@ export default async function bootstrapNuxt() {
     await builder.build();
   }
 
+  app.use(middleware);
   app.use(async (ctx, next) => {
     await next();
     if (ctx.path.startsWith(nuxtPrefix) || ctx.path.startsWith('/favicon')) {
