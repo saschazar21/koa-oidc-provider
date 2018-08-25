@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 const state = () => ({
   client_id: null,
   client_secret: null,
@@ -14,8 +16,8 @@ const getters = {
 
 const mutations = {
   setClient(current, payload) {
-    // eslint-disable-next-line no-param-reassign
-    current = payload;
+    current.client_id = payload.client_id;
+    current.client_secret = payload.client_secret;
   },
 };
 

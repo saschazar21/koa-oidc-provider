@@ -48,6 +48,11 @@ import { emailRegex } from '~/pages/login.vue';
 import errorHash from '~/components/error/error-hash.vue';
 
 export default {
+  asyncData({ store }) {
+    return {
+      client: store.state.client,
+    };
+  },
   async fetch({ redirect, req, store }) {
     store.commit('form/setHeader', 'Register');
     if (process.server && (!req.setup || !req.setup.registration)) {
@@ -59,11 +64,6 @@ export default {
     'error-hash': errorHash,
   },
   computed: {
-    client: {
-      get() {
-        return this.$store.state.client;
-      },
-    },
     email: {
       get() {
         return this.$store.state.form.body.email;
@@ -131,7 +131,7 @@ export default {
       if (!this.isFormInvalid()) {
         this.formErrors = {};
         try {
-          if (!this.client.clientId) {
+          if (!this.client.client_id) {
             throw new Error('An error occurred');
           }
           await this.$axios({
