@@ -50,7 +50,7 @@ import errorHash from '~/components/error/error-hash.vue';
 export default {
   asyncData({ store }) {
     return {
-      client: store.state.client,
+      client: store.getters['client/client'],
     };
   },
   async fetch({ redirect, req, store }) {

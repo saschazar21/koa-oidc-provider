@@ -1,16 +1,23 @@
 /* eslint-disable no-param-reassign */
 
 const state = () => ({
-  registration: null,
+  setup: null,
 });
+
+const getters = {
+  registration(current) {
+    return current.setup.registration;
+  },
+};
 
 const mutations = {
   set(current, payload) {
-    current.registration = payload.registration;
+    current.setup = payload;
   },
 };
 
 export default {
+  getters,
   mutations,
   namespaced: true,
   state,
