@@ -12,7 +12,10 @@ Vue.use(Vuex);
 export default () => new Vuex.Store({
   actions: {
     async nuxtServerInit({ commit }, { req }) {
-      await commit('setup/set', req.setup);
+      await commit('setup/set', {
+        ...req.setup,
+        client: req.baseClient,
+      });
       await commit('client/set', req.client);
       if (req.user) {
         await commit('user/set', req.user);

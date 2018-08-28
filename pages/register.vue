@@ -37,7 +37,7 @@
       </div>
       <div class="form-group button-group">
         <button class="button--success button--round" :disabled="isFormInvalid()">Register</button>
-        <nuxt-link class="button--inverted button--round" to="/">Cancel</nuxt-link>
+        <nuxt-link class="button--inverted button--round" to="/login">Cancel</nuxt-link>
       </div>
     </form>
   </main>
@@ -50,7 +50,7 @@ import errorHash from '~/components/error/error-hash.vue';
 export default {
   asyncData({ store }) {
     return {
-      client: store.getters['client/client'],
+      client: store.getters['setup/baseClient'],
     };
   },
   async fetch({ redirect, req, store }) {

@@ -2,7 +2,7 @@
   <main>
     <form class="form--border shadow" @submit="checkForm" :action="`/interaction/${grant}`" method="post">
       <error-hash v-show="hash"></error-hash>
-      <client-block v-if="client"></client-block>
+      <client-block v-if="client.client_name"></client-block>
       <div class="form-group">
         <div class="label-group">
           <label for="input-username">Enter E-Mail:</label>
@@ -29,7 +29,7 @@
         <span>No user account yet? <nuxt-link to="register">Register an account.</nuxt-link></span>
       </div>
     </form>
-    <scope-block></scope-block>
+    <scope-block v-show="scope"></scope-block>
   </main>
 </template>
 
@@ -42,12 +42,13 @@ import clientBlockVue from '~/components/client-block.vue';
 export const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default {
-  asyncData({ query, store }) {
+  asyncData({ store }) {
     return {
       client: store.getters['client/client'],
-      grant: query.grant,
-      return_to: query.return_to,
+      grant: store.getters['setup/grant'],
+      return_to: store.getters['setup/return_to'],
       registrationEnabled: store.getters['setup/registration'],
+      scope: store.getters['setup/scope'],
     };
   },
   async fetch({ store }) {

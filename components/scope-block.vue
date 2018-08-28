@@ -22,8 +22,8 @@ export default {
   computed: {
     scope: {
       get() {
-        return this.$route.query && this.$route.query.scope
-          ? this.$route.query.scope.split(' ')
+        return this.$store.getters['setup/scope']
+          ? this.$store.getters['setup/scope'].split(' ')
           : [];
       },
     },

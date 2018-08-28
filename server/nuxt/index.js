@@ -6,6 +6,7 @@ import config from '../../nuxt.config';
 import { nuxtPrefix } from '../lib/tools/url';
 import { getBaseClient } from '../lib/config/clients';
 import registrationEnabled from '../lib/tools/registration';
+import bootstrapProvider from '../provider';
 
 const error = debug('error:setup');
 
@@ -21,18 +22,40 @@ export function getNuxt() {
 }
 
 export async function middleware(ctx, next) {
-  let registration = await registrationEnabled();
+  let client;
+  const provider = await bootstrapProvider();
+
+  if (ctx.query.client_id) {
+    try {
+      client = await provider.Client.find(ctx.query.client_id, '-__v -client_secret');
+    } catch (e) {
+      error(e.message || e);
+      ctx.status = 400;
+      ctx.body = {
+        error: e.message,
+      };
+      return null;
+    }
+  }
+
   try {
-    const client = await getBaseClient();
+    const registration = await registrationEnabled();
+    const baseClient = await getBaseClient();
+    const query = {
+      ...ctx.query,
+      client_id: null,
+    };
+    ctx.req.baseClient = baseClient;
     ctx.req.client = client;
+    ctx.req.setup = {
+      ...query,
+      registration,
+    };
+    ctx.query = null;
   } catch (e) {
     error(e.message || e);
     error('Unable to store client in request object. User registration disabled.');
-    registration = false;
   }
-  ctx.req.setup = {
-    registration,
-  };
   return next();
 }
 

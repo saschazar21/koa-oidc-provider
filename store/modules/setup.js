@@ -5,8 +5,20 @@ const state = () => ({
 });
 
 const getters = {
+  baseClient(current) {
+    return current.setup.client;
+  },
+  grant(current) {
+    return current.setup.grant;
+  },
   registration(current) {
     return current.setup.registration;
+  },
+  return_to(current) {
+    return current.setup.return_to;
+  },
+  scope(current) {
+    return current.setup.scope;
   },
 };
 
