@@ -20,6 +20,9 @@ const getters = {
   scope(current) {
     return current.setup.scope;
   },
+  tokenUrl(current) {
+    return current.setup.tokenUrl;
+  },
 };
 
 const mutations = {

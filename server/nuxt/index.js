@@ -7,10 +7,12 @@ import { nuxtPrefix } from '../lib/tools/url';
 import { getBaseClient } from '../lib/config/clients';
 import registrationEnabled from '../lib/tools/registration';
 import bootstrapProvider from '../provider';
+import Configuration from '../lib/config';
 
 const error = debug('error:setup');
 
 const app = new Koa();
+const configuration = new Configuration();
 // Import and Set Nuxt.js options
 config.dev = !(app.env === 'production');
 
@@ -39,6 +41,7 @@ export async function middleware(ctx, next) {
   }
 
   try {
+    const { routes } = await configuration.getConfig();
     const registration = await registrationEnabled();
     const baseClient = await getBaseClient();
     const query = {
@@ -50,6 +53,7 @@ export async function middleware(ctx, next) {
     ctx.req.setup = {
       ...query,
       registration,
+      tokenUrl: routes.token,
     };
     ctx.query = null;
   } catch (e) {
