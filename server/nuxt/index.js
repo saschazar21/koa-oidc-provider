@@ -1,66 +1,26 @@
 import Koa from 'koa';
 import { Nuxt, Builder } from 'nuxt';
-import debug from 'debug';
 
 import config from '../../nuxt.config';
 import { nuxtPrefix } from '../lib/tools/url';
-import { getBaseClient } from '../lib/config/clients';
-import registrationEnabled from '../lib/tools/registration';
-import bootstrapProvider from '../provider';
-import Configuration from '../lib/config';
-
-const error = debug('error:setup');
+import middleware from '../lib/tools/middleware';
 
 const app = new Koa();
-const configuration = new Configuration();
 // Import and Set Nuxt.js options
 config.dev = !(app.env === 'production');
 
 // Instantiate nuxt.js
 const nuxt = new Nuxt(config);
 
-export function getNuxt() {
-  return nuxt;
+async function parsedMiddleware(ctx, next) {
+  ctx.req.baseClient = ctx.state.baseClient;
+  ctx.req.client = ctx.state.client;
+  ctx.req.setup = ctx.state.setup;
+  return next();
 }
 
-export async function middleware(ctx, next) {
-  let client;
-  const provider = await bootstrapProvider();
-
-  if (ctx.query.client_id) {
-    try {
-      client = await provider.Client.find(ctx.query.client_id, '-__v -client_secret');
-    } catch (e) {
-      error(e.message || e);
-      ctx.status = 400;
-      ctx.body = {
-        error: e.message,
-      };
-      return null;
-    }
-  }
-
-  try {
-    const { routes } = await configuration.getConfig();
-    const registration = await registrationEnabled();
-    const baseClient = await getBaseClient();
-    const query = {
-      ...ctx.query,
-      client_id: null,
-    };
-    ctx.req.baseClient = baseClient;
-    ctx.req.client = client;
-    ctx.req.setup = {
-      ...query,
-      registration,
-      tokenUrl: routes.token,
-    };
-    ctx.query = null;
-  } catch (e) {
-    error(e.message || e);
-    error('Unable to store client in request object. User registration disabled.');
-  }
-  return next();
+export function getNuxt() {
+  return nuxt;
 }
 
 export default async function bootstrapNuxt() {
@@ -71,6 +31,7 @@ export default async function bootstrapNuxt() {
   }
 
   app.use(middleware);
+  app.use(parsedMiddleware);
   app.use(async (ctx, next) => {
     await next();
     if (ctx.path.startsWith(nuxtPrefix) || ctx.path.startsWith('/favicon')) {
