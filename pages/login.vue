@@ -44,7 +44,10 @@ export const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)
 export default {
   asyncData({ store }) {
     return {
-      client: store.getters['client/client'],
+      client: {
+        client_name: store.getters['client/clientName'],
+        client_secret: store.getters['client/clientSecret'],
+      },
       grant: store.getters['setup/grant'],
       return_to: store.getters['setup/return_to'],
       registrationEnabled: store.getters['setup/registration'],

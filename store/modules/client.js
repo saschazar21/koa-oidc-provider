@@ -9,10 +9,10 @@ const getters = {
     return current.client;
   },
   clientId(current) {
-    return current.client.client_id;
+    return current.client ? current.client.client_id : null;
   },
   clientSecret(current) {
-    return current.client.client_secret;
+    return current.client ? current.client.client_secret : null;
   },
 };
 

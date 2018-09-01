@@ -5,13 +5,19 @@ const state = () => ({
 
 const getters = {
   email(current) {
-    return current.user.email;
+    return current.user
+      ? current.user.email
+      : null;
   },
   firstName(current) {
-    return current.user.given_name;
+    return current.user
+      ? current.user.given_name
+      : null;
   },
   name(current) {
-    return `${current.user.given_name} ${current.user.family_name}`;
+    return current.user
+      ? `${current.user.given_name} ${current.user.family_name}`
+      : null;
   },
   refresh_token(current) {
     if (!current.user) {
