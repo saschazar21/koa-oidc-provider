@@ -3,7 +3,6 @@ import { Nuxt, Builder } from 'nuxt';
 
 import config from '../../nuxt.config';
 import { nuxtPrefix } from '../lib/tools/url';
-import middleware from '../lib/tools/middleware';
 
 const app = new Koa();
 // Import and Set Nuxt.js options
@@ -30,7 +29,6 @@ export default async function bootstrapNuxt() {
     await builder.build();
   }
 
-  app.use(middleware);
   app.use(parsedMiddleware);
   app.use(async (ctx, next) => {
     await next();

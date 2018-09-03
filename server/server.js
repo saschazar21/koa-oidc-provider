@@ -11,6 +11,7 @@ import bootstrapProvider from './provider';
 import bootstrapRoutes from './routes';
 import { bootstrapPassport } from './lib/auth';
 import keys from './lib/tools/cookie';
+import middleware from './lib/tools/middleware';
 import session from './lib/tools/session';
 
 export async function bootstrap() {
@@ -32,6 +33,7 @@ export async function start(provider) {
   app.use(passport.session());
 
   const router = await bootstrapRoutes();
+  app.use(middleware);
   app.use(router.routes());
   app.use(mount(url.oidcPrefix.length === 0 ? '/' : url.oidcPrefix, provider.app));
   app.use(mount(await bootstrapNuxt()));
