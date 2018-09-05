@@ -103,7 +103,6 @@ export default async function userModel(customClient) {
     },
     preferred_username: {
       type: String,
-      unique: true,
     },
     profile: {
       type: String,

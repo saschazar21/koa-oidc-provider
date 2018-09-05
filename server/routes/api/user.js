@@ -6,6 +6,7 @@ import { bootstrapPassport } from '../../lib/auth';
 import { getBaseClient } from '../../lib/config/clients';
 import { baseUrl } from '../../lib/tools/url';
 import { requireScopes, checkScopes } from '../../lib/tools/auth';
+import userModel from '../../lib/db/models/user';
 
 const error = debug('error:router');
 const info = debug('info');
@@ -15,8 +16,14 @@ const router = new Router({
 
 export default async function userRoutes() {
   try {
-    const passport = await bootstrapPassport();
-    const baseClient = await getBaseClient();
+    const promises = await Promise.all([
+      await bootstrapPassport(),
+      await getBaseClient(),
+      await userModel(),
+    ]);
+    const passport = promises[0];
+    const baseClient = promises[1];
+    const User = promises[2];
 
     router.post(
       '/',
@@ -46,8 +53,23 @@ export default async function userRoutes() {
         info(ctx.request.origin);
         ctx.status = 200;
 
-        // FIXME Create logic for persisting user in database
-        ctx.body = ctx.request.body;
+        try {
+          const user = new User(ctx.request.body);
+          const result = await user.save();
+          info(user);
+          ctx.body = {
+            email: result.get('email'),
+            family_name: result.get('family_name'),
+            given_name: result.get('given_name'),
+            picture: result.get('picture'),
+          };
+        } catch (err) {
+          error(err.message || err);
+          ctx.status = 400;
+          ctx.body = {
+            error: err.message || err,
+          };
+        }
       },
     );
     return router;
