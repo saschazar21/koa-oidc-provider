@@ -34,7 +34,9 @@ export default async ({ app, store, redirect }) => {
         error(err.message || err);
       }
     }
-    // FIXME: Enter correct base URL
-    return redirect('/login');
+    if (store.getters['setup/grant']) {
+      return redirect('/login');
+    }
+    return redirect(`${store.getters['setup/baseUrl']}/login`);
   }
 };

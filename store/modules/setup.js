@@ -8,6 +8,9 @@ const getters = {
   baseClient(current) {
     return current.setup.client;
   },
+  baseUrl(current) {
+    return current.setup.baseUrl;
+  },
   grant(current) {
     return current.setup.grant;
   },

@@ -5,6 +5,7 @@ import { getBaseClient } from '../config/clients';
 import registrationEnabled from './registration';
 import bootstrapProvider from '../../provider';
 import Configuration from '../config';
+import { baseUrl } from './url';
 
 const error = debug('error:router');
 const configuration = new Configuration();
@@ -47,6 +48,7 @@ export default async (ctx, next) => {
       setup: {
         ...ctx.state.setup,
         ...query,
+        baseUrl,
         registration,
         tokenUrl: routes.token,
       },

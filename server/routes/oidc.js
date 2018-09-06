@@ -53,7 +53,8 @@ export default async function oidcRoutes() {
       const user = found.toJSON();
       result = {
         login: {
-          account: user.sub,
+          /* eslint-disable-next-line no-underscore-dangle */
+          account: user._id,
           acr: user.acr,
           remember: remember && remember === 'on',
           ts: Date.now(),
@@ -67,8 +68,8 @@ export default async function oidcRoutes() {
         error_description: e.message,
       };
     }
-    await provider.interactionFinished(ctx.req, ctx.res, result);
-    await next();
+    await provider.interactionFinished(ctx.req, ctx.res, result)
+      .then(next);
   });
 
   return router;
