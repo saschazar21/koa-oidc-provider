@@ -50,7 +50,7 @@ export default async (ctx, next) => {
         ...query,
         baseUrl,
         registration,
-        tokenUrl: routes.token,
+        routes,
       },
     };
   } catch (e) {

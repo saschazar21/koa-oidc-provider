@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { emailRegex } from '~/pages/login.vue';
+import { emailRegex } from '~/pages/login/index.vue';
 import errorHash from '~/components/error/error-hash.vue';
 
 export default {

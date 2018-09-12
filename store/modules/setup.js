@@ -20,11 +20,14 @@ const getters = {
   return_to(current) {
     return current.setup.return_to;
   },
+  routes(current) {
+    return current.setup.routes;
+  },
   scope(current) {
     return current.setup.scope;
   },
   tokenUrl(current) {
-    return current.setup.tokenUrl;
+    return current.setup.routes.tokenUrl;
   },
 };
 

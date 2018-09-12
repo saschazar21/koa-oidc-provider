@@ -39,7 +39,7 @@ const getters = {
 const mutations = {
   set(current, user) {
     current.user = {
-      token: {},
+      token: current.user.token,
       ...user,
     };
   },
