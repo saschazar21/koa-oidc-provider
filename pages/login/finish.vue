@@ -1,31 +1,42 @@
 <template>
-  <h1>Hello</h1>
+  <div>
+    <h1>Hello</h1>
+    <script type="text/javascript">
+      function parseHash(hash) {
+        const obj = {};
+        const hashString = hash.startsWith('#') ? hash.substring(1) : hash;
+        const segments = hashString.split('&');
+        segments.forEach((segment) => {
+          const [key, value] = segment.split('=');
+          obj[key] = value;
+        });
+        return obj;
+      }
+
+      if (window.location.hash) {
+        const form = document.createElement('form');
+        form.setAttribute('method', 'POST');
+        form.setAttribute('action', '/login/finish');
+
+        const hash = parseHash(window.location.hash);
+        Object.keys(hash).forEach((key) => {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = key;
+          input.value = hash[key];
+          form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+      }
+    </script>
+  </div>
 </template>
 
 
 <script>
 export default {
-  async fetch({ app, store, route }) {
-    console.log(window.location);
-    if (route.hash && route.hash.startsWith('#')) {
-      const obj = {};
-      const fragments = route.hash.substr(1).split('&');
-      fragments.forEach((fragment) => {
-        const [key, value] = fragment.split('=');
-        obj[key] = value;
-      });
-      if (obj.id_token) {
-        store.commit('user/token', obj.id_token);
-        const { data } = await app.$axios({
-          headers: {
-            authentication: `Bearer ${obj.id_token}`,
-          },
-          method: 'get',
-          url: store.getters('setup/routes').userinfo,
-        });
-        console.log(data);
-      }
-    }
-  },
+
 };
 </script>
