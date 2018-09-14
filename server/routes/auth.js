@@ -25,7 +25,7 @@ export default async function authRoutes() {
 
     const passport = await bootstrapPassport();
     router.get('/', passport.authenticate('oidc'));
-    router.get(`/${redirectUri.split('/').pop()}`, passport.authenticate('oidc', {
+    router.post(`/${redirectUri.split('/').pop()}`, passport.authenticate('oidc', {
       failureRedirect: '/login',
       successRedirect: nuxtPrefix,
     }));

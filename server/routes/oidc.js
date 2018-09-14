@@ -68,7 +68,7 @@ export default async function oidcRoutes() {
         error_description: e.message,
       };
     }
-    await provider.interactionFinished(ctx.req, ctx.res, result)
+    return provider.interactionFinished(ctx.req, ctx.res, result)
       .then(next);
   });
 
