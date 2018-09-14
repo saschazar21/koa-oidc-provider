@@ -9,11 +9,7 @@
 
 <script>
 export default {
-  asyncData({ store }) {
-    return {
-      user: store.getters['user/user'],
-    };
-  },
+  props: ['user'],
 };
 </script>
 

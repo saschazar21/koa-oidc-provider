@@ -1,42 +1,20 @@
 <template>
   <div>
-    <h1>Hello</h1>
-    <script type="text/javascript">
-      function parseHash(hash) {
-        const obj = {};
-        const hashString = hash.startsWith('#') ? hash.substring(1) : hash;
-        const segments = hashString.split('&');
-        segments.forEach((segment) => {
-          const [key, value] = segment.split('=');
-          obj[key] = value;
-        });
-        return obj;
-      }
-
-      if (window.location.hash) {
-        const form = document.createElement('form');
-        form.setAttribute('method', 'POST');
-        form.setAttribute('action', '/login/finish');
-
-        const hash = parseHash(window.location.hash);
-        Object.keys(hash).forEach((key) => {
-          const input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = key;
-          input.value = hash[key];
-          form.appendChild(input);
-        });
-
-        document.body.appendChild(form);
-        form.submit();
-      }
-    </script>
+    <h1>One last step...</h1>
+    <span>You're nearly there - just wait a few more seconds until you're being redirected.<br>If that doesn't happen, please click the 'Home' link below.</span>
+    <script v-html="js" type="text/javascript"></script>
   </div>
 </template>
 
-
 <script>
-export default {
+/* eslint-disable-next-line import/extensions */
+import formPost from '~/middleware/form-post.js';
 
+export default {
+  data() {
+    return {
+      js: formPost,
+    };
+  },
 };
 </script>

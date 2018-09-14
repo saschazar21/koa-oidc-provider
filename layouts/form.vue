@@ -51,11 +51,20 @@ export default {
     text-align: center;
   }
 
+  nuxt {
+    grid-area: main;
+  }
+
+  .footer-container {
+    grid-area: footer;
+  }
+
   .form-container {
     align-items: center;
     display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 3fr;
+    grid-template-areas: 'header' 'main' 'footer';
+    grid-template-rows: 1fr 3fr auto;
+    grid-row-gap: 1em;
     height: 100vh;
     justify-content: center;
     left: 0;
@@ -70,6 +79,10 @@ export default {
 
   .form-group + .form-group {
     margin-top: 2rem;
+  }
+
+  .header-container {
+    grid-area: header;
   }
 
   .label-group {
