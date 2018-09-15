@@ -1,7 +1,7 @@
 import { initMongo } from '../mongo';
 import { safeIdFactory } from '../../tools/id';
 import { passwordHash, compareHash } from '../../tools/password';
-import { isEmail, isUrl } from '../../tools/validators';
+import { isEmail, isUrl } from '../../tools/regex';
 
 /**
  * User model:

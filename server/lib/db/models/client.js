@@ -2,7 +2,8 @@ import { parse } from 'url';
 
 import { initMongo } from '../mongo';
 import { safeIdFactory, idFactory } from '../../tools/id';
-import { isEmail, isUrl, responseTypes, grantTypes, idTokenSignedResponseAlg, idTokenEncryptedResponseAlg, idTokenEncryptedResponseEnc, userinfoSigningAlg, userinfoEncryptionAlg, userinfoEncryptionEnc, requestObjectSigningAlg, requestObjectEncryptionAlg, requestObjectEncryptionEnc, tokenEndpointAuthMethod, tokenEndpointAuthSigningAlg } from '../../tools/validators';
+import { isEmail, isUrl } from '../../tools/regex';
+import { responseTypes, grantTypes, idTokenSignedResponseAlg, idTokenEncryptedResponseAlg, idTokenEncryptedResponseEnc, userinfoSigningAlg, userinfoEncryptionAlg, userinfoEncryptionEnc, requestObjectSigningAlg, requestObjectEncryptionAlg, requestObjectEncryptionEnc, tokenEndpointAuthMethod, tokenEndpointAuthSigningAlg } from '../../tools/validators';
 import { compareHash } from '../../tools/password';
 
 /**
