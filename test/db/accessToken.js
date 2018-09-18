@@ -26,7 +26,12 @@ test.before(async () => {
     pass: process.env.MONGO_PASSWORD,
     user: process.env.MONGO_USER,
   };
-  mongoose = await initMongo(process.env.MONGO_HOST, process.env.MONGO_PORT, config);
+  mongoose = await initMongo(
+    process.env.MONGO_HOST,
+    process.env.MONGO_PORT,
+    process.env.MONGO_DB,
+    config,
+  );
   AccessToken = await accessTokenModel(mongoose);
   Client = await clientModel(mongoose);
   User = await userModel(mongoose);

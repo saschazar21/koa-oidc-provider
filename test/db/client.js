@@ -22,7 +22,12 @@ test.before(async () => {
     user: process.env.MONGO_USER,
   };
 
-  mongoose = await initMongo(process.env.MONGO_HOST, process.env.MONGO_PORT, config);
+  mongoose = await initMongo(
+    process.env.MONGO_HOST,
+    process.env.MONGO_PORT,
+    process.env.MONGO_DB,
+    config,
+  );
   Client = await clientModel(mongoose);
 });
 

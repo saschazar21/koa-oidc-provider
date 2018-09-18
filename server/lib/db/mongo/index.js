@@ -11,8 +11,8 @@ export const configuration = {
   user: process.env.MONGO_USER,
 };
 
-export async function initMongo(host, port, config) {
-  const db = process.env.MONGO_DB || '';
+export async function initMongo(host, port, dbName, config) {
+  const db = dbName || process.env.MONGO_DB || '';
   const hostname = host || process.env.MONGO_HOST || '127.0.0.1';
   const portNo = port || process.env.MONGO_PORT || 27017;
   let conf = config || configuration;

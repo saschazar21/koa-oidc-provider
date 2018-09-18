@@ -20,7 +20,12 @@ test.before(async () => {
     pass: process.env.MONGO_PASSWORD,
     user: process.env.MONGO_USER,
   };
-  const mongoose = await initMongo(process.env.MONGO_HOST, process.env.MONGO_PORT, mongoConfig);
+  const mongoose = await initMongo(
+    process.env.MONGO_HOST,
+    process.env.MONGO_PORT,
+    process.env.MONGO_DB,
+    mongoConfig,
+  );
 
   const router = await bootstrapRoutes(mongoose);
   const k = new Koa();

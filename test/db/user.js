@@ -19,7 +19,12 @@ test.serial('should connect to MongoDB', async () => {
     pass: process.env.MONGO_PASSWORD,
     user: process.env.MONGO_USER,
   };
-  connection = await initMongo(process.env.MONGO_HOST, process.env.MONGO_PORT, config);
+  connection = await initMongo(
+    process.env.MONGO_HOST,
+    process.env.MONGO_PORT,
+    process.env.MONGO_DB,
+    config,
+  );
   User = await userModel(connection);
   chai.expect(typeof connection).to.equal('object');
 });
