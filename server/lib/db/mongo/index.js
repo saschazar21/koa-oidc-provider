@@ -4,6 +4,14 @@ import mongoose from 'mongoose';
 
 const info = debug('info');
 
+function checkDbName(possibilities) {
+  const compare = Array.isArray(possibilities) ? possibilities : [possibilities];
+  const result = compare
+    .filter(name => typeof name === 'string' && /\S+/.test(name))
+    .map(name => name.trim());
+  return result.length > 0 ? result[0] : 'admin';
+}
+
 export const configuration = {
   reconnectTries: 20,
   pass: process.env.MONGO_PASSWORD,
@@ -12,7 +20,7 @@ export const configuration = {
 };
 
 export async function initMongo(host, port, dbName, config) {
-  const db = dbName || process.env.MONGO_DB || '';
+  const db = checkDbName([dbName, process.env.MONGO_DB, 'admin']);
   const hostname = host || process.env.MONGO_HOST || '127.0.0.1';
   const portNo = port || process.env.MONGO_PORT || 27017;
   let conf = config || configuration;
