@@ -12,7 +12,7 @@ const info = debug('info');
 
 let pass;
 
-export async function bootstrapPassport() {
+export async function bootstrapPassport(customClient) {
   if (pass) {
     return pass;
   }
@@ -64,7 +64,7 @@ export async function bootstrapPassport() {
     throw e;
   }
 
-  const User = await userModel();
+  const User = await userModel(customClient);
   pass.deserializeUser(async (profile, done) => {
     try {
       await User.findById(profile.sub, '_id email family_name given_name picture');

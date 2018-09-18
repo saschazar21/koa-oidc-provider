@@ -6,6 +6,8 @@ import chaiAsPromised from 'chai-as-promised';
 import Koa from 'koa';
 import mount from 'koa-mount';
 
+import { configuration, initMongo } from '../../server/lib/db/mongo';
+import Adapter from '../../server/lib/db/adapter';
 import Configuration from '../../server/lib/config';
 import bootstrapProvider from '../../server/provider';
 import { getBaseClient } from '../../server/lib/config/clients';
@@ -20,7 +22,19 @@ let provider;
 let request;
 
 test.before(async () => {
-  provider = await bootstrapProvider();
+  const mongoConfig = {
+    ...configuration,
+    pass: process.env.MONGO_PASSWORD,
+    user: process.env.MONGO_USER,
+  };
+  const mongoose = await initMongo(process.env.MONGO_HOST, process.env.MONGO_PORT, mongoConfig);
+  class CustomAdapter extends Adapter {
+    constructor(name) {
+      super(name, mongoose);
+    }
+  }
+
+  provider = await bootstrapProvider({ adapter: CustomAdapter });
 
   const koa = new Koa();
   config = new Configuration();

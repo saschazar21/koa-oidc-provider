@@ -5,6 +5,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import Koa from 'koa';
 
+import { configuration, initMongo } from '../server/lib/db/mongo';
 import bootstrapRoutes from '../server/routes';
 
 dotenv.config();
@@ -14,7 +15,14 @@ let koa;
 let request;
 
 test.before(async () => {
-  const router = await bootstrapRoutes(null);
+  const mongoConfig = {
+    ...configuration,
+    pass: process.env.MONGO_PASSWORD,
+    user: process.env.MONGO_USER,
+  };
+  const mongoose = await initMongo(process.env.MONGO_HOST, process.env.MONGO_PORT, mongoConfig);
+
+  const router = await bootstrapRoutes(mongoose);
   const k = new Koa();
   k.use(router.routes());
   koa = k.listen();

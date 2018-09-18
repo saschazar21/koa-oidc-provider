@@ -5,6 +5,7 @@ import test from 'ava';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
+import { configuration, initMongo } from '../../server/lib/db/mongo';
 import Adapter from '../../server/lib/db/adapter';
 import Configuration from '../../server/lib/config';
 import { safeIdFactory } from '../../server/lib/tools/id';
@@ -34,12 +35,26 @@ const data = {
 
 let ac;
 let at;
+let mongoose;
 let provider;
 
 test.before(async () => {
+  const config = {
+    ...configuration,
+    pass: process.env.MONGO_PASSWORD,
+    user: process.env.MONGO_USER,
+  };
+  mongoose = await initMongo(process.env.MONGO_HOST, process.env.MONGO_PORT, config);
+
+  class CustomAdapter extends Adapter {
+    constructor(name) {
+      super(name, mongoose);
+    }
+  }
+
   const providerConfig = new Configuration();
   provider = new Provider('http://127.0.0.1', await providerConfig.getConfig());
-  await provider.initialize({ adapter: Adapter });
+  await provider.initialize({ adapter: CustomAdapter });
 });
 
 test.serial('should create an Authorization Code', async () => {

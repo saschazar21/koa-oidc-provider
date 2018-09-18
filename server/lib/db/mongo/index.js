@@ -19,6 +19,7 @@ export async function initMongo(host, port, config) {
   conf = {
     ...conf,
     pass: conf.pass || process.env.MONGO_PASSWORD || null,
+    useNewUrlParser: true,
     user: conf.user || process.env.MONGO_USER || null,
   };
 

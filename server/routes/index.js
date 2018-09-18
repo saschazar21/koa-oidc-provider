@@ -8,11 +8,11 @@ import { nuxtPrefix } from '../lib/tools/url';
 
 const router = new Router();
 
-export default async function bootstrapRoutes() {
+export default async function bootstrapRoutes(customClient) {
   const result = await Promise.all([
-    apiRoutes(),
-    authRoutes(),
-    oidcRoutes(),
+    apiRoutes(customClient),
+    authRoutes(customClient),
+    oidcRoutes(customClient),
   ]);
 
   result.forEach(route => router.use(route.routes()));

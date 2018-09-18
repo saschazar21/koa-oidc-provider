@@ -14,12 +14,12 @@ const router = new Router({
   prefix: '/user',
 });
 
-export default async function userRoutes() {
+export default async function userRoutes(customClient) {
   try {
     const promises = await Promise.all([
-      await bootstrapPassport(),
-      await getBaseClient(),
-      await userModel(),
+      await bootstrapPassport(customClient),
+      await getBaseClient(customClient),
+      await userModel(customClient),
     ]);
     const passport = promises[0];
     const baseClient = promises[1];

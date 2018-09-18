@@ -10,9 +10,9 @@ import userModel from '../lib/db/models/user';
 const error = debug('error:setup');
 const router = new Router();
 
-export default async function oidcRoutes() {
+export default async function oidcRoutes(customClient) {
   const nuxt = getNuxt();
-  const provider = await bootstrapProvider();
+  const provider = await bootstrapProvider(customClient);
 
   router.get(`${oidcPrefix}/interaction/:grant`, async (ctx) => {
     try {
@@ -42,7 +42,7 @@ export default async function oidcRoutes() {
       password,
       remember,
     } = ctx.request.body;
-    const User = await userModel();
+    const User = await userModel(customClient);
 
     let result = {};
     try {

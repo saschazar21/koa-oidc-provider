@@ -4,12 +4,12 @@ import debug from 'debug';
 import ClientAdapter from '../../lib/db/adapter/clientAdapter';
 
 const error = debug('error:router');
-const adapter = new ClientAdapter();
 const router = new Router({
   prefix: '/client',
 });
 
-export default async function clientRoutes() {
+export default async function clientRoutes(customClient) {
+  const adapter = new ClientAdapter(null, customClient);
   router.get('/', async (ctx) => {
     try {
       // eslint-disable-next-line no-underscore-dangle

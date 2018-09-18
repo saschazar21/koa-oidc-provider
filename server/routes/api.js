@@ -8,10 +8,10 @@ const router = new Router({
   prefix: '/api',
 });
 
-export default async function apiRoutes() {
+export default async function apiRoutes(customClient) {
   const result = await Promise.all([
-    clientRoutes(),
-    userRoutes(),
+    clientRoutes(customClient),
+    userRoutes(customClient),
   ]);
 
   result.forEach(route => router.use(route.routes()));
