@@ -9,7 +9,11 @@
 
 <script>
 export default {
-  props: ['user'],
+  data() {
+    return {
+      user: this.$store.getters['user/user'],
+    };
+  },
 };
 </script>
 

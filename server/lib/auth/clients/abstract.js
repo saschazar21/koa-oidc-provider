@@ -3,6 +3,7 @@ import debug from 'debug';
 import { Issuer } from 'openid-client';
 
 const error = debug('error:auth');
+const info = debug('info');
 
 export default class AbstractProvider {
   constructor(providerConfig) {
@@ -16,10 +17,16 @@ export default class AbstractProvider {
     }
 
     try {
+      Issuer.defaultHttpOptions = {
+        retries: 1,
+        timeout: 12500,
+      };
       const issuer = providerConfig.config
         ? new Issuer(providerConfig.config)
         : await Issuer.discover(providerConfig.discoveryUrl);
 
+      info('Found issuer:');
+      info(issuer.metadata);
       const client = new issuer.Client({
         ...providerConfig.client,
       });

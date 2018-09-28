@@ -24,22 +24,36 @@ export default class AbstractPassport {
       const User = result[0];
       const provider = result[1];
       const sanitized = name ? name.toLowerCase() : 'oidc';
+      const client = await provider.client(sanitized);
 
       this.passport.use(sanitized, new Strategy(
         {
-          client: await provider.client(sanitized),
+          client,
           params: this.params,
           passReqToCallback: true,
         },
         async (req, tokenset, userinfo, done) => {
-          if (!tokenset.id_token) {
-            throw new Error('No ID Token present.');
+          let token = {};
+          if (!tokenset.id_token && !tokenset.access_token) {
+            throw new Error('No ID Token or Access Token present.');
+          }
+          if (tokenset.id_token) {
+            const body = tokenset.id_token.split('.')[1];
+            const parsed = JSON.parse(Buffer.from(body, 'base64').toString('utf8'));
+            token = {
+              ...token,
+              ...tokenset,
+              expires_in: new Date(parsed.exp * 1000).toISOString(),
+            };
           }
           try {
             // TODO: Also support upsert, when using external Provider
-            await User.findById(tokenset.claims.sub, '_id email family_name given_name picture');
-            info(`${userinfo.name} successfully retrieved from DB.`);
-            return done(null, userinfo);
+            const user = await User.findById(tokenset.claims.sub, '_id email family_name given_name name picture');
+            info(`${user.get('name')} successfully retrieved from DB.`);
+            return done(null, {
+              ...user.toJSON(),
+              token,
+            });
           } catch (e) {
             error(e.message || e);
             return done(e);

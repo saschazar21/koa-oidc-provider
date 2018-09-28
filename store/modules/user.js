@@ -20,13 +20,13 @@ const getters = {
       : null;
   },
   refresh_token(current) {
-    if (!current.user) {
+    if (!current.user || !current.user.token) {
       return null;
     }
     return current.user.token.refresh_token;
   },
   token_expires(current) {
-    if (!current.user) {
+    if (!current.user || !current.user.token) {
       return null;
     }
     return current.user.token.expires_in;
@@ -39,7 +39,7 @@ const getters = {
 const mutations = {
   set(current, user) {
     current.user = {
-      token: current.user.token,
+      token: current.user ? current.user.token : null,
       ...user,
     };
   },

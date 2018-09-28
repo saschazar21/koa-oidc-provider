@@ -1,21 +1,18 @@
 <template>
-  <div class="container">
-    <nuxt/>
-    <div class="footer-container">
-      <nav-list :user="user"></nav-list>
+  <main class="container">
+    <div>
+      <nuxt/>
     </div>
-  </div>
+    <aside class="footer-container">
+      <nav-list></nav-list>
+    </aside>
+  </main>
 </template>
 
 <script>
 import navList from '~/components/nav-list.vue';
 
 export default {
-  asyncData({ store }) {
-    return {
-      user: store.getters('user/user'),
-    };
-  },
   components: {
     'nav-list': navList,
   },

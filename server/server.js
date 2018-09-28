@@ -2,6 +2,7 @@ import { ensureDir } from 'fs-extra';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import helmet from 'koa-helmet';
+import logger from 'koa-logger';
 import mount from 'koa-mount';
 
 import { privateDir } from './lib/tools/directory';
@@ -24,6 +25,7 @@ export async function start(provider) {
 
   app.proxy = true;
   app.keys = keys();
+  app.use(logger());
   app.use(session());
   app.use(helmet());
   app.use(bodyParser());
