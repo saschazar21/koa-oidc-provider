@@ -26,7 +26,7 @@ export async function getBaseClient() {
     owner: process.env.APP_NAME || pkg.name,
     grant_types: ['implicit'],
     redirect_uris: `${process.env.NODE_ENV === 'test' ? `https://127.0.0.1:${port}` : oidcUrl}/web/login/finish`,
-    response_types: ['id_token'],
+    response_types: ['id_token token'],
   });
 
   try {

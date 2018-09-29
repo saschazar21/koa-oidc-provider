@@ -33,11 +33,12 @@ export default class AbstractPassport {
           passReqToCallback: true,
         },
         async (req, tokenset, userinfo, done) => {
-          let token = {};
+          let token;
+          let user;
           if (!tokenset.id_token && !tokenset.access_token) {
             throw new Error('No ID Token or Access Token present.');
           }
-          if (tokenset.id_token) {
+          if (tokenset.id_token && !tokenset.access_token) {
             const body = tokenset.id_token.split('.')[1];
             const parsed = JSON.parse(Buffer.from(body, 'base64').toString('utf8'));
             token = {
@@ -45,13 +46,15 @@ export default class AbstractPassport {
               ...tokenset,
               expires_in: new Date(parsed.exp * 1000).toISOString(),
             };
+            // TODO: Also support upsert, when using external Provider
+            const userResult = await User.findById(tokenset.claims.sub, '_id email family_name given_name name picture');
+            user = userResult.toJSON();
           }
           try {
-            // TODO: Also support upsert, when using external Provider
-            const user = await User.findById(tokenset.claims.sub, '_id email family_name given_name name picture');
-            info(`${user.get('name')} successfully retrieved from DB.`);
+            user = userinfo || user;
+            info(`${user.name} successfully retrieved from DB.`);
             return done(null, {
-              ...user.toJSON(),
+              ...user,
               token,
             });
           } catch (e) {
