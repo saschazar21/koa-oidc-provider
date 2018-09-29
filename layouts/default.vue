@@ -1,8 +1,6 @@
 <template>
   <main class="container">
-    <div>
-      <nuxt/>
-    </div>
+    <nuxt/>
     <aside class="footer-container">
       <nav-list></nav-list>
     </aside>

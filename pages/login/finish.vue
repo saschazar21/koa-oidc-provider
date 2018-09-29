@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="intermediate-container">
     <h1>One last step...</h1>
     <span>You're nearly there - just wait a few more seconds until you're being redirected.<br>If that doesn't happen, please click the 'Home' link below.</span>
     <script v-html="js" type="text/javascript"></script>
@@ -18,3 +18,11 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.intermediate-container {
+  display: grid;
+  justify-content: center;
+}
+</style>
+
