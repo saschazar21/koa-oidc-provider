@@ -1,4 +1,12 @@
 export default `
+const form = document.createElement('form');
+form.setAttribute('method', 'POST');
+form.setAttribute('action', '/login/finish');
+
+function sendForm() {
+  form.submit();
+}
+
 function parseHash(hash) {
   const obj = {};
   const hashString = hash.startsWith('#') ? hash.substring(1) : hash;
@@ -10,9 +18,6 @@ function parseHash(hash) {
   return obj;
 }
 if (window.location.hash) {
-  const form = document.createElement('form');
-  form.setAttribute('method', 'POST');
-  form.setAttribute('action', '/login/finish');
   const hash = parseHash(window.location.hash);
   Object.keys(hash).forEach((key) => {
     const input = document.createElement('input');
@@ -23,6 +28,6 @@ if (window.location.hash) {
   });
 
   document.body.appendChild(form);
-  form.submit();
+  sendForm();
 }
 `;

@@ -29,7 +29,7 @@ const getters = {
     if (!current.user || !current.user.token) {
       return null;
     }
-    return current.user.token.expires_in;
+    return current.user.token.expires_at;
   },
   user(current) {
     return current.user;
