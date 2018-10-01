@@ -29,10 +29,10 @@ export default {
 
 @keyframes showAfter {
   0% {
-    opacity: 100%;
+    opacity: 0;
   }
   100% {
-    opacity: 0%;
+    opacity: 1;
   }
 }
 
@@ -42,12 +42,11 @@ export default {
 }
 
 .hide-first {
-  opacity: 0%;
-  visibility: hidden;
+  opacity: 0;
 }
 
 .show-after {
-  animation: showAfter 300ms;
+  animation: showAfter 500ms;
 }
 
 .intermediate-container {

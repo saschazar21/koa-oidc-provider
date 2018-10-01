@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 const state = () => ({
-  setup: null,
+  setup: {},
 });
 
 const getters = {

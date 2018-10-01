@@ -19,13 +19,15 @@ function parseHash(hash) {
 }
 if (window.location.hash) {
   window.setTimeout(() => {
-    const hidden = document.getElementsByClassName('hide-first');
-    for (let i = 0; i < hidden.length; i++) {
-      console.log(i + ' do it');
-      hidden[i].classList.remove('hide-first');
-      hidden[i].classList.add('show-after');
-    }
-  }, 3000);
+    const hidden = [
+      document.querySelector('span.hide-first'),
+      document.querySelector('button.hide-first'),
+    ];
+    hidden.forEach((el) => {
+      el.classList.remove('hide-first');
+      el.classList.add('show-after');
+    });
+  }, 5000);
   const hash = parseHash(window.location.hash);
   Object.keys(hash).forEach((key) => {
     const input = document.createElement('input');
