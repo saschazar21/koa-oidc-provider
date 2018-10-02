@@ -20,6 +20,7 @@ export default {
       js: formPost,
     };
   },
+  middleware: ['no-auth'],
 };
 </script>
 

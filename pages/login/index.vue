@@ -125,5 +125,6 @@ export default {
       return !!this.formErrors.password;
     },
   },
+  middleware: ['no-auth'],
 };
 </script>
