@@ -24,11 +24,24 @@ export default async function bootstrapRoutes(customClient) {
   result.forEach(route => router.use(route.routes()));
 
   router.get('/logout', async (ctx) => {
+    const cookies = [
+      '_session',
+      '_session.sig',
+    ];
     if (ctx.state && ctx.state.user) {
       const { user } = ctx.state;
       try {
-        const token = await provider.AccessToken.find(user.token.access_token);
-        await token.destroy();
+        const results = await Promise.all([
+          provider.AccessToken.find(user.token.access_token),
+          provider.Session.find(ctx.cookies.get(cookies[0])),
+        ]);
+        const token = results.shift();
+        const session = results.shift();
+        await Promise.all([
+          token.destroy(),
+          session.destroy(),
+        ]);
+        ctx.cookies.set(cookies[0]);
         ctx.logout();
         /* eslint-disable-next-line no-underscore-dangle */
         info(`Token ${token._id} destroyed, ${user.name} logged out.`);
