@@ -41,6 +41,25 @@ export default class TokenAdapter {
     this.model = this.client.then(tokenModel.bind(this));
   }
 
+  async get(user) {
+    const Token = await this.model;
+    try {
+      const result = await Token.find(
+        {
+          accountId: user,
+          exp: {
+            $gt: Date.now() * 0.001,
+          },
+        },
+        '_id iat iss exp scope',
+      );
+      return result;
+    } catch (e) {
+      error(e.message || e);
+      return Promise.reject(e);
+    }
+  }
+
   async upsert(id, payload, expiresIn) {
     const Token = await this.model;
     try {
