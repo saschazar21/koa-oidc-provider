@@ -1,17 +1,14 @@
 <template>
-  <article>
-    <div class="card-body">
-      <span class="card-highlight">{{ number }}</span>
-      <span class="card-title">{{ title }}<br/>{{ name }}</span>
-    </div>
-    <nuxt-link :to="action">View {{ name }}</nuxt-link>
+  <article class="shadow">
+    <span class="card-highlight">{{ number }}</span>
+    <span class="card-title">{{ title }}<br/>{{ name }}</span>
+    <nuxt-link class="card-action" :to="name">View {{ name }}</nuxt-link>
   </article>
 </template>
 
 <script>
 export default {
   props: [
-    'action',
     'name',
     'number',
     'title',
@@ -20,21 +17,30 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "~assets/css/_partials/variables";
+@import "~assets/css/_partials/specials";
+
   article {
+    background-color: $bg-main;
+    border-color: $color-border;
+    border-width: .5px;
+    border-style: solid;
     display: grid;
     grid-gap: .75em;
     grid-template-areas: 
-      'main'
-      'action';
+      'highlight title'
+      'action action';
     grid-template-rows: 1fr auto;
     justify-content: center;
+    justify-self: center;
+    max-width: map-get($breakpoints, s);
+    padding: 1em;
+    width: 100%;
   }
 
-  .card-body {
-    display: grid;
-    grid-gap: 1em;
-    grid-template-rows: 1fr;
-    grid-template-areas: 'highlight title';
+  .card-action {
+    grid-area: action;
+    justify-self: inherit;
   }
 
   .card-highlight,

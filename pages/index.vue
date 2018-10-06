@@ -3,8 +3,8 @@
     <h1 v-if="first_name"><greeting></greeting> {{ first_name }}!</h1>
     <span>Your current dashboard:</span>
     <section>
-      <card :number="3" name="tokens" title="active" action="/tokens"></card>
-      <card :number="3" name="clients" title="registered" action="/clients"></card>
+      <card :number="3" name="tokens" title="active"></card>
+      <card :number="3" name="clients" title="registered"></card>
     </section>
   </div>
 </template>
@@ -29,6 +29,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "~assets/css/_partials/variables";
+
 section {
   display: grid;
   grid-gap: 1.5em;
@@ -42,5 +44,12 @@ section {
 span {
   display: block;
   text-align: center;
+}
+
+@media screen and (min-width: map-get($breakpoints, m)) {
+  section {
+    grid-template-areas: 'a a';
+    grid-template-columns: 1fr 1fr;
+  }
 }
 </style>
