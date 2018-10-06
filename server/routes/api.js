@@ -1,8 +1,8 @@
 import Promise from 'bluebird';
 import Router from 'koa-router';
 
-import clientRoutes from './api/client';
-import userRoutes from './api/user';
+import clientRoutes from './api/clients';
+import userRoutes from './api/users';
 
 const router = new Router({
   prefix: '/api',

@@ -4,6 +4,11 @@
 
 <script>
 export default {
+  async asyncData({ store }) {
+    return {
+      clients: store.getters['clients/clients'],
+    };
+  },
   middleware: ['auth'],
 };
 </script>

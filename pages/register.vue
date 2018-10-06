@@ -141,7 +141,7 @@ export default {
             },
             data: this.$store.state.form.body,
             method: 'post',
-            url: '/api/user',
+            url: '/api/users',
           });
           this.$store.commit('form/reset');
           this.$router.push('/login');

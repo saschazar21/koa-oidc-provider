@@ -4,6 +4,12 @@ const state = () => ({
 });
 
 const getters = {
+  access_token(current) {
+    if (!current.user || !current.user.token) {
+      return null;
+    }
+    return current.user.token.access_token;
+  },
   email(current) {
     return current.user
       ? current.user.email

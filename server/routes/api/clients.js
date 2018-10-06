@@ -2,29 +2,35 @@ import Router from 'koa-router';
 import debug from 'debug';
 
 import ClientAdapter from '../../lib/db/adapter/clientAdapter';
+import { bootstrapPassport } from '../../lib/auth';
 
 const error = debug('error:router');
 const router = new Router({
-  prefix: '/client',
+  prefix: '/clients',
 });
 
 export default async function clientRoutes(customClient) {
+  const passport = await bootstrapPassport(customClient);
   const adapter = new ClientAdapter(null, customClient);
-  router.get('/', async (ctx) => {
-    try {
-      // eslint-disable-next-line no-underscore-dangle
-      const result = await adapter.get(ctx.state.user._id);
-      if (!result) {
-        throw new Error('Something went wrong while fetching clients.');
+  router.get(
+    '/',
+    passport.authenticate(['bearer']),
+    async (ctx) => {
+      try {
+        // eslint-disable-next-line no-underscore-dangle
+        const result = await adapter.get(ctx.state.user._id);
+        if (!result) {
+          throw new Error('Something went wrong while fetching clients.');
+        }
+        ctx.status = 200;
+        ctx.body = result.map(client => client.toJSON());
+      } catch (e) {
+        error(e.message || e);
+        ctx.status = e.statusCode || 500;
+        ctx.body = { error: e.message || e };
       }
-      ctx.status = 200;
-      ctx.body = result.map(client => client.toJSON());
-    } catch (e) {
-      error(e.message || e);
-      ctx.status = e.statusCode || 500;
-      ctx.body = { error: e.message || e };
-    }
-  });
+    },
+  );
   // Don't use POST /, as this is default for dynamic client registration!
 
   router.get('/:id/reset', async (ctx) => {

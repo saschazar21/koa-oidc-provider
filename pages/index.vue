@@ -14,11 +14,32 @@ import card from '~/components/card.vue';
 import greeting from '~/components/greeting.vue';
 
 export default {
-  async asyncData({ store }) {
-    return {
-      client: store.getters['setup/baseClient'],
-      first_name: store.getters['user/firstName'],
-    };
+  async asyncData({ app, store }) {
+    try {
+      const token = store.getters['user/access_token'];
+      const expires = store.getters['user/token_expires'];
+      if (!token || !expires) {
+        throw new Error('No token available, or token expired');
+      }
+      const result = await Promise.all([
+        app.$axios({
+          headers: {
+            Authorizaiton: `Bearer ${token}`,
+          },
+          method: 'GET',
+          url: '/api/clients',
+        }),
+      ]);
+      return {
+        client: store.getters['setup/baseClient'],
+        clients: result.shift(),
+        first_name: store.getters['user/firstName'],
+      };
+    } catch (e) {
+      return {
+        error: e,
+      };
+    }
   },
   components: {
     card,

@@ -11,7 +11,7 @@ import userModel from '../../lib/db/models/user';
 const error = debug('error:router');
 const info = debug('info');
 const router = new Router({
-  prefix: '/user',
+  prefix: '/users',
 });
 
 export default async function userRoutes(customClient) {

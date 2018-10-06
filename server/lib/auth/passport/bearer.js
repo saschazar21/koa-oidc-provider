@@ -35,8 +35,20 @@ export default class BearerPassport {
           if (!tokenResult) {
             throw new Error(`No access token found: ${token}`);
           }
-          const obj = tokenResult.toJSON();
-          return done(null, obj, { scope: obj.scope });
+          const result = tokenResult.toJSON();
+          const user = {
+            ...result.accountId,
+            client: result.clientId,
+            token: {
+              /* eslint-disable-next-line no-underscore-dangle */
+              access_token: result._id,
+              iat: result.iat,
+              iss: result.iss,
+              exp: result.exp,
+              scope: result.scope,
+            },
+          };
+          return done(null, user, { scope: result.scope });
         } catch (e) {
           error(e.message || e);
           return done(e);
