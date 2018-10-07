@@ -27,8 +27,8 @@ export default async function userRoutes(customClient) {
 
     router.post(
       '/',
-      async (ctx, next) => requireScopes(ctx, next, ['user', 'user:create']),
       passport.authenticate(['bearer', 'basic']),
+      async (ctx, next) => requireScopes(ctx, next, ['user', 'user:create']),
       async (ctx, next) => {
         try {
           if (ctx.state.user.clientId === baseClient.client_id && ctx.request.origin === baseUrl) {

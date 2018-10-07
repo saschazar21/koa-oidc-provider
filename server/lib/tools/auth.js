@@ -51,14 +51,32 @@ export async function registeredUsers() {
 }
 
 export async function requireScopes(ctx, next, scope) {
-  if (!scope || !scope.length) {
-    throw new Error('Middleware called, but no scope value given!');
+  try {
+    if (!ctx.state.user || !ctx.state.user.token || !ctx.state.user.token.scope) {
+      throw new Error('User is not logged in or scope information missing!');
+    }
+    if (!scope || !scope.length) {
+      throw new Error('Middleware called, but no scope value given!');
+    }
+    const array = Array.isArray(scope) ? scope : scope.split(' ');
+    const valid = array.filter(s => scopes.indexOf(s) >= 0);
+
+    if (valid.length !== array.length) {
+      throw new Error(`Unsupported scope values given, please check: ${array.join(' ')}`);
+    }
+    ctx.state.scope = array;
+
+    const available = ctx.state.user.token.scope.split(' ').map(s => s.trim());
+    const required = valid.filter(s => available.indexOf(s) >= 0);
+
+    if (required.length !== valid.length) {
+      throw new Error(`Insufficient scopes present! Necessary scopes are ${valid.join(', ')}`);
+    }
+    return next();
+  } catch (e) {
+    error(e.message || e);
+    ctx.status = e.statusCode || 403;
+    ctx.body = { error: e.message || e };
+    return ctx;
   }
-  const array = Array.isArray(scope) ? scope : scope.split(' ');
-  const valid = array.filter(s => scopes.indexOf(s) >= 0);
-  if (valid.length !== array.length) {
-    throw new Error(`Unsupported scope values given, please check: ${array.join(' ')}`);
-  }
-  ctx.state.scope = array;
-  return next();
 }
