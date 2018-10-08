@@ -2,6 +2,7 @@ import debug from 'debug';
 import Router from 'koa-router';
 import { bootstrapPassport } from '../../lib/auth';
 import TokenAdapter from '../../lib/db/adapter/tokenAdapter';
+import { requireScopes } from '../../lib/tools/auth';
 
 const error = debug('error:router');
 const router = new Router({
@@ -15,6 +16,7 @@ export default async function tokenRoutes(customClient) {
   router.get(
     '/',
     passport.authenticate(['bearer']),
+    async (ctx, next) => requireScopes(ctx, next, ['token']),
     async (ctx) => {
       try {
         /* eslint-disable-next-line no-underscore-dangle */

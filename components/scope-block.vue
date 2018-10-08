@@ -1,11 +1,21 @@
 <template>
   <section class="block block--success--inverted" v-show="scope.length > 0">
-    <span>If you proceed, you agree to pass on your details:</span>
-    <ul class="list--inline list--blank">
-      <li v-for="(claim, index) in translated" :key="index">
-        <strong>{{ claim }}</strong>
-      </li>
-    </ul>
+    <p>
+      <span>If you proceed, you agree to pass on your details:</span>
+      <ul class="list--inline list--blank">
+        <li v-for="(claim, index) in translated" :key="index">
+          <strong>{{ claim }}</strong>
+        </li>
+      </ul>
+    </p>
+    <p v-if="actions.length > 0">
+      <span>Furthermore, the application would like to:</span>
+      <ul class="list--blank">
+        <li v-for="(claim, index) in actions" :key="index">
+          <strong>{{ claim }}</strong>
+        </li>
+      </ul>
+    </p>
   </section>
 </template>
 
@@ -18,8 +28,25 @@ const table = {
   website: 'website',
 };
 
+const actions = {
+  client: 'list your clients',
+  'client:create': 'register new clients',
+  'client:delete': 'delete existing clients',
+  'client:edit': 'edit existing clients',
+  token: 'list your active tokens',
+  user: 'access users created by you',
+  'user:create': 'register new users',
+  'user:edit': 'edit existing users',
+  'user:delete': 'delete existing users',
+}
+
 export default {
   computed: {
+    actions: {
+      get() {
+        return this.scope.map(s => actions[s]).filter(s => typeof s !== 'undefined');
+      },
+    },
     scope: {
       get() {
         return this.$store.getters['setup/scope']

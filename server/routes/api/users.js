@@ -5,7 +5,7 @@ import debug from 'debug';
 import { bootstrapPassport } from '../../lib/auth';
 import { getBaseClient } from '../../lib/config/clients';
 import { baseUrl } from '../../lib/tools/url';
-import { requireScopes, checkScopes } from '../../lib/tools/auth';
+import { requireScopes } from '../../lib/tools/auth';
 import userModel from '../../lib/db/models/user';
 
 const error = debug('error:router');
@@ -31,11 +31,10 @@ export default async function userRoutes(customClient) {
       async (ctx, next) => requireScopes(ctx, next, ['user', 'user:create']),
       async (ctx, next) => {
         try {
-          if (ctx.state.user.clientId === baseClient.client_id && ctx.request.origin === baseUrl) {
+          const { user } = ctx.state;
+          if (user.token
+              || (user.clientId === baseClient.client_id && ctx.request.origin === baseUrl)) {
             return next();
-          }
-          if (ctx.state.user.scope) {
-            return checkScopes(ctx, next);
           }
           ctx.status = 403;
           throw new Error('Invalid request, check your authentication settings!');

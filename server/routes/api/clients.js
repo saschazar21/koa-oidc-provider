@@ -3,6 +3,7 @@ import debug from 'debug';
 
 import ClientAdapter from '../../lib/db/adapter/clientAdapter';
 import { bootstrapPassport } from '../../lib/auth';
+import { requireScopes } from '../../lib/tools/auth';
 
 const error = debug('error:router');
 const router = new Router({
@@ -15,6 +16,7 @@ export default async function clientRoutes(customClient) {
   router.get(
     '/',
     passport.authenticate(['bearer']),
+    async (ctx, next) => requireScopes(ctx, next, ['client']),
     async (ctx) => {
       try {
         // eslint-disable-next-line no-underscore-dangle

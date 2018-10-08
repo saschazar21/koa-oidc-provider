@@ -5,6 +5,7 @@ export const scopes = [
   'client:create',
   'client:delete',
   'client:edit',
+  'token',
   'user',
   'user:create',
   'user:edit',
