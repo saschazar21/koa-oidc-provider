@@ -38,7 +38,7 @@ const actions = {
   'user:create': 'register new users',
   'user:edit': 'edit existing users',
   'user:delete': 'delete existing users',
-}
+};
 
 export default {
   computed: {
