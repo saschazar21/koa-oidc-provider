@@ -15,28 +15,32 @@ import greeting from '~/components/greeting.vue';
 
 export default {
   async asyncData({ app, store }) {
+    const token = store.getters['user/access_token'];
+    const expires = store.getters['user/token_expires'];
+    const data = {
+      client: store.getters['setup/baseClient'],
+      first_name: store.getters['user/firstName'],
+    };
     try {
-      const token = store.getters['user/access_token'];
-      const expires = store.getters['user/token_expires'];
       if (!token || !expires) {
         throw new Error('No token available, or token expired');
       }
       const result = await Promise.all([
         app.$axios({
           headers: {
-            Authorizaiton: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
           method: 'GET',
           url: '/api/clients',
         }),
       ]);
       return {
-        client: store.getters['setup/baseClient'],
-        clients: result.shift(),
-        first_name: store.getters['user/firstName'],
+        ...data,
+        clients: result.shift().data,
       };
     } catch (e) {
       return {
+        ...data,
         error: e,
       };
     }
