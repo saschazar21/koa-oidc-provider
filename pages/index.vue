@@ -2,8 +2,8 @@
   <div>
     <h1 v-if="first_name"><greeting></greeting> {{ first_name }}!</h1>
     <span>Your current dashboard:</span>
-    <section>
-      <card :number="3" name="tokens" title="active"></card>
+    <section v-if="clients && tokens">
+      <card :number="tokens.length" name="tokens" title="active"></card>
       <card :number="clients.length" name="clients" title="registered"></card>
     </section>
   </div>
@@ -19,7 +19,9 @@ export default {
     const expires = store.getters['user/token_expires'];
     const data = {
       client: store.getters['setup/baseClient'],
+      clients: null,
       first_name: store.getters['user/firstName'],
+      tokens: null,
     };
     try {
       if (!token || !expires) {
@@ -33,10 +35,18 @@ export default {
           method: 'GET',
           url: '/api/clients',
         }),
+        app.$axios({
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          method: 'GET',
+          url: '/api/tokens',
+        }),
       ]);
       return {
         ...data,
         clients: result.shift().data,
+        tokens: result.shift().data,
       };
     } catch (e) {
       return {
