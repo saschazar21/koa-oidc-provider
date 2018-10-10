@@ -4,7 +4,7 @@
     <span>Your current dashboard:</span>
     <section>
       <card :number="3" name="tokens" title="active"></card>
-      <card :number="3" name="clients" title="registered"></card>
+      <card :number="clients.length" name="clients" title="registered"></card>
     </section>
   </div>
 </template>
