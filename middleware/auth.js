@@ -4,7 +4,7 @@ const error = debug('error:nuxt');
 
 export default async ({ app, store, redirect }) => {
   try {
-    const expires = Date.parse(store.getters['user/token_expires']);
+    const expires = store.getters['user/token_expires'];
     if (Number.isNaN(expires) || new Date() > new Date(expires)) {
       throw new Error(`Invalid expiry date: ${new Date(expires)}`);
     }

@@ -1,11 +1,14 @@
 <template>
-  <div class="block block--alert--inverted">
-    <small>{{ error_description }}</small>
-  </div>
+  <error-block v-if="error_description" :message="error_description"></error-block>
 </template>
 
 <script>
+import errorBlock from '~/components/error/error-block.vue';
+
 export default {
+  components: {
+    'error-block': errorBlock,
+  },
   computed: {
     error: {
       get() {
@@ -37,22 +40,3 @@ export default {
   props: ['hash'],
 };
 </script>
-
-<style lang="scss" scoped>
-@import '~assets/css/_partials/variables';
-@import '~assets/css/_partials/blocks';
-
-.block {
-  border-radius: $border-radius;
-  border-style: solid;
-  border-width: $border-width;
-  margin-bottom: 1em;
-  max-width: 100%;
-  padding: 1rem;
-  
-  strong,
-  span {
-    display: block;
-  }
-}
-</style>

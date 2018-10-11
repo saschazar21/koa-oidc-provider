@@ -35,7 +35,7 @@ const getters = {
     if (!current.user || !current.user.token) {
       return null;
     }
-    return current.user.token.expires_at;
+    return new Date(current.user.token.exp * 1000);
   },
   user(current) {
     return current.user;

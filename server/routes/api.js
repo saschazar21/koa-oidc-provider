@@ -2,6 +2,7 @@ import Promise from 'bluebird';
 import Router from 'koa-router';
 
 import clientRoutes from './api/clients';
+import tokenRoutes from './api/tokens';
 import userRoutes from './api/users';
 
 const router = new Router({
@@ -11,6 +12,7 @@ const router = new Router({
 export default async function apiRoutes(customClient) {
   const result = await Promise.all([
     clientRoutes(customClient),
+    tokenRoutes(customClient),
     userRoutes(customClient),
   ]);
 
