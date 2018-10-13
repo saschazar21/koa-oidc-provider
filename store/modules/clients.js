@@ -36,8 +36,9 @@ const mutations = {
     });
   },
   set(current, payload) {
+    const p = Array.isArray(payload) ? payload : [payload];
     current.clients = [
-      payload,
+      ...p,
     ];
   },
 };

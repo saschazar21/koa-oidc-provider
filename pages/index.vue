@@ -18,7 +18,7 @@ import errorBlock from '~/components/error/error-block.vue';
 import greeting from '~/components/greeting.vue';
 
 export default {
-  async asyncData({ app, store }) {
+  async asyncData({ store }) {
     const token = store.getters['user/access_token'];
     const expires = store.getters['user/token_expires'];
     const data = {
@@ -31,26 +31,10 @@ export default {
       if (!token || !expires) {
         throw new Error('No token available, or token expired');
       }
-      const result = await Promise.all([
-        app.$axios({
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          method: 'GET',
-          url: '/api/clients',
-        }),
-        app.$axios({
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          method: 'GET',
-          url: '/api/tokens',
-        }),
-      ]);
       return {
         ...data,
-        clients: result.shift().data,
-        tokens: result.shift().data,
+        clients: store.getters['clients/clients'],
+        tokens: store.getters['tokens/tokens'],
       };
     } catch (e) {
       return {
@@ -64,7 +48,11 @@ export default {
     'error-block': errorBlock,
     greeting,
   },
-  middleware: ['auth'],
+  middleware: [
+    'auth',
+    'clients',
+    'tokens',
+  ],
 };
 </script>
 

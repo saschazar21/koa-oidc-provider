@@ -3,8 +3,10 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import client from './modules/client';
+import clients from './modules/clients';
 import form from './modules/form';
 import setup from './modules/setup';
+import tokens from './modules/tokens';
 import user from './modules/user';
 
 Vue.use(Vuex);
@@ -24,8 +26,10 @@ export default () => new Vuex.Store({
   },
   modules: {
     client,
+    clients,
     form,
     setup,
+    tokens,
     user,
   },
 });
