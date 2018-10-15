@@ -1,7 +1,8 @@
 export default async function getClients({ app, store }) {
   const clients = store.getters['clients/clients'];
   const token = store.getters['user/access_token'];
-  if (!clients || !clients.length) {
+  const ts = store.getters['clients/ts'];
+  if (!clients || !clients.length || ts < new Date(Date.now() - 600000)) {
     try {
       const result = await app.$axios({
         headers: {

@@ -1,11 +1,15 @@
 /* eslint-disable no-param-reassign */
 const state = () => ({
   clients: [],
+  ts: 0,
 });
 
 const getters = {
   clients(current) {
     return current.clients;
+  },
+  ts(current) {
+    return new Date(current.ts * 1000);
   },
 };
 
@@ -37,6 +41,7 @@ const mutations = {
   },
   set(current, payload) {
     const p = Array.isArray(payload) ? payload : [payload];
+    current.ts = Math.floor(Date.now() * 0.001);
     current.clients = [
       ...p,
     ];

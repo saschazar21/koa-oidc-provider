@@ -9,6 +9,6 @@ export default {
       clients: store.getters['clients/clients'],
     };
   },
-  middleware: ['auth'],
+  middleware: ['auth', 'clients'],
 };
 </script>

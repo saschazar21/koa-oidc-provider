@@ -1,10 +1,15 @@
+/* eslint-disable no-param-reassign */
 const state = ({
   tokens: [],
+  ts: 0,
 });
 
 const getters = {
   tokens(current) {
     return current.tokens;
+  },
+  ts(current) {
+    return new Date(current.ts * 1000);
   },
 };
 
@@ -23,7 +28,7 @@ const mutations = {
     return current;
   },
   set(current, payload) {
-    /* eslint-disable-next-line no-param-reassign */
+    current.ts = Math.floor(Date.now() * 0.001);
     current.tokens = [
       ...payload,
     ];
