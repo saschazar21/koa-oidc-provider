@@ -44,15 +44,17 @@ export default class TokenAdapter {
   async get(user) {
     const Token = await this.model;
     try {
-      const result = await Token.find(
-        {
-          accountId: user,
-          exp: {
-            $gt: Date.now() * 0.001,
+      const result = await Token
+        .find(
+          {
+            accountId: user,
+            exp: {
+              $gt: Date.now() * 0.001,
+            },
           },
-        },
-        '_id iat iss exp scope',
-      );
+          '_id iat iss exp scope clientId',
+        )
+        .populate('clientId', 'client_name logo_uri');
       return result;
     } catch (e) {
       error(e.message || e);

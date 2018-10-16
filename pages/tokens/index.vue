@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Tokens</h1>
-    <ul>
+    <ul class="list--blank">
       <li v-for="(token, index) in tokens" :key="index">
         <token-block :token="token"></token-block>
       </li>
@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import tokenBlock from '~/components/token-block.vue';
+import tokenBlock from '~/components/tokens/token-block.vue';
 
 export default {
   asyncData({ store }) {
@@ -24,3 +24,9 @@ export default {
   middleware: ['auth', 'tokens'],
 };
 </script>
+
+<style lang="scss" scoped>
+@import '~assets/css/_partials/fonts';
+@import '~assets/css/_partials/variables';
+@import '~assets/css/_partials/typography';
+</style>

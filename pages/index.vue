@@ -34,6 +34,7 @@ export default {
       return {
         ...data,
         clients: store.getters['clients/clients'],
+        error: null,
         tokens: store.getters['tokens/tokens'],
       };
     } catch (e) {
