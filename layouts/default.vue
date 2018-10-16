@@ -30,16 +30,26 @@ nuxt {
 }
 
 .container {
+  box-sizing: border-box;
   min-height: 100vh;
   display: grid;
-  grid-template-areas: 'main' 'footer';
-  grid-template-rows: 1fr auto;
-  grid-row-gap: 1em;
+  grid-template-areas:
+    'main'
+    'footer';
+  grid-template-columns: 1fr;
+  grid-row-gap: $grid-gap;
 }
 
 .footer-container {
   align-self: end;
   grid-area: footer;
+}
+
+@media screen and (min-width: map-get($breakpoints, s)) {
+  .container {
+    grid-template-areas: 'main' 'footer';
+    grid-template-rows: 1fr auto;
+  }
 }
 </style>
 

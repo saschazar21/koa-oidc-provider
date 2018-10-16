@@ -29,4 +29,13 @@ export default {
 @import '~assets/css/_partials/fonts';
 @import '~assets/css/_partials/variables';
 @import '~assets/css/_partials/typography';
+
+ul {
+  margin: 0 auto;
+  max-width: map-get($sizes, text);
+}
+
+li:not(:last-child) {
+  margin-bottom: 1rem;
+}
 </style>
