@@ -10,13 +10,14 @@
         <strong v-if="client && client.client_name">{{ client.client_name }} - </strong>
         <a :href="token.iss" target="_blank" rel="noopener noreferrer">{{ token.iss }}</a>
       </span>
-      <span>Token: {{ token._id }}</span>
+      <span>Token: {{ access_token }}</span>
       <ul class="list--inline list--blank">
         <li v-for="(scope, index) of scopes" :key="index"><small>{{ scope }}</small></li>
       </ul>
     </div>
-    <div class="token-actions">
-      <button class="button--round button--alert button--shadow">Invalidate</button>
+    <div class="token-info">
+      <span>Issued at: <strong>{{ issued }}</strong></span>
+      <span>Expires in: <strong>{{ expires }}</strong></span>
     </div>
   </div>
 </template>
@@ -24,15 +25,56 @@
 <script>
 export default {
   computed: {
+    access_token: {
+      get() {
+        /* eslint-disable-next-line no-underscore-dangle */
+        const t = this.token._id;
+        const len = Math.round(t.length * 0.5);
+        return `${t.slice(0, len)}...`;
+      },
+    },
     client: {
       get() {
         return this.token.clientId;
+      },
+    },
+    expires: {
+      get() {
+        const d = new Date(this.token.exp * 1000);
+        const lifespan = d - new Date();
+        return this.semanticExpire(lifespan);
+      },
+    },
+    issued: {
+      get() {
+        const d = new Date(this.token.iat * 1000);
+        const min = d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes();
+        const h = d.getHours() < 10 ? `0${d.getHours()}` : d.getHours();
+        return `${h}:${min}`;
       },
     },
     scopes: {
       get() {
         return this.token.scope.split(' ');
       },
+    },
+  },
+  methods: {
+    semanticExpire(ms) {
+      const seconds = Math.round(ms * 0.001);
+      if (seconds < 60) {
+        return '< 1min';
+      }
+      const mins = Math.round(seconds * 0.0166666667);
+      if (mins < 60) {
+        return `${mins}min`;
+      }
+      const hours = Math.round(mins * 0.0166666667);
+      if (hours < 24) {
+        return `${hours}h`;
+      }
+      const days = Math.round(hours * 0.04166666667);
+      return `${days}d`;
     },
   },
   props: ['token'],
@@ -66,7 +108,8 @@ img {
   padding: 1em;
 }
 
-.token-body {
+.token-body,
+.token-info {
   display: inherit;
 
   li {
@@ -92,7 +135,7 @@ img {
     padding: 1em;
   }
 
-  .token-actions {
+  .token-info {
     grid-column-end: -1;
   }
 
