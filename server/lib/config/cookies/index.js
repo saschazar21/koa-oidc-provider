@@ -1,4 +1,5 @@
 import keyFactory from '../../tools/cookie';
+import { ttl } from '../ttl';
 
 export const cookies = {
   keys: keyFactory(),
@@ -6,7 +7,7 @@ export const cookies = {
     secure: true,
     signed: true,
     httpOnly: true,
-    maxAge: 1209600000,
+    maxAge: ttl.RefreshToken,
   },
   names: {
     session: '_session',
@@ -18,7 +19,7 @@ export const cookies = {
     secure: true,
     signed: true,
     httpOnly: true,
-    maxAge: 600000,
+    maxAge: ttl.AccessToken,
   },
 };
 
