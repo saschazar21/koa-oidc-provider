@@ -4,6 +4,12 @@ const state = () => Object({
   body: {},
 });
 
+const getters = {
+  body(current) {
+    return current.body;
+  },
+};
+
 const mutations = {
   /* eslint-disable-next-line no-unused-vars */
   reset(current) {
@@ -24,6 +30,7 @@ const mutations = {
 };
 
 export default {
+  getters,
   mutations,
   namespaced: true,
   state,
