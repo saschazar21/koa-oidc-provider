@@ -19,8 +19,8 @@ const mutations = {
     /* eslint-disable-next-line no-underscore-dangle */
     const sanitized = addition.filter(el => current.clients.findIndex(e => e._id === el._id) < 0);
     current.clients = [
-      ...current.clients,
       ...sanitized,
+      ...current.clients,
     ];
   },
   remove(current, payload) {

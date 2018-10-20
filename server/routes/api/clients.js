@@ -6,6 +6,7 @@ import { bootstrapPassport } from '../../lib/auth';
 import { requireScopes } from '../../lib/tools/auth';
 
 const error = debug('error:router');
+const info = debug('info');
 const router = new Router({
   prefix: '/clients',
 });
@@ -63,9 +64,20 @@ export default async function clientRoutes(customClient) {
         if (!ctx.req.body || Object.keys(ctx.req.body).length === 0) {
           throw new Error('Empty body is not supported!');
         }
-        const result = await adapter.upsert(null, ctx.req.body);
+        if (ctx.req.body.client_id || ctx.req.body.client_secret) {
+          throw new Error('Setting client_id or client_secret is not allowed!');
+        }
+        const { _id } = ctx.state.user;
+        const client = {
+          ...ctx.req.body,
+          owner: _id,
+        };
+        info(`Trying to register new client '${ctx.req.body.name}'...`);
+        const result = await adapter.upsert(null, client);
         ctx.status = 200;
         ctx.body = result.toJSON();
+        info('Registered new client:');
+        info(result.toJSON());
       } catch (e) {
         error(e.message || e);
         ctx.status = e.statusCode || 500;
