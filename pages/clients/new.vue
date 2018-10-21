@@ -1,6 +1,7 @@
 <template>
   <main>
     <form class="form--border shadow" action="#" @submit="checkForm" method="post">
+      <error-block v-if="error" :message="error"></error-block>
       <div class="form-group">
         <div class="label-group">
           <label for="input-name">Enter your application's name:</label>
@@ -24,13 +25,31 @@
 </template>
 
 <script>
+import errorBlock from '~/components/error/error-block.vue';
+
 export default {
-  asyncData({ store }) {
+  async asyncData({ app, store }) {
     store.commit('form/reset');
     store.commit('form/setHeader', 'Create application');
-    return {
+    const data = {
       access_token: store.getters['user/access_token'],
     };
+    try {
+      const result = await app.$axios.$get('/api/setup/responsetypes');
+      return {
+        ...data,
+        supported_response_types: result.data,
+        error: false,
+      };
+    } catch (e) {
+      return {
+        ...data,
+        error: `${e.message || e} - please reload!`,
+      };
+    }
+  },
+  components: {
+    'error-block': errorBlock,
   },
   computed: {
     client_name: {

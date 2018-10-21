@@ -8,6 +8,7 @@ import bootstrapProvider from '../provider';
 import userModel from '../lib/db/models/user';
 
 const error = debug('error:setup');
+const info = debug('info');
 const router = new Router();
 
 export default async function oidcRoutes(customClient) {
@@ -68,6 +69,7 @@ export default async function oidcRoutes(customClient) {
         error_description: e.message,
       };
     }
+    info(result);
     return provider.interactionFinished(ctx.req, ctx.res, result)
       .then(next);
   });
