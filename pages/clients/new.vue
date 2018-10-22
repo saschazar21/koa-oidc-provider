@@ -16,6 +16,22 @@
         </div>
         <input id="input-redirect" v-model.trim.lazy="redirect_uris" type="text" name="redirect_uris" class="input--full input--round" :class="{'input--alert': formErrors.redirect_uris }" placeholder="The redirect URIs">
       </div>
+      <div class="form-group">
+        <div class="label-group">
+          <label for="input-redirect">Select the desired response types:</label>
+        </div>
+        <select id="input-redirect" v-if="supported_response_types" v-model.trim.lazy="response_types" name="response_types" class="input--full input--round" :class="{'input--alert': formErrors.response_types }">
+          <option v-for="(responseType, index) in supported_response_types" :key="index" :value="responseType">{{ responseType }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="label-group">
+          <label for="input-redirect">Select the desired grant type:</label>
+        </div>
+        <select id="input-redirect" v-if="supported_grant_type" v-model.trim.lazy="grant_type" name="grant_type" class="input--full input--round" :class="{'input--alert': formErrors.grant_type }">
+          <option v-for="(grantType, index) in supported_grant_type" :key="index" :value="grantType">{{ grantType }}</option>
+        </select>
+      </div>
       <div class="form-group button-group">
         <button class="button--success button--round" :disabled="!isValidForm()">Save</button>
         <nuxt-link class="button--inverted button--round" to="/clients">Cancel</nuxt-link>
@@ -35,16 +51,22 @@ export default {
       access_token: store.getters['user/access_token'],
     };
     try {
-      const result = await app.$axios.$get('/api/setup/responsetypes');
+      const [responseTypes, grantTypes] = await Promise.all([
+        app.$axios.$get('/api/setup/responsetypes'),
+        app.$axios.$get('/api/setup/granttypes'),
+      ]);
       return {
         ...data,
-        supported_response_types: result.data,
-        error: false,
+        error: null,
+        supported_grant_type: grantTypes,
+        supported_response_types: responseTypes,
       };
     } catch (e) {
       return {
         ...data,
         error: `${e.message || e} - please reload!`,
+        supported_grant_type: null,
+        supported_response_types: null,
       };
     }
   },
@@ -64,7 +86,7 @@ export default {
         return this.$store.commit('form/updateBody', { client_name: value });
       },
     },
-    grant_types: {
+    grant_type: {
       get() {},
       set(value) {
         return value;
