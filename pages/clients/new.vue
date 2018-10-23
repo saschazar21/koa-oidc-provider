@@ -24,14 +24,6 @@
           <option v-for="(responseType, index) in supported_response_types" :key="index" :value="responseType">{{ responseType }}</option>
         </select>
       </div>
-      <div class="form-group">
-        <div class="label-group">
-          <label for="input-redirect">Select the desired grant type:</label>
-        </div>
-        <select id="input-redirect" v-if="supported_grant_type" v-model.trim.lazy="grant_type" name="grant_type" class="input--full input--round" :class="{'input--alert': formErrors.grant_type }">
-          <option v-for="(grantType, index) in supported_grant_type" :key="index" :value="grantType">{{ grantType }}</option>
-        </select>
-      </div>
       <div class="form-group button-group">
         <button class="button--success button--round" :disabled="!isValidForm()">Save</button>
         <nuxt-link class="button--inverted button--round" to="/clients">Cancel</nuxt-link>
@@ -58,14 +50,14 @@ export default {
       return {
         ...data,
         error: null,
-        supported_grant_type: grantTypes,
+        supported_grant_types: grantTypes,
         supported_response_types: responseTypes,
       };
     } catch (e) {
       return {
         ...data,
         error: `${e.message || e} - please reload!`,
-        supported_grant_type: null,
+        supported_grant_types: null,
         supported_response_types: null,
       };
     }
@@ -86,16 +78,17 @@ export default {
         return this.$store.commit('form/updateBody', { client_name: value });
       },
     },
-    grant_type: {
+    grant_types: {
       get() {},
       set(value) {
-        return value;
+        return Array.isArray(value) ? value : [value];
       },
     },
     redirect_uris: {
       get() {},
       set(value) {
-        return value;
+        this.grant_types = this.setAppropriateGrantTypes(value);
+        return Array.isArray(value) ? value : [value];
       },
     },
     response_types: {
@@ -109,6 +102,11 @@ export default {
     return {
       error: null,
       formErrors: {},
+      grants: {
+        authorization_code: 'Authorization Code Flow',
+        implicit: 'Implicit Flow',
+        refresh_token: 'Refresh Token Flow',
+      },
     };
   },
   layout: 'form',
@@ -142,6 +140,20 @@ export default {
     },
     isValidForm() {
       return !this.isNameInvalid() && !this.isRedirectURIInvalid();
+    },
+    setAppropriateGrantTypes(responseTypes) {
+      const grantTypes = this.supported_grant_types.filter(entry => entry !== 'authorization_code' || entry !== 'implicit');
+      const responseTypeArray = responseTypes.split(' ').map(type => type.trim());
+      if (responseTypeArray.includes('code')) {
+        return [
+          'authorization_code',
+          ...grantTypes,
+        ];
+      }
+      return [
+        'implicit',
+        ...grantTypes,
+      ];
     },
   },
   middleware: ['auth'],

@@ -2,7 +2,7 @@ import Router from 'koa-router';
 import debug from 'debug';
 
 import { responseTypes } from '../../lib/config/responseTypes';
-import { grantTypes } from '../../lib/tools/grantTypes';
+import grantTypes from '../../lib/tools/grantTypes';
 
 const error = debug('error:router');
 const info = debug('info');
@@ -13,11 +13,12 @@ const router = new Router({
 export default async function setupRoutes() {
   router.get(
     '/granttypes',
-    (ctx) => {
+    async (ctx) => {
       try {
+        const grants = await grantTypes();
         ctx.status = 200;
-        ctx.body = grantTypes;
-        info(`Supported grant types: ${grantTypes.join(', ')}`);
+        ctx.body = grants;
+        info(`Supported grant types: ${grants.join(', ')}`);
       } catch (e) {
         error(e.message || e);
         ctx.status = e.statusCode || 500;
