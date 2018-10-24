@@ -7,7 +7,7 @@
           <label for="input-name">Enter your application's name:</label>
           <small class="form-error" v-if="isNameInvalid()">{{ formErrors.client_name }}</small>
         </div>
-        <input id="input-name" v-model.trim.lazy="client_name" type="text" name="name" class="input--full input--round" :class="{'input--alert': formErrors.client_name }" autofocus placeholder="The app's name">
+        <input id="input-name" v-model.trim.lazy="client_name" type="text" name="client_name" class="input--full input--round" :class="{'input--alert': formErrors.client_name }" autofocus placeholder="The app's name">
       </div>
       <div class="form-group">
         <div class="label-group">
@@ -33,12 +33,14 @@
 </template>
 
 <script>
+/* eslint-disable camelcase */
 import errorBlock from '~/components/error/error-block.vue';
 
+const uriRegex = /^[A-Za-z]{1}[A-Za-z0-9+-.]*:\/\/(.[^:/]+)?/;
 export default {
   async asyncData({ app, store }) {
     store.commit('form/reset');
-    store.commit('form/setHeader', 'Create application');
+    store.commit('form/setHeader', 'Register client');
     const data = {
       access_token: store.getters['user/access_token'],
     };
@@ -68,33 +70,80 @@ export default {
   computed: {
     client_name: {
       get() {
-        const body = this.$store.getters['form/body'];
-        if (!body) {
-          return null;
-        }
-        return body.name;
+        const { client_name } = this.$store.getters['form/body'];
+        return client_name;
       },
       set(value) {
+        if (!value || value.length === 0) {
+          this.formErrors.client_name = 'Empty client name is invalid.';
+          return null;
+        }
+        this.formErrors.client_name = null;
         return this.$store.commit('form/updateBody', { client_name: value });
       },
     },
     grant_types: {
-      get() {},
+      get() {
+        const { grant_types } = this.$store.getters['form/body'];
+        return grant_types ? grant_types.join(', ') : null;
+      },
       set(value) {
-        return Array.isArray(value) ? value : [value];
+        const result = Array.isArray(value) ? value : [value];
+        return this.$store.commit('form/updateBody', { grant_types: result });
       },
     },
     redirect_uris: {
-      get() {},
+      get() {
+        const { redirect_uris } = this.$store.getters['form/body'];
+        return redirect_uris ? redirect_uris.join(', ') : null;
+      },
       set(value) {
-        this.grant_types = this.setAppropriateGrantTypes(value);
-        return Array.isArray(value) ? value : [value];
+        let applicationType;
+        const uris = value.split(',').map(u => u.trim());
+        const sanitized = uris.filter((u) => {
+          const result = uriRegex.exec(u.toLowerCase());
+          if (!result) {
+            return false;
+          }
+          if (u.toLowerCase().startsWith('http://')) {
+            if (applicationType === 'web' || result[1] !== 'localhost') {
+              return false;
+            }
+            applicationType = 'native';
+            return true;
+          }
+          if (u.toLowerCase().startsWith('https://')) {
+            if (applicationType === 'native' || result[1] === 'localhost') {
+              return false;
+            }
+            applicationType = 'web';
+            return true;
+          }
+          if (applicationType === 'web') {
+            return false;
+          }
+          applicationType = 'native';
+          return true;
+        });
+        if (sanitized.length !== uris.length) {
+          this.formErrors.redirect_uris = 'One or more malformed Redirect URIs present.';
+          return null;
+        }
+        this.formErrors.redirect_uris = null;
+        return this.$store.commit('form/updateBody', {
+          application_type: applicationType,
+          redirect_uris: sanitized,
+        });
       },
     },
     response_types: {
-      get() {},
+      get() {
+        const { response_types } = this.$store.getters['form/body'];
+        return response_types;
+      },
       set(value) {
-        return value;
+        this.grant_types = this.setAppropriateGrantTypes(value);
+        return this.$store.commit('form/updateBody', { response_types: value });
       },
     },
   },
@@ -102,11 +151,6 @@ export default {
     return {
       error: null,
       formErrors: {},
-      grants: {
-        authorization_code: 'Authorization Code Flow',
-        implicit: 'Implicit Flow',
-        refresh_token: 'Refresh Token Flow',
-      },
     };
   },
   layout: 'form',
@@ -115,13 +159,14 @@ export default {
       event.preventDefault();
       if (this.isValidForm()) {
         try {
+          const data = this.$store.getters['form/body'];
           const result = await this.$axios({
             headers: {
               Authorization: `Bearer ${this.access_token}`,
             },
             method: 'POST',
             url: '/api/clients',
-            data: this.$store.getters['form/body'],
+            data,
           });
           this.$store.commit('clients/add', result);
           this.$store.commit('form/reset');
@@ -132,11 +177,10 @@ export default {
       }
     },
     isNameInvalid() {
-      return !this.client_name || this.client_name.length === 0;
+      return this.formErrors.client_name;
     },
     isRedirectURIInvalid() {
-      // TODO: Implement redirect URI check
-      return false;
+      return this.formErrors.redirect_uris;
     },
     isValidForm() {
       return !this.isNameInvalid() && !this.isRedirectURIInvalid();
