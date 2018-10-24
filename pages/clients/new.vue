@@ -139,11 +139,12 @@ export default {
     response_types: {
       get() {
         const { response_types } = this.$store.getters['form/body'];
-        return response_types;
+        return response_types ? response_types.join(', ') : null;
       },
       set(value) {
+        const responseTypes = Array.isArray(value) ? value : [value];
         this.grant_types = this.setAppropriateGrantTypes(value);
-        return this.$store.commit('form/updateBody', { response_types: value });
+        return this.$store.commit('form/updateBody', { response_types: responseTypes });
       },
     },
   },
@@ -186,16 +187,16 @@ export default {
       return !this.isNameInvalid() && !this.isRedirectURIInvalid();
     },
     setAppropriateGrantTypes(responseTypes) {
-      const grantTypes = this.supported_grant_types.filter(entry => entry !== 'authorization_code' || entry !== 'implicit');
+      const [authorizationCode, implicit, ...grantTypes] = this.supported_grant_types;
       const responseTypeArray = responseTypes.split(' ').map(type => type.trim());
       if (responseTypeArray.includes('code')) {
         return [
-          'authorization_code',
+          authorizationCode,
           ...grantTypes,
         ];
       }
       return [
-        'implicit',
+        implicit,
         ...grantTypes,
       ];
     },
