@@ -145,10 +145,17 @@ export default {
           });
           this.$store.commit('form/reset');
           this.$router.push('/login');
+          return true;
         } catch (err) {
+          if (err.response) {
+            this.error = err.response.data.error || err.message || err;
+            return null;
+          }
           this.error = `${err.message || err} - please reload!`;
+          return null;
         }
       }
+      return null;
     },
     isEmailInvalid() {
       return this.formErrors.email !== null;

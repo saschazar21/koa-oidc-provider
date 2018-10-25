@@ -95,7 +95,7 @@ img {
 
 .token-block {
   background-color: $bg-main;
-  border-radius: $border-radius;
+  border: $border-width solid $color-border;
   display: grid;
   grid-gap: $grid-gap;
   grid-template-areas:

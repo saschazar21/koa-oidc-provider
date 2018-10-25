@@ -160,22 +160,29 @@ export default {
       event.preventDefault();
       if (this.isValidForm()) {
         try {
-          const data = this.$store.getters['form/body'];
-          const result = await this.$axios({
+          const formBody = this.$store.getters['form/body'];
+          const { data } = await this.$axios({
             headers: {
               Authorization: `Bearer ${this.access_token}`,
             },
             method: 'POST',
             url: '/api/clients',
-            data,
+            data: formBody,
           });
-          this.$store.commit('clients/add', result);
+          this.$store.commit('clients/add', data);
           this.$store.commit('form/reset');
           this.$router.push('/clients');
+          return true;
         } catch (e) {
+          if (e.response) {
+            this.error = e.response.data.error || e.message || e;
+            return null;
+          }
           this.error = e.message || e;
+          return null;
         }
       }
+      return null;
     },
     isNameInvalid() {
       return this.formErrors.client_name;
