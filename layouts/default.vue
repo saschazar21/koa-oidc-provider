@@ -48,7 +48,7 @@ nuxt {
 @media screen and (min-width: map-get($breakpoints, s)) {
   .container {
     grid-template-areas: 'main' 'footer';
-    grid-template-rows: 1fr auto;
+    grid-template-rows: auto 1fr;
   }
 }
 </style>

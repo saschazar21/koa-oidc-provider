@@ -1,14 +1,40 @@
 <template>
-  <h1>Clients</h1>
+  <article>
+    <h1>Clients</h1>
+    <div class="client-block" v-if="clients.length > 0">
+      <h2>You currently have {{ clients.length }} active client(s).</h2>
+      <span>Want one more? <nuxt-link to="/clients/new">Go create one!</nuxt-link></span>
+      <ul class="list--blank">
+        <li v-for="(client, index) in clients" :key="index">
+          <client-block :id="client.client_id"></client-block>
+        </li>
+      </ul>
+    </div>
+    <div class="client-block" v-else>
+      <h2>You don't have any active clients right now...</h2>
+      <span>Want one? <nuxt-link to="/clients/new">Go create one!</nuxt-link></span>
+    </div>
+  </article>
 </template>
 
 <script>
+import clientBlock from '~/components/clients/client-block.vue';
+
 export default {
   async asyncData({ store }) {
     return {
       clients: store.getters['clients/clients'],
     };
   },
+  components: {
+    'client-block': clientBlock,
+  },
   middleware: ['auth', 'clients'],
 };
 </script>
+
+<style lang="scss" scoped>
+li:not(:first-child) {
+  margin-top: 2rem;
+}
+</style>
