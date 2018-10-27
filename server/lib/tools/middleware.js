@@ -5,6 +5,7 @@ import { getBaseClient } from '../config/clients';
 import registrationEnabled from './registration';
 import bootstrapProvider from '../../provider';
 import Configuration from '../config';
+import grantTypes from './grantTypes';
 import { baseUrl } from './url';
 
 const error = debug('error:router');
@@ -31,11 +32,15 @@ export default async (ctx, next) => {
     const promises = await Promise.all([
       configuration.getConfig(),
       getBaseClient(),
+      grantTypes(),
       registrationEnabled(),
     ]);
-    const { routes } = promises[0];
-    const registration = promises[2];
-    const baseClient = promises[1];
+    const [
+      { responseTypes, routes },
+      baseClient,
+      supportedGrantTypes,
+      registration,
+    ] = promises;
 
     const query = {
       ...ctx.query,
@@ -49,7 +54,9 @@ export default async (ctx, next) => {
         ...ctx.state.setup,
         ...query,
         baseUrl,
+        grantTypes: supportedGrantTypes,
         registration,
+        responseTypes,
         routes,
       },
     };

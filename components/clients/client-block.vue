@@ -29,12 +29,18 @@ export default {
   data() {
     return {
       accessToken: this.$store.getters['user/access_token'],
-      client: this.$store.getters['clients/client'](this.id),
       errorMsg: null,
     };
   },
   components: {
     'error-block': errorBlock,
+  },
+  computed: {
+    client: {
+      get() {
+        return this.$store.getters['clients/client'](this.id);
+      },
+    },
   },
   methods: {
     error(msg) {
@@ -121,6 +127,10 @@ small {
   max-width: 100%;
   overflow: hidden;
   padding: 1em;
+}
+
+.client-body {
+  text-align: left;
 }
 
 .client-body,

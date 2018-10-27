@@ -55,7 +55,7 @@ const mutations = {
     }
     const replaced = [
       ...current.clients.slice(0, idx),
-      ...payload,
+      payload,
       ...current.clients.slice(idx + 1),
     ];
     current.clients = replaced;

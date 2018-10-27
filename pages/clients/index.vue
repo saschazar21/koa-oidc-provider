@@ -21,13 +21,15 @@
 import clientBlock from '~/components/clients/client-block.vue';
 
 export default {
-  async asyncData({ store }) {
-    return {
-      clients: store.getters['clients/clients'],
-    };
-  },
   components: {
     'client-block': clientBlock,
+  },
+  computed: {
+    clients: {
+      get() {
+        return this.$store.getters['clients/clients'];
+      },
+    },
   },
   middleware: ['auth', 'clients'],
 };
@@ -36,5 +38,13 @@ export default {
 <style lang="scss" scoped>
 li:not(:first-child) {
   margin-top: 2rem;
+}
+
+.client-block {
+  text-align: center;
+
+  h2 {
+    text-align: inherit;
+  }
 }
 </style>

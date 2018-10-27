@@ -14,8 +14,14 @@ const getters = {
   grant(current) {
     return current.setup.grant;
   },
+  grant_types(current) {
+    return current.setup.grantTypes;
+  },
   registration(current) {
     return current.setup.registration;
+  },
+  response_types(current) {
+    return current.setup.responseTypes;
   },
   return_to(current) {
     return current.setup.return_to;

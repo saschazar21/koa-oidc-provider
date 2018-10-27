@@ -1,9 +1,10 @@
 import Router from 'koa-router';
 import debug from 'debug';
 
-import { responseTypes } from '../../lib/config/responseTypes';
+import Configuration from '../../lib/config';
 import grantTypes from '../../lib/tools/grantTypes';
 
+const configuration = new Configuration();
 const error = debug('error:router');
 const info = debug('info');
 const router = new Router({
@@ -11,6 +12,8 @@ const router = new Router({
 });
 
 export default async function setupRoutes() {
+  const { responseTypes } = await configuration.getConfig();
+
   router.get(
     '/granttypes',
     async (ctx) => {
