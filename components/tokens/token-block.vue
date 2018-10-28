@@ -1,5 +1,5 @@
 <template>
-  <div class="token-block">
+  <div class="token-block shadow">
     <div class="token-logo">
       <a :href="token.iss" target="_blank" rel="noopener noreferrer">
         <img class="img--circle img--border" v-if="client && client.logo_uri" :src="client.logo_uri" :alt="`Logo of ${client.client_name}`">

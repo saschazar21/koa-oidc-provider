@@ -1,5 +1,5 @@
 <template>
-  <div class="client-block">
+  <div class="client-block shadow">
     <div class="client-logo">
       <img class="img--circle img--border" v-if="client && client.logo_uri" :src="client.logo_uri" :alt="`Logo of ${client.client_name}`">
     </div>
@@ -15,8 +15,8 @@
       </ul>
     </div>
     <div class="client-info">
-      <button @click="resetClientSecret()" class="button--round button--inverted">Reset Client Secret</button>
-      <button @click="remove()" class="button--round button--inverted button--alert">Delete Client</button>
+      <button @click="resetClientSecret()" class="button--small button--round button--inverted">Reset Client Secret</button>
+      <button @click="remove()" class="button--small button--round button--inverted button--alert">Delete Client</button>
     </div>
   </div>
 </template>
@@ -104,6 +104,10 @@ export default {
 @import '~assets/css/_partials/typography';
 @import '~assets/css/_partials/images';
 @import '~assets/css/_partials/buttons';
+
+h3 {
+  margin-top: 0;
+}
 
 img {
   height: auto;

@@ -55,6 +55,16 @@ button {
   border-radius: $border-radius;
 }
 
+.button--small {
+  font-size: $font-small;
+}
+
+@each $descriptor, $size in $font-headings {
+  .button--#{$descriptor} {
+    font-size: $size;
+  }
+}
+
 @each $state, $color in $states {
   @if $state != contrast {
     $contrast: map-get(map-get($states, contrast), $state);
