@@ -5,7 +5,7 @@
     </div>
     <div class="client-body">
       <error-block v-if="errorMsg" :message="errorMsg"></error-block>
-      <h3>{{ client.client_name }}</h3>
+      <h3>{{ client.client_name }} <small>- <nuxt-link :to="`/clients/${client.client_id}/edit`">Edit</nuxt-link></small></h3>
       <span>Client ID: <span class="passive">{{ client.client_id }}</span></span>
       <span v-if="client.client_secret">Client Secret: <span class="passive">{{ client.client_secret }}</span></span>
       
