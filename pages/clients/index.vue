@@ -2,7 +2,7 @@
   <article>
     <h1>Clients</h1>
     <div class="client-block" v-if="clients.length > 0">
-      <h2>You currently have {{ clients.length }} active client(s).</h2>
+      <h2>You currently have {{ clients.length }} active client<span v-if="clients.length > 1">s</span>.</h2>
       <span>Want one more? <nuxt-link to="/clients/new">Go create one!</nuxt-link></span>
       <ul class="list--blank">
         <li v-for="(client, index) in clients" :key="index">
