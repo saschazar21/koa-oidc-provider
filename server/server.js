@@ -27,7 +27,13 @@ export async function start(provider) {
   app.keys = keys();
   app.use(logger());
   app.use(session());
-  app.use(helmet());
+  app.use(helmet({
+    hsts: {
+      maxAge: 5184000,
+      includeSubdomains: true,
+      preload: true,
+    },
+  }));
   app.use(bodyParser());
 
   const passport = await bootstrapPassport();

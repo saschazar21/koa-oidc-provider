@@ -160,16 +160,12 @@ small {
 
   .client-logo {
     display: block;
-    min-width: map-get($media-sizes, xs);
+    min-width: map-get($media-sizes, s);
     padding: 1em;
   }
 
   .client-info {
     grid-column-end: -1;
-  }
-
-  .client-logo {
-    min-width: map-get($media-sizes, s);
   }
 }
 
