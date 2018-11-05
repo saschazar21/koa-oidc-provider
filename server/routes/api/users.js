@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import Promise from 'bluebird';
 import Router from 'koa-router';
 import debug from 'debug';
@@ -71,6 +72,38 @@ export default async function userRoutes(customClient) {
         }
       },
     );
+
+    router.put(
+      '/:id',
+      passport.authenticate(['bearer']),
+      async (ctx, next) => requireScopes(ctx, next, ['user', 'user:edit']),
+      async (ctx) => {
+        const { id } = ctx.params;
+        const { body } = ctx.request;
+        try {
+          if (id !== ctx.state.user._id) {
+            throw new Error(`Not able to update user with ID: ${id}.`);
+          }
+          if (!body) {
+            throw new Error('No data found in request to update user.');
+          }
+          const { _id, email } = body;
+          if (_id || email) {
+            throw new Error('_id or email must not be altered.');
+          }
+          const result = await User.findByIdAndUpdate(id, { $set: body }, { new: true, select: '-__v -password' });
+          ctx.status = 200;
+          ctx.body = result.toJSON();
+        } catch (err) {
+          error(err.message || err);
+          ctx.status = 400;
+          ctx.body = {
+            error: err.message || err,
+          };
+        }
+      },
+    );
+
     return router;
   } catch (e) {
     error(e.message || e);
