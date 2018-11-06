@@ -8,8 +8,9 @@ export const claims = {
   openid: ['sub'],
   profile: [
     'birthdate',
-    'gender',
+    'email',
     'family_name',
+    'gender',
     'given_name',
     'name',
     'nickname',
@@ -20,10 +21,10 @@ export const claims = {
     'website',
   ],
   user: [
-    'nickname',
-    'preferred_username',
-    'picture',
     'name',
+    'nickname',
+    'picture',
+    'preferred_username',
   ],
   website: ['website'],
 };

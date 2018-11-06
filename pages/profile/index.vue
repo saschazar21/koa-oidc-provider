@@ -20,12 +20,14 @@
 <script>
 /* eslint-disable no-underscore-dangle */
 export default {
-  computed: {
-    user: {
-      get() {
-        return this.$store.getters['user/user'];
+  asyncData({ store }) {
+    const user = store.getters['user/user'];
+    return {
+      user: {
+        ...user,
+        id: user._id || user.sub,
       },
-    },
+    };
   },
   middleware: ['auth'],
 };
