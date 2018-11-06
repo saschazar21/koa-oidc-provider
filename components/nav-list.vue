@@ -18,16 +18,6 @@ export default {
         nuxt: true,
         text: 'Home',
       }, {
-        auth: false,
-        link: '/login',
-        nuxt: false,
-        text: 'Login',
-      }, {
-        auth: true,
-        link: '/logout',
-        nuxt: false,
-        text: 'Logout',
-      }, {
         auth: true,
         link: '/clients',
         nuxt: true,
@@ -37,6 +27,21 @@ export default {
         link: '/tokens',
         nuxt: true,
         text: 'Tokens',
+      }, {
+        auth: true,
+        link: '/profile',
+        nuxt: true,
+        text: 'Profile',
+      }, {
+        auth: false,
+        link: '/login',
+        nuxt: false,
+        text: 'Login',
+      }, {
+        auth: true,
+        link: '/logout',
+        nuxt: false,
+        text: 'Logout',
       }],
       user: this.$store.getters['user/user'],
     };

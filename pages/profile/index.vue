@@ -3,12 +3,12 @@
     <h1>Your profile</h1>
     <div class="profile-block shadow">
       <div class="profile-avatar">
-        <img :src="picture" :alt="`Avatar of ${name}`" class="img--circle img--border" v-if="picture">
+        <img :src="user.picture" :alt="`Avatar of ${user.name}`" class="img--circle img--border" v-if="user.picture">
       </div>
       <div class="profile-body">
-        <small>ID: {{ id }}</small>
-        <h2>{{ name }}</h2>
-        <strong>{{ email }}</strong>
+        <small>ID: {{ user._id }}</small>
+        <h2>{{ user.name }}</h2>
+        <strong>{{ user.email }}</strong>
       </div>
       <div class="profile-actions">
         <nuxt-link to="/profile/edit">Edit profile</nuxt-link>
@@ -20,12 +20,12 @@
 <script>
 /* eslint-disable no-underscore-dangle */
 export default {
-  asyncData({ store }) {
-    const user = store.getters['user/user'];
-    return {
-      ...user,
-      id: user._id,
-    };
+  computed: {
+    user: {
+      get() {
+        return this.$store.getters['user/user'];
+      },
+    },
   },
   middleware: ['auth'],
 };

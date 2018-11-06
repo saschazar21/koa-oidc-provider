@@ -22,8 +22,10 @@ export default {
     };
   },
   fetch({ store }) {
+    const user = store.getters['user/user'];
     store.commit('form/reset');
-    return store.commit('form/setHeader', 'Edit your profile');
+    store.commit('form/setHeader', 'Edit your profile');
+    return store.commit('form/updateBody', user);
   },
   layout: 'form',
   methods: {

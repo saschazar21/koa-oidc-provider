@@ -5,7 +5,7 @@
         <label for="input-username">Enter E-Mail:</label>
         <small class="form-error" v-if="isEmailInvalid()">{{ formErrors.email }}</small>
       </div>
-      <input id="input-username" v-model.trim.lazy="email" type="text" name="email" class="input--full input--round" :class="{'input--alert': formErrors.email }" autofocus placeholder="Your E-Mail">
+      <input id="input-username" v-model.trim.lazy="email" type="text" name="email" class="input--full input--round" :class="{'input--alert': formErrors.email }" autofocus placeholder="Your E-Mail" :disabled="!!id">
     </div>
     <div class="input-group">
       <div class="form-group">
@@ -34,20 +34,21 @@
       </div>
     </div>
     <div class="form-group button-group">
-      <button class="button--success button--round" :disabled="isFormInvalid()">{{ saveText || 'Register' }}</button>
-      <nuxt-link class="button--inverted button--round" to="/login">Cancel</nuxt-link>
+      <button class="button--success button--round" :disabled="isFormInvalid()">{{ id ? 'Save' : 'Register' }}</button>
+      <nuxt-link class="button--inverted button--round" :to="this.id ? '/profile' : '/login'">Cancel</nuxt-link>
     </div>
   </form>
 </template>
 
 <script>
+/* eslint-disable no-underscore-dangle */
 import { emailRegex } from '~/pages/login/index.vue';
 
 export default {
   computed: {
     email: {
       get() {
-        return this.$store.state.form.body.email;
+        return this.$store.getters['form/body'].email;
       },
       set(value) {
         this.formErrors.email = value.length === 0 || !emailRegex.test(value)
@@ -58,7 +59,7 @@ export default {
     },
     family_name: {
       get() {
-        return this.$store.state.form.body.family_name;
+        return this.$store.getters['form/body'].family_name;
       },
       set(value) {
         this.formErrors.family_name = value.length === 0 ? 'Please enter your last name' : null;
@@ -67,16 +68,22 @@ export default {
     },
     given_name: {
       get() {
-        return this.$store.state.form.body.given_name;
+        return this.$store.getters['form/body'].given_name;
       },
       set(value) {
         this.formErrors.given_name = value.length === 0 ? 'Please enter your first name' : null;
         this.$store.commit('form/updateBody', { given_name: value });
       },
     },
+    id: {
+      get() {
+        const user = this.$store.getters['form/body'];
+        return user ? user._id : null;
+      },
+    },
     password: {
       get() {
-        return this.$store.state.form.body.password;
+        return this.$store.getters['form/body'].password;
       },
       set(value) {
         this.formErrors.password = value.length < 6 || value !== this.password2
@@ -101,13 +108,18 @@ export default {
   data() {
     return {
       error: null,
-      formErrors: {},
+      formErrors: {
+        email: null,
+        family_name: null,
+        given_name: null,
+        password: null,
+      },
       passwordCheck: null,
     };
   },
   layout: 'form',
   methods: {
-    async checkForm(e) {
+    checkForm(e) {
       e.preventDefault();
       if (!this.isFormInvalid()) {
         this.formErrors = {};
@@ -123,7 +135,7 @@ export default {
     },
     isFormInvalid() {
       return !(this.email
-        && this.password
+        && (!this.id ? this.password : true)
         && !this.isEmailInvalid()
         && !this.isFamilyNameInvalid()
         && !this.isGivenNameInvalid()
@@ -136,7 +148,6 @@ export default {
       return this.formErrors.password !== null;
     },
   },
-  props: ['saveText'],
 };
 </script>
 
