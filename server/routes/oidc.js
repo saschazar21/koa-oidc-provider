@@ -13,12 +13,18 @@ const router = new Router();
 
 export default async function oidcRoutes(customClient) {
   const nuxt = getNuxt();
-  const provider = await bootstrapProvider(customClient);
+  const {
+    provider,
+    User,
+  } = await Promise.all([
+    bootstrapProvider(customClient),
+    userModel(customClient),
+  ]);
 
   router.get(`${oidcPrefix}/interaction/:grant`, async (ctx) => {
     try {
       const details = await provider.interactionDetails(ctx.req);
-      const route = details.interaction.error === 'login_required' ? '/login' : '/interaction';
+      const route = details.interaction.error === 'login_required' ? '/login' : `/interaction/${details.uuid}`;
       const redirect = new URL(`${nuxtUrl}${route}`);
       redirect.searchParams.append('client_id', details.params.client_id);
       redirect.searchParams.append('scope', details.params.scope);
@@ -37,13 +43,12 @@ export default async function oidcRoutes(customClient) {
     }
   });
 
-  router.post(`${oidcPrefix}/interaction/:grant`, async (ctx, next) => {
+  router.post(`${oidcPrefix}/interaction/:grant/login`, async (ctx, next) => {
     const {
       email,
       password,
       remember,
     } = ctx.request.body;
-    const User = await userModel(customClient);
 
     let result = {};
     try {
@@ -56,6 +61,36 @@ export default async function oidcRoutes(customClient) {
         login: {
           /* eslint-disable-next-line no-underscore-dangle */
           account: user._id,
+          acr: user.acr,
+          remember: remember && remember === 'on',
+          ts: Date.now(),
+        },
+        consent: { },
+      };
+    } catch (e) {
+      error(e.message || e);
+      result = {
+        error: 'access_denied',
+        error_description: e.message,
+      };
+    }
+    info(result);
+    return provider.interactionFinished(ctx.req, ctx.res, result)
+      .then(next);
+  });
+
+  router.post(`${oidcPrefix}/interaction/:grant`, async (ctx, next) => {
+    let result;
+    try {
+      const {
+        account,
+        remember,
+      } = ctx.request.body;
+      const userResult = await User.findById(account, 'acr');
+      const user = userResult.toJSON();
+      result = {
+        login: {
+          account,
           acr: user.acr,
           remember: remember && remember === 'on',
           ts: Date.now(),

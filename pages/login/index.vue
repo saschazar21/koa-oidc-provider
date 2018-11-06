@@ -1,6 +1,6 @@
 <template>
   <main>
-    <form class="form--border shadow" @submit="checkForm" :action="`/interaction/${grant}`" method="post">
+    <form class="form--border shadow" @submit="checkForm" :action="`/interaction/${grant}/login`" method="post">
       <error-hash v-show="hash"></error-hash>
       <client-block v-if="client.client_name"></client-block>
       <div class="form-group">

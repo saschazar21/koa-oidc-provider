@@ -49,6 +49,9 @@ export default {
     },
     scope: {
       get() {
+        if (this.scopeString) {
+          return this.scopeString.split(' ');
+        }
         return this.$store.getters['setup/scope']
           ? this.$store.getters['setup/scope'].split(' ')
           : [];
@@ -60,6 +63,7 @@ export default {
       },
     },
   },
+  props: ['scopeString'],
 };
 </script>
 
