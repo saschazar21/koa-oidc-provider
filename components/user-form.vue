@@ -78,7 +78,10 @@ export default {
     id: {
       get() {
         const user = this.$store.getters['form/body'];
-        return user ? user._id : null;
+        if (!user) {
+          return null;
+        }
+        return user._id || user.sub;
       },
     },
     password: {

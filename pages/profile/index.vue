@@ -6,7 +6,7 @@
         <img :src="user.picture" :alt="`Avatar of ${user.name}`" class="img--circle img--border" v-if="user.picture">
       </div>
       <div class="profile-body">
-        <small>ID: {{ user._id }}</small>
+        <small>ID: {{ user.id }}</small>
         <h2>{{ user.name }}</h2>
         <strong>{{ user.email }}</strong>
       </div>
