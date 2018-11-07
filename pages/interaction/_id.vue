@@ -1,6 +1,7 @@
 <template>
   <main>
     <form class="form--border shadow" :action="`/interaction/${id}`" method="post">
+      <client-block v-if="clientName"></client-block>
       <p>
         <span>The application<strong v-if="clientName"> '{{ clientName }}'</strong> requests access to your profile:</span>
       </p>
@@ -20,24 +21,27 @@
 
 <script>
 /* eslint-disable no-underscore-dangle */
+import clientBlock from '~/components/clients/client-login-block.vue';
 import scopeBlock from '~/components/scope-block.vue';
 
 export default {
   asyncData({ params, query, store }) {
     store.commit('form/reset');
     const client = store.getters['client/client'];
-    const header = `Allow access from ${client && client.client_name ? `'${client.client_name}'` : 'application'}?`;
+    const clientName = client ? client.client_name || client.clientName : null;
+    const header = 'Allow access?';
     const user = store.getters['user/user'];
     store.commit('form/setHeader', header);
     return {
       account: user._id || user.sub,
-      clientName: client.client_name,
+      clientName,
       id: params.id,
       redirect: query.return_to,
       scope: query.scope,
     };
   },
   components: {
+    'client-block': clientBlock,
     'scope-block': scopeBlock,
   },
   layout: 'form',

@@ -1,8 +1,9 @@
 <template>
   <div class="block block--author">
-    <figure v-show="clientLogo">
+    <figure v-if="clientLogo">
       <img class="client-logo" :src="clientLogo" :alt="`Logo of ${clientName}`">
     </figure>
+    <div class="client-logo" v-else></div>
     <div class="block--author__text">
       <small>Login to:</small>
       <strong>{{ clientName }}</strong>
@@ -20,7 +21,7 @@ export default {
     },
     clientName: {
       get() {
-        return this.client ? this.client.client_name : null;
+        return this.client ? this.client.client_name || this.client.clientName : null;
       },
     },
   },
@@ -43,9 +44,21 @@ export default {
   @extend .img--xs;
 }
 
+div.client-logo {
+  background-color: $color-shadow;
+  height: map-get($media-sizes, xs);
+  margin: 1.5rem .5rem;
+  width: map-get($media-sizes, xs);
+}
+
 @media screen and (min-width: map-get($breakpoints, m)) {
   .client-logo {
-    width: map-get($sizes, s);
+    width: map-get($media-sizes, s);
+  }
+
+  div.client-logo {
+    height: map-get($media-sizes, s);
+    width: map-get($media-sizes, s);
   }
 
   .block--author__text {
