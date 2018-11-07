@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  db:
+    conainer_name: mongodb
+    image: mongo:3-stretch
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: p4ssw0rD
+      MONGO_INITDB_DATABASE: koa-oidc
+    ports:
+      - 27017:16118
+    volumes:
+      - ./mongo:/data/db
+  koa-oidc-provider:
+    container_name: koa-oidc-provider
+    image: koa-oidc-provider
+    build: 
+      context: .
+      target: prod
+    depends_on:
+      - db
+      - redis
+    dns: 8.8.8.8
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      MONGO_HOST: db
+      MONGO_PORT: 16118
+      MONGO_DB: koa-oidc
+      MONGO_USER: admin
+      MONGO_PASSWORD: p4ssw0rD
+      REDIS_HOST: redis
+      REDIS_PORT: 10896
+    networks:
+      - mongo-net
+      - redis-net
+    ports:
+      - 3000:3000
+    volumes:
+      - ./private:/usr/src/oidc/private
+  redis:
+    container_name: redis
+    image: redis:5-alpine
+    environment:
+    ports:
+      - 6379:10896
+    volumes:
+      - ./redis:/data
+
+networks:
+  mongo-net:
+    internal: true
+  redis-net:
+    internal: true
