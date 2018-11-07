@@ -16,9 +16,10 @@ export default class LocalProvider extends AbstractProvider {
 
   static async init() {
     const configuration = new Configuration();
-    const result = await Promise.all([configuration.getConfig(), getBaseClient()]);
-    const config = result[0];
-    const baseClient = result[1];
+    const [config, baseClient] = await Promise.all([
+      configuration.getConfig(),
+      getBaseClient(),
+    ]);
 
     conf = {
       local: {

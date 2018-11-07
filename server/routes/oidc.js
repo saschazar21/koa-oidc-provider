@@ -1,4 +1,5 @@
 import debug from 'debug';
+import Promise from 'bluebird';
 import Router from 'koa-router';
 import { URL } from 'url';
 
@@ -13,10 +14,7 @@ const router = new Router();
 
 export default async function oidcRoutes(customClient) {
   const nuxt = getNuxt();
-  const {
-    provider,
-    User,
-  } = await Promise.all([
+  const [provider, User] = await Promise.all([
     bootstrapProvider(customClient),
     userModel(customClient),
   ]);
@@ -56,12 +54,11 @@ export default async function oidcRoutes(customClient) {
       if (!found || !await found.correctPassword(password)) {
         throw new Error(`No user found with e-mail: ${email}, or wrong password given!`);
       }
-      const user = found.toJSON();
       result = {
         login: {
           /* eslint-disable-next-line no-underscore-dangle */
-          account: user._id,
-          acr: user.acr,
+          account: found._id,
+          acr: found.get('acr'),
           remember: remember && remember === 'on',
           ts: Date.now(),
         },
@@ -87,11 +84,13 @@ export default async function oidcRoutes(customClient) {
         remember,
       } = ctx.request.body;
       const userResult = await User.findById(account, 'acr');
-      const user = userResult.toJSON();
+      if (!userResult) {
+        throw new Error(`No user found with ID: ${account}`);
+      }
       result = {
         login: {
           account,
-          acr: user.acr,
+          acr: userResult.get('acr'),
           remember: remember && remember === 'on',
           ts: Date.now(),
         },

@@ -20,9 +20,7 @@ export default class AbstractPassport {
 
   async init(name) {
     try {
-      const result = await Promise.all([userModel(), this.provider()]);
-      const User = result[0];
-      const provider = result[1];
+      const [User, provider] = await Promise.all([userModel(), this.provider()]);
       const sanitized = name ? name.toLowerCase() : 'oidc';
       const client = await provider.client(sanitized);
 

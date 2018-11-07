@@ -29,18 +29,17 @@ export default async (ctx, next) => {
   }
 
   try {
-    const promises = await Promise.all([
-      configuration.getConfig(),
-      getBaseClient(),
-      grantTypes(),
-      registrationEnabled(),
-    ]);
     const [
       { responseTypes, routes },
       baseClient,
       supportedGrantTypes,
       registration,
-    ] = promises;
+    ] = await Promise.all([
+      configuration.getConfig(),
+      getBaseClient(),
+      grantTypes(),
+      registrationEnabled(),
+    ]);
 
     const query = {
       ...ctx.query,

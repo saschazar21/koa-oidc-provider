@@ -13,15 +13,14 @@ const error = debug('error:auth');
 const info = debug('info');
 
 export default async function bootstrapRoutes(customClient) {
-  const result = await Promise.all([
+  const [provider, ...routes] = await Promise.all([
+    bootstrapProvider(customClient),
     apiRoutes(customClient),
     authRoutes(customClient),
     oidcRoutes(customClient),
-    bootstrapProvider(customClient),
   ]);
-  const provider = result.pop();
 
-  result.forEach(route => router.use(route.routes()));
+  routes.forEach(route => router.use(route.routes()));
 
   router.get('/logout', async (ctx) => {
     const cookies = [

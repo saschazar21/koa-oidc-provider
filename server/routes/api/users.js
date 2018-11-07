@@ -17,14 +17,11 @@ const router = new Router({
 
 export default async function userRoutes(customClient) {
   try {
-    const promises = await Promise.all([
+    const [passport, baseClient, User] = await Promise.all([
       await bootstrapPassport(customClient),
       await getBaseClient(customClient),
       await userModel(customClient),
     ]);
-    const passport = promises[0];
-    const baseClient = promises[1];
-    const User = promises[2];
 
     router.post(
       '/',
