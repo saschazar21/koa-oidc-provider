@@ -11,16 +11,14 @@ import userForm from '~/components/user-form.vue';
 
 export default {
   asyncData({ store }) {
+    if (process.server) {
+      window.location.href = '/login';
+      return null;
+    }
+    store.commit('form/setHeader', 'Register');
     return {
       client: store.getters['setup/baseClient'],
     };
-  },
-  async fetch({ redirect, req, store }) {
-    store.commit('form/setHeader', 'Register');
-    if (process.server && (!req.setup || !req.setup.registration)) {
-      return redirect('/error');
-    }
-    return true;
   },
   components: {
     'error-block': errorBlock,
@@ -47,7 +45,6 @@ export default {
           url: '/api/users',
           data: form,
         });
-        this.$store.commit('form/reset');
         return this.$router.push('/login');
       } catch (e) {
         if (e.response) {

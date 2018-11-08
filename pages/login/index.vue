@@ -46,7 +46,6 @@ export default {
     return {
       client: {
         client_name: store.getters['client/clientName'],
-        client_secret: store.getters['client/clientSecret'],
       },
       grant: store.getters['setup/grant'],
       return_to: store.getters['setup/return_to'],
@@ -65,7 +64,7 @@ export default {
   computed: {
     email: {
       get() {
-        return this.$store.state.form.body.email;
+        return this.$store.getters['form/body'].email;
       },
       set(value) {
         this.formErrors.email = value.length === 0 || !emailRegex.test(value)
@@ -81,7 +80,7 @@ export default {
     },
     password: {
       get() {
-        return this.$store.state.form.body.password;
+        return this.$store.getters['form/body'].password;
       },
       set(value) {
         this.formErrors.password = value.length === 0
@@ -92,7 +91,7 @@ export default {
     },
     remember: {
       get() {
-        return this.$store.state.form.body.remember;
+        return this.$store.getters['form/body'].remember;
       },
       set(value) {
         return this.$store.commit('form/updateBody', { remember: value });
@@ -108,9 +107,8 @@ export default {
   methods: {
     checkForm(e) {
       if (this.isFormInvalid()) {
-        return e.preventDefault();
+        e.preventDefault();
       }
-      return this.$store.commit('form/reset');
     },
     isEmailInvalid() {
       return !!this.formErrors.email;

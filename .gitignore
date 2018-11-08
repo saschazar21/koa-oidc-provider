@@ -1,3 +1,7 @@
+# Docker volumes
+mongo/
+redis/
+
 # Config directory
 private
 static/.well-known

@@ -48,12 +48,12 @@ export default async function userRoutes(customClient) {
       async (ctx) => {
         info(ctx.state.user);
         info(ctx.request.origin);
-        ctx.status = 200;
 
         try {
           const user = new User(ctx.request.body);
           const result = await user.save();
           info(user);
+          ctx.status = 200;
           ctx.body = {
             email: result.get('email'),
             family_name: result.get('family_name'),
