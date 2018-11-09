@@ -58,14 +58,15 @@ export default async function clientModel(customClient) {
       type: [String],
       validate: {
         validator(value) {
+          const self = this;
           const sane = value.filter((v) => {
             const u = parse(v);
-            if (!this.application_type || this.application_type === 'web') {
+            if (!self.application_type || self.application_type === 'web') {
               return isUrl(v) && u.hostname !== 'localhost';
             }
             return (u.protocol !== 'http:' && u.protocol !== 'https:') || u.hostname === 'localhost';
           });
-          return sane.length === value.length;
+          return sane.length > 0 && sane.length === value.length;
         },
         message: 'One of the given URIs either contains localhost and was declared as "web", or vice versa',
       },

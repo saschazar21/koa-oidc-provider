@@ -44,18 +44,22 @@ export default class ClientAdapter {
     const Client = await this.model;
 
     try {
-      const client = await Client.findById(id);
+      const client = await Client.findByIdAndUpdate(
+        id,
+        {
+          $set: payload,
+          $inc: { __v: 1 },
+        }, {
+          fields: '-client_secret',
+          new: true,
+          runValidators: true,
+          setDefaultsOnInsert: true,
+        },
+      );
       if (!client) {
-        throw new Error(`No client found w/ ID: ${id}. Attempting to create new one.`);
+        throw new Error(`No client found with ID: ${id}. Attempting to create new one.`);
       }
-      return client.update({
-        $set: payload,
-        $inc: { __v: 1 },
-      }, {
-        new: true,
-        runValidators: true,
-        setDefaultsOnInsert: true,
-      });
+      return client;
     } catch (e) {
       error(e.message || e);
       return new Client(payload).save();
@@ -81,7 +85,7 @@ export default class ClientAdapter {
     const Client = await this.model;
 
     try {
-      const result = await Client.findByIdAndRemove(id);
+      const result = await Client.findByIdAndRemove(id, { select: '-client_secret' });
       if (!result) {
         throw new Error(`No client found with ID: ${id}`);
       }

@@ -98,7 +98,18 @@ export default async function clientRoutes(customClient) {
         ctx.body = { error: err };
       }
       try {
-        const result = await adapter.upsert(ctx.params.id, ctx.request.body);
+        if (!await adapter.find(ctx.params.id)) {
+          throw new Error(`Client ID ${ctx.params.id} does not exist`);
+        }
+        const body = {
+          ...ctx.request.body,
+          /* eslint-disable-next-line no-underscore-dangle */
+          owner: ctx.state.user._id,
+        };
+        const result = await adapter.upsert(ctx.params.id, body);
+        if (!result) {
+          throw new Error(`Something went wrong while updating client ID: ${ctx.params.id}`);
+        }
         ctx.status = 200;
         ctx.body = result.toJSON();
       } catch (e) {
