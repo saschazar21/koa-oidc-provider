@@ -90,7 +90,7 @@ Resets a client's secret and returns the client object containing the new client
 ### POST /api/clients
 
 | **HTTP Header** | **Necessary Scopes** | **Mandatory Fields** | **Example cURL Request** |
-|-----------------|----------------------|------------------------|
+|-----------------|----------------------|------------------------|------------------------|
 | Authorization: Bearer <access_token> | client client:create | `client_name`, `redirect_uris`  | `curl -X POST --http1.1 -H "Authorization: Bearer <access_token>" -d "client_name=Burgerbot&redirect_uris=https://burger_bot.example.com/auth" https://your-url.com/api/clients` |
 
 Returns the newly created client as JSON object:
