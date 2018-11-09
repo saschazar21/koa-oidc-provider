@@ -1,9 +1,9 @@
 [![Build Status](https://travis-ci.org/saschazar21/koa-oidc-provider.svg?branch=master)](https://travis-ci.org/saschazar21/koa-oidc-provider)
 
 # koa-oidc-provider
-> An OpenID Connect Provider based on Nuxt/Koa for the masses.
+> A fully configurable OpenID Connect Provider based on Nuxt/Koa for the masses.
 
-A slightly more opinionated config-/frontend-wrapper around **[node-oidc-provider](https://github.com/panva/node-oidc-provider)** from @panva.
+A slightly more opinionated config-/frontend-wrapper around **[node-oidc-provider](https://github.com/panva/node-oidc-provider)** from [@panva](https://github.com/panva).
 
 * Author: [Sascha Zarhuber](https://sascha.work)
 * GitHub: [@saschazar21](https://github.com/saschazar21)
@@ -18,13 +18,13 @@ A slightly more opinionated config-/frontend-wrapper around **[node-oidc-provide
 * [MongoDB](https://www.mongodb.com/) v3.4 and above (when running locally, services like [mlab](https://mlab.com) also work)
 * [Redis](https://redis.io/) v5 and above (when running locally, services like [redislabs](https://redislabs.com/) also work)
 
--- OR --
+**-- OR --**
 
-* :whale: [Docker](https://www.docker.com/community/open-source) v17.09 CE and above (no extra setup needed, `docker-compose.yml`-file present)
+* :whale: [Docker](https://www.docker.com/community/open-source) v17.09 CE and above (no extra setup needed, `docker-compose.yml`-file included)
 
 ## Build Setup
 
-**CAUTION:** Make sure to set the appropriate HOST environment variable. More information about variables may be found under [Variables](#variables)
+**CAUTION:** Make sure to set the appropriate HOST environment variable. More information about variables may be found in the [Variables](/docs/CONFIGURATION.md#variables) section of the configuration document.
 
 ### Building locally
 
@@ -58,6 +58,23 @@ $ docker-compose build --build-arg HOST=example.com koa-oidc-provider
 $ docker-compose up
 ```
 
+## Configuration
+
+If you want to customize the default configuration to your needs, the full configuration options are explained in [/docs/CONFIGURATION.md](/docs/CONFIGURATION.md).
+
 ## API
 
-The documentation for the API to handle clients, tokens & users may be found under [/docs/api.md](/docs/api.md)
+The documentation for the API to handle clients, tokens & users may be found under [/docs/API.md](/docs/api.md).
+
+## Contribution
+
+Contributors welcome!  
+If you have resolved an [issue](https://github.com/saschazar21/koa-oidc-provider/issues), or enhanced the project in any other way; please fork this repository, open up a pull request and drop me a line on [twitter](https://twitter.com/saschazar).
+
+## License
+
+This project is licensed under the [MIT](/LICENSE.md) license.
+
+## Version history
+
+* **0.1.0** - Initial version (*unstable*).

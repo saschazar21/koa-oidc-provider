@@ -1,6 +1,6 @@
 {
   "name": "koa-oidc-provider",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "An OpenID Connect Provider based on Nuxt/Koa",
   "author": "Sascha Zarhuber <sascha.zarhuber@gmail.com>",
   "homepage": "https://github.com/saschazar21/koa-oidc-provider#readme",
