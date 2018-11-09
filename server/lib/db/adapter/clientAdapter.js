@@ -85,7 +85,7 @@ export default class ClientAdapter {
     const Client = await this.model;
 
     try {
-      const result = await Client.findByIdAndRemove(id, { select: '-client_secret' });
+      const result = await Client.findByIdAndRemove(id);
       if (!result) {
         throw new Error(`No client found with ID: ${id}`);
       }

@@ -189,6 +189,7 @@ Deletes an existing client from the database and returns its last state as JSON:
   "client_name":"Burgerbot3",
   "owner":"dwyOLCBwWivAvgBD",
   "client_id":"k2VeN88PRVJJbnUp6F8akvCoBAcHNExy",
+  "client_secret":"~09HMj1043ysvUlr3pQ7fbjEzSutxI0gJ9IkEVrm7l9xnZVcOwuXA9eOko5sDXxA",
   "__v":0
 }
 ```

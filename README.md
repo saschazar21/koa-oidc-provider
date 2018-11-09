@@ -24,7 +24,7 @@ A slightly more opinionated config-/frontend-wrapper around **[node-oidc-provide
 
 ## Build Setup
 
-**CAUTION:** Make sure to set the appropriate HOST environment variable. More information about variables may be found in the [Variables](/docs/CONFIGURATION.md#variables) section of the configuration document.
+**CAUTION:** Make sure to set the appropriate HOST environment variable. More information about variables may be found in the [Variables](/docs/configuration.md#variables) section of the configuration document.
 
 ### Building locally
 
@@ -64,7 +64,7 @@ If you want to customize the default configuration to your needs, the full confi
 
 ## API
 
-The documentation for the API to handle clients, tokens & users may be found under [/docs/API.md](/docs/api.md).
+The documentation for the API to handle clients, tokens & users may be found under [/docs/API.md](/docs/API.md).
 
 ## Contribution
 
