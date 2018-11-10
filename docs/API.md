@@ -236,3 +236,9 @@ This route is only active, if either no user has been registered yet, or the `RE
   "given_name":"Testy"
 }
 ```
+
+### PUT /api/users/:id
+
+| **HTTP Header** | **Necessary Scopes** | **Example cURL Request** |
+|-----------------|----------------------|------------------------|
+| Authorization: Bearer <access_token> | user user:edit | `curl -X POST -H "Authorization: Bearer <access_token>" -d "given_name=Testophilius" https://your-url.com/api/users/:id` (Insert a correct Client ID in URL!) |
