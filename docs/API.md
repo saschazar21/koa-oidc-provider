@@ -5,6 +5,11 @@ The following document lists the API routes for koa-oidc-provider. Further infor
 This document covers the following route sections:
 
 * [Client Routes](#client-routes)
+  * [GET /api/clients](#get-apiclients)
+  * [GET /api/clients/:id/reset](#get-apiclientsidreset)
+  * [POST /api/clients](#post-apiclients)
+  * [PUT /api/clients/:id](#put-apiclientsid)
+  * [DELETE /api/clients/:id](#delete-apiclientsid)
 * [User Routes](#user-routes)
 * [Token Routes](#token-routes)
 
@@ -193,3 +198,7 @@ Deletes an existing client from the database and returns its last state as JSON:
   "__v":0
 }
 ```
+
+## User Routes
+
+With koa-oidc-provider it is possible to not only register new clients, but also to modify them, reset their secrets and as well delete them.

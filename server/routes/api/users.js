@@ -8,20 +8,31 @@ import { getBaseClient } from '../../lib/config/clients';
 import { baseUrl } from '../../lib/tools/url';
 import { requireScopes } from '../../lib/tools/auth';
 import userModel from '../../lib/db/models/user';
+import Configuration from '../../lib/config';
 
 const error = debug('error:router');
 const info = debug('info');
+const configuration = new Configuration();
 const router = new Router({
   prefix: '/users',
 });
 
 export default async function userRoutes(customClient) {
   try {
-    const [passport, baseClient, User] = await Promise.all([
+    const [passport, baseClient, { routes }, User] = await Promise.all([
       await bootstrapPassport(customClient),
       await getBaseClient(customClient),
+      await configuration.getConfig(),
       await userModel(customClient),
     ]);
+
+    router.get(
+      '/',
+      (ctx) => {
+        ctx.status = 301;
+        ctx.redirect(routes.userinfo);
+      },
+    );
 
     router.post(
       '/',
