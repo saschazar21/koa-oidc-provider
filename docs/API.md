@@ -25,7 +25,7 @@ With koa-oidc-provider it is possible to not only register new clients, but also
 
 Returns a list of clients containing client metadata, which is specified in the [OpenID Connect Dynamic Client Registration 1.0 spec](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata), created by the user the access token belongs to:
 
-```json
+```javascript
 [
   {
     "active":true,
@@ -62,7 +62,7 @@ Returns a list of clients containing client metadata, which is specified in the 
 
 Resets a client's secret and returns the client object containing the new client secret:
 
-```json
+```javascript
 {
   "active":true,
   "redirect_uris":[
@@ -100,7 +100,7 @@ Resets a client's secret and returns the client object containing the new client
 
 Returns the newly created client as JSON object:
 
-```json
+```javascript
 {
   "active":true,
   "redirect_uris":[
@@ -136,7 +136,7 @@ Returns the newly created client as JSON object:
 
 Updates an existing client with data transmitted in the POST body, afterwards, returns the whole new client object:
 
-```json
+```javascript
 {
   "active":true,
   "redirect_uris":[
@@ -171,7 +171,7 @@ Updates an existing client with data transmitted in the POST body, afterwards, r
 
 Deletes an existing client from the database and returns its last state as JSON:
 
-```json
+```javascript
 {
   "active":true,
   "redirect_uris":[
@@ -201,4 +201,38 @@ Deletes an existing client from the database and returns its last state as JSON:
 
 ## User Routes
 
-With koa-oidc-provider it is possible to not only register new clients, but also to modify them, reset their secrets and as well delete them.
+Concerning user modification, there are the following API endpoints available:
+
+### GET /api/users
+
+| **HTTP Header** | **Necessary Scopes** | **Example cURL Request** |
+|-----------------|----------------------|------------------------|
+| Authorization: Bearer <access_token> | openid | `curl -LH "Authorization: Bearer <access_token>" https://your-url.com/api/users` |
+
+Returns an HTTP Status 301 (*permanent redirect*) to your configured [userinfo endpoint](https://openid.net/specs/openid-connect-core-1_0.html#UserInfo) (`/profile` by default). An example response from the userinfo endpoint is the following:
+
+```javascript
+{
+  "sub":"dwyOLCBwWivAvgBD",
+  "email":"testy@testface.org",
+  "family_name":"McTestface",
+  "given_name":"Testy",
+  "name":"Testy McTestface"
+}
+```
+
+### POST /api/users
+
+| **HTTP Header** | **Necessary Scopes** | **Mandatory Fields** | **Example cURL Request** |
+|-----------------|----------------------|------------------------|------------------------|
+| Authorization: Bearer <access_token>  Authorization: Basic <baseClient_id>:<baseClient_secret> | user user:create | `email`, `given_name`, `family_name`, `password` | `curl -X POST -H "Authorization: Bearer <access_token>" -d "email=testy@testface.org&given_name=Testy&family_name=McTestface&password=ASecretPassword" https://your-url.com/api/users` |
+
+This route is only active, if either no user has been registered yet, or the `REGISTRATION` environment variable was set. Then either the (automatically generated) base client is allowed to register a new user using the `Authorization: Basic` Header, or an existing user using an Access Token which was created using both `user` and `user:create` scopes:
+
+```javascript
+{
+  "email":"testy@testface.org",
+  "family_name":"McTestface",
+  "given_name":"Testy"
+}
+```
