@@ -242,3 +242,18 @@ This route is only active, if either no user has been registered yet, or the `RE
 | **HTTP Header** | **Necessary Scopes** | **Example cURL Request** |
 |-----------------|----------------------|------------------------|
 | Authorization: Bearer <access_token> | user user:edit | `curl -X POST -H "Authorization: Bearer <access_token>" -d "given_name=Testophilius" https://your-url.com/api/users/:id` (Insert a correct Client ID in URL!) |
+
+Updates a user object based on the given properties, then returns the updated user object:
+
+```javascript
+{
+  "email_verified":false,
+  "phone_number_verified":false,
+  "_id":"dwyOLCBwWivAvgBD",
+  "email":"testy@testface.org",
+  "given_name":"Testophilius",
+  "family_name":"McTestface",
+  "name":"Testophilius McTestface",
+  "id":"dwyOLCBwWivAvgBD"
+}
+```
