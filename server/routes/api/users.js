@@ -84,7 +84,7 @@ export default async function userRoutes(customClient) {
     router.put(
       '/:id',
       passport.authenticate(['bearer']),
-      async (ctx, next) => requireScopes(ctx, next, ['user', 'user:edit']),
+      // async (ctx, next) => requireScopes(ctx, next, ['user', 'user:edit']),
       async (ctx) => {
         const { id } = ctx.params;
         const { body } = ctx.request;
@@ -99,7 +99,19 @@ export default async function userRoutes(customClient) {
           if (_id || email) {
             throw new Error('_id or email must not be altered.');
           }
-          const result = await User.findByIdAndUpdate(id, { $set: body }, { new: true, select: '-__v -password' });
+          const result = await User.findByIdAndUpdate(
+            id,
+            {
+              $set: body,
+              $inc: { __v: 1 },
+            },
+            {
+              new: true,
+              runValidators: true,
+              select: '-__v -password',
+              setDefaultsOnInsert: true,
+            },
+          );
           ctx.status = 200;
           ctx.body = result.toJSON();
         } catch (err) {

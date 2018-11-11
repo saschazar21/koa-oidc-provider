@@ -6,7 +6,7 @@ import { resolve } from 'path';
 import pkg from '../../../package.json';
 import { privateDir } from '../tools/directory';
 import clientModel from '../db/models/client';
-import { oidcUrl, port } from '../tools/url';
+import { oidcUrl } from '../tools/url';
 
 const error = debug('error:setup');
 const info = debug('info');
@@ -25,7 +25,7 @@ export async function getBaseClient() {
     client_name: process.env.APP_NAME || pkg.name,
     owner: process.env.APP_NAME || pkg.name,
     grant_types: ['implicit'],
-    redirect_uris: `${process.env.NODE_ENV === 'test' ? `https://127.0.0.1:${port}` : oidcUrl}/web/login/finish`,
+    redirect_uris: `${oidcUrl}/web/login/finish`,
     response_types: ['id_token token'],
   });
 

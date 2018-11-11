@@ -29,6 +29,13 @@ import { isEmail, isUrl } from '../../tools/regex';
  */
 /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
 
+function sanitizeName(name) {
+  return name
+    .trim()
+    .charAt(0)
+    .toUpperCase() + name.substr(1);
+}
+
 export default async function userModel(customClient) {
   const mongoose = customClient || await initMongo();
 
@@ -82,12 +89,6 @@ export default async function userModel(customClient) {
     },
     locale: String,
     middle_name: String,
-    name: {
-      default: function generateName() {
-        return `${this.given_name} ${this.family_name}`;
-      },
-      type: String,
-    },
     phone_number: String,
     phone_number_verified: {
       default: false,
@@ -119,6 +120,38 @@ export default async function userModel(customClient) {
       },
     },
     zoneinfo: String,
+  }, {
+    toJSON: {
+      virtuals: true,
+    },
+  });
+
+  userSchema.virtual('name')
+    .get(function getName() { return `${this.given_name} ${this.family_name}`; });
+
+  userSchema.pre('findOneAndUpdate', async function updatePassword() {
+    let update = this.getUpdate().$set;
+
+    if (update.given_name) {
+      update = {
+        ...update,
+        given_name: sanitizeName(update.given_name),
+      };
+    }
+    if (update.family_name) {
+      update = {
+        ...update,
+        family_name: sanitizeName(update.family_name),
+      };
+    }
+    if (update.password) {
+      update = {
+        ...update,
+        password: await passwordHash(update.password),
+      };
+    }
+
+    return this.update(update);
   });
 
   userSchema.pre('save', async function genPasswd(next) {
@@ -127,16 +160,11 @@ export default async function userModel(customClient) {
     //   this.picture = await cat();
     // }
 
-    if (this.isModified('family_name') || this.isModified('given_name')) {
-      this.family_name = this.family_name
-        .trim()
-        .charAt(0)
-        .toUpperCase() + this.family_name.slice(1);
-      this.given_name = this.given_name
-        .trim()
-        .charAt(0)
-        .toUpperCase() + this.given_name.slice(1);
-      this.name = `${this.given_name} ${this.family_name}`;
+    if (this.isModified('family_name')) {
+      this.family_name = sanitizeName(this.family_name);
+    }
+    if (this.isModified('given_name')) {
+      this.given_name = sanitizeName(this.given_name);
     }
 
     if (!this.isModified('password')) {

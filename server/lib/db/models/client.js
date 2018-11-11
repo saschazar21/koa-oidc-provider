@@ -42,13 +42,6 @@ export default async function clientModel(customClient) {
       type: String,
       ref: 'User',
     },
-    client_id: {
-      default() {
-        // eslint-disable-next-line no-underscore-dangle
-        return this._id;
-      },
-      type: String,
-    },
     client_secret: {
       default: clientSecret,
       type: String,
@@ -316,7 +309,15 @@ export default async function clientModel(customClient) {
         message: 'One of the given URIs is not a valid URI starting with http(s)',
       },
     },
+  }, {
+    toJSON: {
+      virtuals: true,
+    },
   });
+
+  clientSchema.virtual('client_id')
+  /* eslint-disable-next-line no-underscore-dangle */
+    .get(function getClientId() { return this._id; });
 
   clientSchema.pre('save', async function genPasswd(next) {
     if (this.logo_uri) {
