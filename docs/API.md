@@ -11,7 +11,11 @@ This document covers the following route sections:
   * [PUT /api/clients/:id](#put-apiclientsid)
   * [DELETE /api/clients/:id](#delete-apiclientsid)
 * [User Routes](#user-routes)
+  * [GET /api/users](#get-apiusers)
+  * [POST /api/users](#post-apiusers)
+  * [PUT /api/users/:id](#put-apiusersid)
 * [Token Routes](#token-routes)
+  * [GET /api/tokens](#get-apitokens)
 
 ## Client Routes
 
@@ -256,4 +260,30 @@ Updates a user object based on the given properties, then returns the updated us
   "name":"Testophilius McTestface",
   "id":"dwyOLCBwWivAvgBD"
 }
+```
+
+## Token Routes
+
+To list currently active tokens for registered user, perform the following request:
+
+### GET /api/tokens
+
+| **HTTP Header** | **Necessary Scopes** | **Example cURL Request** |
+|-----------------|----------------------|------------------------|
+| Authorization: Bearer <access_token> | token | `curl -H "Authorization: Bearer <access_token>" https://your-url.com/api/tokens` |
+
+Returns a list of currently active tokens in the following schema:
+
+```javascript
+[
+  {
+    "kind":"AccessToken",
+    "_id":"Y97GBmzDPUSQezsPnhtyj42UJpT_sa90bWjPohK2xUG",
+    "iat":1541952653,
+    "iss":"https://your-url.com",
+    "exp":1541956253,
+    "clientId":null,  // if clientId is null, access token was created using base client
+    "scope":"openid profile token client client:create client:delete client:edit"
+  }
+]
 ```

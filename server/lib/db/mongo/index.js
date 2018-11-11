@@ -31,7 +31,9 @@ export async function initMongo(host, port, dbName, config) {
     user: conf.user || process.env.MONGO_USER || null,
   };
 
-  const connection = await mongoose.connect(`mongodb://${hostname}:${portNo}/${db}`, conf);
+  const mongoUrl = process.env.MONGO_URL;
+  const mongoString = `mongodb://${mongoUrl && mongoUrl.length > 0 ? mongoUrl : `${hostname}:${portNo}/${db}`}`;
+  const connection = await mongoose.connect(mongoString, conf);
   info(`Connected to MongoDB ${hostname}:${portNo}`);
   return connection;
 }

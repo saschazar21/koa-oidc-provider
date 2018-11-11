@@ -124,6 +124,8 @@ export default async function userRoutes(customClient) {
       },
     );
 
+    // TODO: Add DELETE route, make sure to also remove depending clients & tokens
+
     return router;
   } catch (e) {
     error(e.message || e);

@@ -4,6 +4,7 @@ FROM node:carbon-alpine
 # Arguments used to set correct hostname & debug messages
 ARG HOST
 ARG DEBUG
+ARG REGISTRATION
 
 # Arguments used to set correct MongoDB connection
 ARG MONGO_HOST
@@ -11,6 +12,7 @@ ARG MONGO_PORT
 ARG MONGO_DB
 ARG MONGO_USER
 ARG MONGO_PASSWORD
+ARG MONGO_URL
 
 # Arguments used to set correct Redis connection
 ARG REDIS_HOST
@@ -22,6 +24,7 @@ ARG REDIS_PASSWORD
 # Set base environment variables
 ENV HOST $HOST
 ENV DEBUG ${DEBUG:-error:*}
+ENV REGISTRATION $REGISTRATION
 
 # Set MongoDB environment variables
 ENV MONGO_HOST ${MONGO_HOST:-localhost}
@@ -29,6 +32,7 @@ ENV MONGO_PORT ${MONGO_PORT:-27017}
 ENV MONGO_DB $MONGO_DB
 ENV MONGO_USER $MONGO_USER
 ENV MONGO_PASSWORD $MONGO_PASSWORD
+ENV MONGO_URL $MONGO_URL
 
 # Set Redis environment variables
 ENV REDIS_HOST ${REDIS_HOST:-localhost}
@@ -39,13 +43,24 @@ ENV REDIS_PASSWORD $REDIS_PASSWORD
 
 # Set correct working directory for builder image
 WORKDIR /usr/src/oidc
+COPY package.json .
+RUN apk --update --no-cache add \
+    python \
+    make \
+    gcc \
+    g++ \
+    ca-certificates \
+  && yarn
 COPY . .
-RUN apk --update --no-cache add python make gcc g++ ca-certificates \
-  && yarn \
-  && npm run build
+RUN npm run build
 
 ENV NODE_ENV production
-RUN apk del python make gcc g++ ca-certificates \
+RUN apk del \
+    python \
+    make \
+    gcc \
+    g++ \
+    ca-certificates \
   && rm -rf /var/cache/apk
 
 EXPOSE 3000
