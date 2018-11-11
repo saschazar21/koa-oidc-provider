@@ -84,7 +84,7 @@ export default async function userRoutes(customClient) {
     router.put(
       '/:id',
       passport.authenticate(['bearer']),
-      // async (ctx, next) => requireScopes(ctx, next, ['user', 'user:edit']),
+      async (ctx, next) => requireScopes(ctx, next, ['user', 'user:edit']),
       async (ctx) => {
         const { id } = ctx.params;
         const { body } = ctx.request;
