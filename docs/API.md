@@ -1,4 +1,6 @@
-# API documentation
+> Hint: Before you read the API Documentation, it's strongly advised to read the [Configuration Manual](/docs/CONFIGURATION.md) for properly setting up your OpenID Connect Provider.
+
+# API Documentation
 
 The following document lists the API routes for koa-oidc-provider. Further information may be looked up in the [configuration document](/docs/CONFIGURATION.md).
 
@@ -16,6 +18,10 @@ This document covers the following route sections:
   * [PUT /api/users/:id](#put-apiusersid)
 * [Token Routes](#token-routes)
   * [GET /api/tokens](#get-apitokens)
+* [Setup Routes](#setup-routes)
+  * [GET /api/setup/granttypes](#get-apisetupgranttypes)
+  * [GET /api/setup/responsetypes](#get-apisetupresponsetypes)
+
 
 ## Client Routes
 
@@ -285,5 +291,45 @@ Returns a list of currently active tokens in the following schema:
     "clientId":null,  // if clientId is null, access token was created using base client
     "scope":"openid profile token client client:create client:delete client:edit"
   }
+]
+```
+
+## Setup Routes
+
+Concerning the supported [grant types](https://oauth.net/2/grant-types/) and [response types](https://openid.net/specs/openid-connect-core-1_0.html#Authentication), there are two routes to list them:
+
+### GET /api/setup/granttypes
+
+| **HTTP Header** | **Necessary Scopes** | **Example cURL Request** |
+|-----------------|----------------------|------------------------|
+|  |  | `curl https://your-url.com/api/setup/granttypes` |
+
+Returns a list of supported grant types, to customize the list, take a look at the [Custom Configuration](/docs/CONFIGURATION.md#custom-configuration) section:
+
+```javascript
+[
+  "authorization_code",
+  "implicit",
+  "refresh_token"
+]
+```
+
+### GET /api/setup/responsetypes
+
+| **HTTP Header** | **Necessary Scopes** | **Example cURL Request** |
+|-----------------|----------------------|------------------------|
+|  |  | `curl https://your-url.com/api/setup/responsetypes` |
+
+Returns a list of supported response types:
+
+```javascript
+[
+  "code id_token token",
+  "code id_token",
+  "code token",
+  "code",
+  "id_token token",
+  "id_token",
+  "none"
 ]
 ```
