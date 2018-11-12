@@ -24,7 +24,7 @@ A slightly more opinionated config-/frontend-wrapper around **[node-oidc-provide
 
 ## Build Setup
 
-**CAUTION:** Make sure to set the appropriate HOST environment variable. More information about variables may be found in the [Variables](/docs/configuration.md#variables) section of the configuration document.
+**CAUTION:** Make sure to set the appropriate HOST environment variable. More information about variables may be found in the [Variables](/docs/CONFIGURATION.md#variables) section of the configuration document.
 
 ### Building locally
 
