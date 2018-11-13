@@ -1,6 +1,15 @@
 [![Build Status](https://travis-ci.org/saschazar21/koa-oidc-provider.svg?branch=master)](https://travis-ci.org/saschazar21/koa-oidc-provider)
 
 # koa-oidc-provider
+
+<div align="center">
+  <br />
+  <img src="/docs/dashboard.png" alt="Screenshot of koa-oidc-provider's dashboard" width="640px">
+  <br />
+  <br />
+  <br />
+</div>
+
 > A fully configurable OpenID Connect Provider based on Nuxt/Koa for the masses.
 
 A slightly more opinionated config-/frontend-wrapper around **[node-oidc-provider](https://github.com/panva/node-oidc-provider)** from [@panva](https://github.com/panva).

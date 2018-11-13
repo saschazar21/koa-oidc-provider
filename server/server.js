@@ -26,7 +26,7 @@ export async function start(provider) {
   app.proxy = true;
   app.keys = keys();
   app.use(logger());
-  app.use(session());
+  app.use(await session());
   app.use(helmet({
     hsts: {
       maxAge: 5184000,
