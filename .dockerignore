@@ -1,6 +1,3 @@
-docs
-redis
-mongo
 node_modules
 npm-debug.log
 yarn-error.log
@@ -14,8 +11,12 @@ docker-compose*
 .env.sample
 .nuxt
 .travis.yml
+now.json
 build
 private
+docs
+redis
+mongo
 */bin
 */obj
 README.md

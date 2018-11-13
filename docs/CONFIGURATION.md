@@ -6,6 +6,9 @@ Contents:
 
 * [Default Configuration](#default-configuration)
 * [Custom Configuration](#custom-configuration)
+  * [Keystore](#keystore)
+  * [Base Client(s)](#base-clients)
+  * [Configuration File](#configuration-file)
 * [Variables](#variables)
   * [Setup Variables](#setup-variables)
   * [MongoDB Variables](#mongodb-variables)
@@ -17,15 +20,15 @@ The default configuration is tightly coupled with node-oidc-provider's default c
 
 ## Custom Configuration
 
-The custom configuration in the `private/` directory divides itself into 3 different parts:
+The custom configuration in the `private/` directory (or at least the one defined in the `PRIVATE_DIR` env) divides itself into 3 different parts:
 
 * **Keystore**: Either let yourself automatically create a JSON Web Keystore, or place a custom one as `jwks.json` file in the folder.
-* **Base Client(s)**: Either let koa-oidc-provider create a random base client upon each start, or place a client configuration as `clients.js` file in the folder.
+* **Base Client(s)**: Additionally include custom created clients into the OpenID Connect Provider via the `clients.js` file in the folder.
 * **Custom Configuration file**: Place a custom `configuration.json` file in the folder.
 
 ### Keystore
 
-By default, koa-oidc-provider looks for an existing `jwks.json` file in the `private/` directory and creates one, if none is present yet. This file holds the keystore needed for signing the JWTs. If you'd like to user your own keystore, create one in the format described in [Appendix A](https://tools.ietf.org/html/draft-ietf-jose-json-web-key-41#appendix-A) in the JSON Web Key IETF Draft.
+By default, koa-oidc-provider looks for an existing `jwks.json` file in the `private/` directory (or at least the one defined in the `PRIVATE_DIR` env) and creates one, if none is present yet. This file holds the keystore needed for signing the JWTs. If you'd like to user your own keystore, create one in the format described in [Appendix A](https://tools.ietf.org/html/draft-ietf-jose-json-web-key-41#appendix-A) in the JSON Web Key IETF Draft.
 
 ```javascript
 {
@@ -49,10 +52,11 @@ By default, koa-oidc-provider looks for an existing `jwks.json` file in the `pri
 
 ### Base Client(s)
 
+Using a `clients.js` file in the `private/` directory (or at least the one defined in the `PRIVATE_DIR` env), you are able to define static clients, which may not be altered through the web frontend. Be sure to only use valid client metadata as defined in [Dynamic Client Registration](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata)
 
-### `configuration.json` file
+### Configuration File
 
-By placing a `configuration.json` file in the `private/` directory, you're able to overwrite some of the default configuration and therefore customize the application.
+By placing a `configuration.json` file in the `private/` directory (or at least the one defined in the `PRIVATE_DIR` env), you're able to overwrite some of the default configuration and therefore customize the application.
 
 To limit the available claims to the following three, just create a `configuration.json` file with the following contents.
 
