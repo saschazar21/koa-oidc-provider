@@ -52,7 +52,7 @@ By default, koa-oidc-provider looks for an existing `jwks.json` file in the `pri
 
 ### Base Client(s)
 
-Using a `clients.js` file in the `private/` directory (or at least the one defined in the `PRIVATE_DIR` env), you are able to define static clients, which may not be altered through the web frontend. Be sure to only use valid client metadata as defined in [Dynamic Client Registration](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata)
+Using a `clients.js` file in the `private/` directory (or at least the one defined in the `PRIVATE_DIR` env), you are able to define static clients, which may not be altered through the web frontend. Be sure to only use valid client metadata as defined in [Dynamic Client Registration](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata).
 
 ### Configuration File
 
@@ -99,7 +99,7 @@ Apart from customizing the default configuration, there is a list of environment
 Necessary environment variables for setting the issuer URL, enable registration, etc...
 
 * **HOST**: Set the issuer domain, e.g. `HOST=your-url.com`
-* **REGISTRATIOIN**: If environment variable is set, user registration will be enabled
+* **REGISTRATION**: If environment variable is set, user registration will be enabled
 * **DEBUG**: Set the amount of logging:
   * `info`: Will log general information (a verbose logging)
   * `error:*`: Will log different error messages
